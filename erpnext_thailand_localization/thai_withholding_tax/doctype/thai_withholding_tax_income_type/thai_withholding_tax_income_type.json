@@ -1,0 +1,143 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:income_type_name",
+ "creation": "2026-08-06 14:11:12.111296",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "income_type_name",
+  "income_type_code",
+  "description_th",
+  "return_types_section",
+  "pnd1",
+  "pnd2",
+  "pnd_column_break",
+  "pnd3",
+  "pnd53",
+  "pnd54",
+  "disabled"
+ ],
+ "fields": [
+  {
+   "fieldname": "income_type_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Income Type Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "income_type_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Income Type Code",
+   "reqd": 1
+  },
+  {
+   "fieldname": "description_th",
+   "fieldtype": "Small Text",
+   "label": "Thai Description",
+   "reqd": 1
+  },
+  {
+   "fieldname": "return_types_section",
+   "fieldtype": "Section Break",
+   "label": "Tax Returns"
+  },
+  {
+   "default": "0",
+   "fieldname": "pnd1",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "PND 1"
+  },
+  {
+   "default": "0",
+   "fieldname": "pnd2",
+   "fieldtype": "Check",
+   "label": "PND 2"
+  },
+  {
+   "fieldname": "pnd_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "pnd3",
+   "fieldtype": "Check",
+   "label": "PND 3"
+  },
+  {
+   "default": "0",
+   "fieldname": "pnd53",
+   "fieldtype": "Check",
+   "label": "PND 53"
+  },
+  {
+   "default": "0",
+   "fieldname": "pnd54",
+   "fieldtype": "Check",
+   "label": "PND 54"
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Disabled"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-06 14:24:09.172775",
+ "modified_by": "Administrator",
+ "module": "Thai Withholding Tax",
+ "name": "Thai Withholding Tax Income Type",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "search_fields": "income_type_code,description_th",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "income_type_name",
+ "track_changes": 1
+}

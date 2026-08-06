@@ -1,0 +1,119 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-08-06 14:11:12.879178",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "income_type",
+  "base_amount",
+  "tax_rate",
+  "tax_amount",
+  "accounting_evidence_section",
+  "gl_entry",
+  "reference_section",
+  "reference_doc_doctype",
+  "reference_doc",
+  "reference_item_column",
+  "reference_doc_item_doctype",
+  "reference_doc_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "income_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Income Type",
+   "link_filters": "[[\"Thai Withholding Tax Income Type\",\"disabled\",\"=\",0]]",
+   "mandatory_depends_on": "eval:doc.docstatus == 1",
+   "options": "Thai Withholding Tax Income Type"
+  },
+  {
+   "fieldname": "base_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Base Amount",
+   "mandatory_depends_on": "eval:doc.docstatus == 1",
+   "options": "company_currency"
+  },
+  {
+   "fieldname": "tax_rate",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Tax Rate (%)",
+   "mandatory_depends_on": "eval:doc.docstatus == 1"
+  },
+  {
+   "fieldname": "tax_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Tax Amount",
+   "mandatory_depends_on": "eval:doc.docstatus == 1",
+   "options": "company_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "accounting_evidence_section",
+   "fieldtype": "Section Break",
+   "label": "Accounting Evidence"
+  },
+  {
+   "fieldname": "gl_entry",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "GL Entry",
+   "mandatory_depends_on": "eval:doc.docstatus == 1",
+   "options": "GL Entry"
+  },
+  {
+   "fieldname": "reference_section",
+   "fieldtype": "Section Break",
+   "label": "Source Document"
+  },
+  {
+   "fieldname": "reference_doc_doctype",
+   "fieldtype": "Link",
+   "label": "Reference Document Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "reference_doc",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Document",
+   "options": "reference_doc_doctype"
+  },
+  {
+   "fieldname": "reference_item_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reference_doc_item_doctype",
+   "fieldtype": "Link",
+   "label": "Reference Item Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "reference_doc_item",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Item",
+   "options": "reference_doc_item_doctype"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-06 14:11:12.879178",
+ "modified_by": "Administrator",
+ "module": "Thai Withholding Tax",
+ "name": "Withholding Tax Entry Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
