@@ -53,7 +53,7 @@ class WithholdingTaxEntry(Document):
 
 	def validate_item(self, item):
 		row_label = _("Row {0}").format(item.idx)
-		for fieldname in ("income_type", "base_amount", "tax_rate", "tax_amount", "gl_entry"):
+		for fieldname in ("income_type", "base_amount", "tax_rate", "tax_amount"):
 			if item.get(fieldname) in (None, ""):
 				frappe.throw(_("{0}: {1} is required.").format(row_label, _(item.meta.get_label(fieldname))))
 
@@ -67,7 +67,6 @@ class WithholdingTaxEntry(Document):
 			frappe.throw(_("{0}: Tax Amount must be greater than zero.").format(row_label))
 
 		self.validate_reference(item, row_label)
-		self.validate_gl_entry(item, row_label)
 
 	def validate_reference(self, item, row_label):
 		if bool(item.reference_doc_doctype) != bool(item.reference_doc):
@@ -101,28 +100,4 @@ class WithholdingTaxEntry(Document):
 		):
 			frappe.throw(
 				_("{0}: Reference Item does not belong to the selected Reference Document.").format(row_label)
-			)
-
-	def validate_gl_entry(self, item, row_label):
-		gl_entry = frappe.db.get_value(
-			"GL Entry",
-			item.gl_entry,
-			["company", "is_cancelled", "voucher_type", "voucher_no"],
-			as_dict=True,
-		)
-		if not gl_entry:
-			frappe.throw(_("{0}: GL Entry does not exist.").format(row_label))
-		if gl_entry.is_cancelled:
-			frappe.throw(_("{0}: GL Entry is cancelled.").format(row_label))
-		if gl_entry.company != self.company:
-			frappe.throw(
-				_("{0}: GL Entry must belong to Company {1}.").format(row_label, frappe.bold(self.company))
-			)
-		if self.payment_entry and (
-			gl_entry.voucher_type != "Payment Entry" or gl_entry.voucher_no != self.payment_entry
-		):
-			frappe.throw(
-				_("{0}: GL Entry must belong to Payment Entry {1}.").format(
-					row_label, frappe.bold(self.payment_entry)
-				)
 			)

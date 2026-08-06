@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ERPNext Thailand Localization VERSION\n"
 "Report-Msgid-Bugs-To: p@spacecode.co.th\n"
-"POT-Creation-Date: 2026-08-06 08:45+0000\n"
-"PO-Revision-Date: 2026-08-06 08:45+0000\n"
+"POT-Creation-Date: 2026-08-06 12:16+0000\n"
+"PO-Revision-Date: 2026-08-06 12:16+0000\n"
 "Last-Translator: p@spacecode.co.th\n"
 "Language-Team: p@spacecode.co.th\n"
 "MIME-Version: 1.0\n"
@@ -16,10 +16,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#. Label of the accounting_evidence_section (Section Break) field in DocType
-#. 'Withholding Tax Entry Item'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/withholding_tax_entry_item/withholding_tax_entry_item.json
-msgid "Accounting Evidence"
+#. Option for the 'Income Type Code' (Select) field in DocType 'Thai
+#. Withholding Tax Income Type'
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
+msgid "4 ก"
+msgstr ""
+
+#. Option for the 'Income Type Code' (Select) field in DocType 'Thai
+#. Withholding Tax Income Type'
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
+msgid "4 ข"
 msgstr ""
 
 #. Name of a role
@@ -36,7 +42,7 @@ msgstr ""
 msgid "Accounts User"
 msgstr ""
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:47
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:49
 msgid "Address {0} is not linked to {1} {2}."
 msgstr ""
 
@@ -63,6 +69,12 @@ msgstr ""
 
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.py:26
 msgid "Certificate Attachment is required before submission."
+msgstr ""
+
+#. Label of the certificate_section (Section Break) field in DocType 'Sales
+#. Withholding Tax Entry'
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.json
+msgid "Certificate Details"
 msgstr ""
 
 #. Label of the certificate_number (Data) field in DocType 'Sales Withholding
@@ -96,8 +108,17 @@ msgstr ""
 msgid "Company Currency"
 msgstr ""
 
-#: erpnext_thailand_localization/public/js/payment_entry.js:20
-#: erpnext_thailand_localization/public/js/payment_entry.js:37
+#. Label of the company_section (Section Break) field in DocType 'Purchase
+#. Withholding Tax Entry'
+#. Label of the company_section (Section Break) field in DocType 'Sales
+#. Withholding Tax Entry'
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/purchase_withholding_tax_entry/purchase_withholding_tax_entry.json
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.json
+msgid "Company Details"
+msgstr ""
+
+#: erpnext_thailand_localization/public/js/payment_entry.js:19
+#: erpnext_thailand_localization/public/js/payment_entry.js:35
 msgid "Create"
 msgstr ""
 
@@ -118,15 +139,16 @@ msgstr ""
 msgid "Customer Details"
 msgstr ""
 
+#. Label of the default_thai_withholding_tax_rate (Percent) field in DocType
+#. 'Thai Withholding Tax Income Type'
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
+msgid "Default Thai Withholding Tax Rate (%)"
+msgstr ""
+
 #. Label of the disabled (Check) field in DocType 'Thai Withholding Tax Income
 #. Type'
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
 msgid "Disabled"
-msgstr ""
-
-#. Label of the gl_entry (Link) field in DocType 'Withholding Tax Entry Item'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/withholding_tax_entry_item/withholding_tax_entry_item.json
-msgid "GL Entry"
 msgstr ""
 
 #. Label of the income_type (Link) field in DocType 'Withholding Tax Entry
@@ -135,8 +157,8 @@ msgstr ""
 msgid "Income Type"
 msgstr ""
 
-#. Label of the income_type_code (Data) field in DocType 'Thai Withholding Tax
-#. Income Type'
+#. Label of the income_type_code (Select) field in DocType 'Thai Withholding
+#. Tax Income Type'
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
 msgid "Income Type Code"
 msgstr ""
@@ -202,15 +224,6 @@ msgstr ""
 msgid "Payment Date"
 msgstr ""
 
-#. Label of the payment_entry (Link) field in DocType 'Purchase Withholding Tax
-#. Entry'
-#. Label of the payment_entry (Link) field in DocType 'Sales Withholding Tax
-#. Entry'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/purchase_withholding_tax_entry/purchase_withholding_tax_entry.json
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.json
-msgid "Payment Entry"
-msgstr ""
-
 #: erpnext_thailand_localization/thai_withholding_tax/payment_entry.py:22
 msgid "Payment Entry {0} is not eligible to create a {1}."
 msgstr ""
@@ -223,6 +236,12 @@ msgstr ""
 #: erpnext_thailand_localization/public/js/payment_entry.js:13
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/purchase_withholding_tax_entry/purchase_withholding_tax_entry.json
 msgid "Purchase Withholding Tax Entry"
+msgstr ""
+
+#. Label of the reference_section (Section Break) field in DocType 'Withholding
+#. Tax Entry Item'
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/withholding_tax_entry_item/withholding_tax_entry_item.json
+msgid "Reference"
 msgstr ""
 
 #. Label of the reference_doc (Dynamic Link) field in DocType 'Withholding Tax
@@ -249,20 +268,14 @@ msgstr ""
 msgid "Reference Item Type"
 msgstr ""
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:53
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:55
 msgid "Row {0}"
 msgstr ""
 
 #. Name of a DocType
-#: erpnext_thailand_localization/public/js/payment_entry.js:30
+#: erpnext_thailand_localization/public/js/payment_entry.js:29
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.json
 msgid "Sales Withholding Tax Entry"
-msgstr ""
-
-#. Label of the reference_section (Section Break) field in DocType 'Withholding
-#. Tax Entry Item'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/withholding_tax_entry_item/withholding_tax_entry_item.json
-msgid "Source Document"
 msgstr ""
 
 #. Label of the supplier (Link) field in DocType 'Purchase Withholding Tax
@@ -300,18 +313,6 @@ msgstr ""
 #. Item'
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/withholding_tax_entry_item/withholding_tax_entry_item.json
 msgid "Tax Rate (%)"
-msgstr ""
-
-#. Label of the return_types_section (Section Break) field in DocType 'Thai
-#. Withholding Tax Income Type'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
-msgid "Tax Returns"
-msgstr ""
-
-#. Label of the description_th (Small Text) field in DocType 'Thai Withholding
-#. Tax Income Type'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
-msgid "Thai Description"
 msgstr ""
 
 #. Label of the custom_thai_withholding_tax_section (Section Break) field in
@@ -384,7 +385,7 @@ msgstr ""
 msgid "Withholding Tax Items"
 msgstr ""
 
-#: erpnext_thailand_localization/thai_withholding_tax/payment_entry.py:27
+#: erpnext_thailand_localization/thai_withholding_tax/payment_entry.py:28
 msgid "You do not have permission to create a {0}."
 msgstr ""
 
@@ -396,47 +397,31 @@ msgstr ""
 msgid "{0}: Base Amount must be greater than zero."
 msgstr ""
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:110
-msgid "{0}: GL Entry does not exist."
-msgstr ""
-
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:112
-msgid "{0}: GL Entry is cancelled."
-msgstr ""
-
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:114
-msgid "{0}: GL Entry must belong to Company {1}."
-msgstr ""
-
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:119
-msgid "{0}: GL Entry must belong to Payment Entry {1}."
-msgstr ""
-
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:73
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:74
 msgid "{0}: Reference Document Type and Reference Document must be provided together."
 msgstr ""
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:79
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:80
 msgid "{0}: Reference Item Type and Reference Item must be provided together."
 msgstr ""
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:100
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:102
 msgid "{0}: Reference Item does not belong to the selected Reference Document."
 msgstr ""
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:95
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:96
 msgid "{0}: Reference Item does not exist."
 msgstr ""
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:65
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:67
 msgid "{0}: Tax Amount must be greater than zero."
 msgstr ""
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:63
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:64
 msgid "{0}: Tax Rate must be greater than zero and no greater than 100."
 msgstr ""
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:57
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:58
 msgid "{0}: {1} is required."
 msgstr ""
 

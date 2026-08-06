@@ -5,7 +5,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "1 เงินเดือนค่าจ้าง เบี้ยเลี้ยง - กรณีทั่วไป",
 		"income_type_code": "1",
-		"description_th": "เงินเดือนค่าจ้าง เบี้ยเลี้ยง - กรณีทั่วไป",
 		"pnd1": 1,
 		"pnd2": 0,
 		"pnd3": 0,
@@ -15,7 +14,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "1 เงินเดือนค่าจ้าง เบี้ยเลี้ยง - กรณีได้รับอนุมัติให้หัก 3%",
 		"income_type_code": "1",
-		"description_th": "เงินเดือนค่าจ้าง เบี้ยเลี้ยง - กรณีได้รับอนุมัติให้หัก 3%",
 		"pnd1": 1,
 		"pnd2": 0,
 		"pnd3": 0,
@@ -25,7 +23,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "1 เงินเดือนค่าจ้าง เบี้ยเลี้ยง - กรณีนายจ้างจ่ายครั้งเดียวเพราะออกจากงาน",
 		"income_type_code": "1",
-		"description_th": "เงินเดือนค่าจ้าง เบี้ยเลี้ยง - กรณีนายจ้างจ่ายครั้งเดียวเพราะออกจากงาน",
 		"pnd1": 1,
 		"pnd2": 0,
 		"pnd3": 0,
@@ -35,7 +32,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "2 ค่าธรรมเนียม ค่านายหน้า - กรณีผู้รับเป็นผู้อยู่ในประเทศไทย",
 		"income_type_code": "2",
-		"description_th": "ค่าธรรมเนียม ค่านายหน้า - กรณีผู้รับเป็นผู้อยู่ในประเทศไทย",
 		"pnd1": 1,
 		"pnd2": 0,
 		"pnd3": 0,
@@ -45,7 +41,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "2 ค่าธรรมเนียม ค่านายหน้า - กรณีผู้รับมิได้เป็นผู้อยู่ในประเทศไทย",
 		"income_type_code": "2",
-		"description_th": "ค่าธรรมเนียม ค่านายหน้า - กรณีผู้รับมิได้เป็นผู้อยู่ในประเทศไทย",
 		"pnd1": 1,
 		"pnd2": 0,
 		"pnd3": 0,
@@ -55,7 +50,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "2 ค่าธรรมเนียม ค่านายหน้า - กรณีนายจ้างจ่ายครั้งเดียวเพราะออกจากงาน",
 		"income_type_code": "2",
-		"description_th": "ค่าธรรมเนียม ค่านายหน้า - กรณีนายจ้างจ่ายครั้งเดียวเพราะออกจากงาน",
 		"pnd1": 1,
 		"pnd2": 0,
 		"pnd3": 0,
@@ -65,7 +59,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "3 ค่าแห่งลิขสิทธิ์",
 		"income_type_code": "3",
-		"description_th": "ค่าแห่งลิขสิทธิ์",
 		"pnd1": 0,
 		"pnd2": 1,
 		"pnd3": 0,
@@ -75,7 +68,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "4 ก ดอกเบี้ย",
 		"income_type_code": "4 ก",
-		"description_th": "ดอกเบี้ย",
 		"pnd1": 0,
 		"pnd2": 1,
 		"pnd3": 0,
@@ -85,7 +77,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "4 ข เงินปันผล - ได้รับเครดิตภาษี",
 		"income_type_code": "4 ข",
-		"description_th": "เงินปันผล - ได้รับเครดิตภาษี",
 		"pnd1": 0,
 		"pnd2": 1,
 		"pnd3": 0,
@@ -95,7 +86,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "4 ข เงินปันผล - ไม่ได้รับเครดิตภาษี - กำไรสุทธิของกิจการที่ได้รับยกเว้นภาษีเงินได้นิติบุคคล",
 		"income_type_code": "4 ข",
-		"description_th": "เงินปันผล - ไม่ได้รับเครดิตภาษี - กำไรสุทธิของกิจการที่ได้รับยกเว้นภาษีเงินได้นิติบุคคล",
 		"pnd1": 0,
 		"pnd2": 1,
 		"pnd3": 0,
@@ -105,7 +95,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "4 ข เงินปันผล - ไม่ได้รับเครดิตภาษี - เงินปันผลหรือเงินส่วนแบ่งของกำไรที่ได้รับยกเว้น ...",
 		"income_type_code": "4 ข",
-		"description_th": "เงินปันผล - ไม่ได้รับเครดิตภาษี - เงินปันผลหรือเงินส่วนแบ่งของกำไรที่ได้รับยกเว้น ...",
 		"pnd1": 0,
 		"pnd2": 1,
 		"pnd3": 0,
@@ -115,7 +104,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "4 ข เงินปันผล - ไม่ได้รับเครดิตภาษี - กำไรสุทธิส่วนที่ได้หักผลขาดทุนสุทธิยกมาไม่เกิน 5 ปี ...",
 		"income_type_code": "4 ข",
-		"description_th": "เงินปันผล - ไม่ได้รับเครดิตภาษี - กำไรสุทธิส่วนที่ได้หักผลขาดทุนสุทธิยกมาไม่เกิน 5 ปี ...",
 		"pnd1": 0,
 		"pnd2": 1,
 		"pnd3": 0,
@@ -125,7 +113,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "4 ข เงินปันผล - ไม่ได้รับเครดิตภาษี - กำไรที่รับรู้ทางบัญชีโดยวิธีส่วนได้เสีย",
 		"income_type_code": "4 ข",
-		"description_th": "เงินปันผล - ไม่ได้รับเครดิตภาษี - กำไรที่รับรู้ทางบัญชีโดยวิธีส่วนได้เสีย",
 		"pnd1": 0,
 		"pnd2": 1,
 		"pnd3": 0,
@@ -135,7 +122,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "4 ข เงินปันผล - ไม่ได้รับเครดิตภาษี - อื่นๆ",
 		"income_type_code": "4 ข",
-		"description_th": "เงินปันผล - ไม่ได้รับเครดิตภาษี - อื่นๆ",
 		"pnd1": 0,
 		"pnd2": 1,
 		"pnd3": 0,
@@ -145,7 +131,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "4 อื่นๆ",
 		"income_type_code": "4",
-		"description_th": "อื่นๆ",
 		"pnd1": 0,
 		"pnd2": 1,
 		"pnd3": 0,
@@ -155,7 +140,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "5 ค่าเช่า",
 		"income_type_code": "5",
-		"description_th": "ค่าเช่า",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -165,7 +149,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "6 เงินได้จากวิชาชีพอิสระ",
 		"income_type_code": "6",
-		"description_th": "เงินได้จากวิชาชีพอิสระ",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -175,7 +158,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "7 การรับเหมาที่ผู้รับเหมาต้องลงทุนด้วยการจัดหาสัมภาระ",
 		"income_type_code": "7",
-		"description_th": "การรับเหมาที่ผู้รับเหมาต้องลงทุนด้วยการจัดหาสัมภาระ",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -185,7 +167,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ - ค่าจ้างทำของ",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ - ค่าจ้างทำของ",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -195,7 +176,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ - ค่าบริการ",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ - ค่าบริการ",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -205,7 +185,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ - ค่าโฆษณา",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ - ค่าโฆษณา",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -215,7 +194,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ - ค่าขายอสังหาริมทรัพย์",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ - ค่าขายอสังหาริมทรัพย์",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -225,7 +203,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ - ค่าแสดงของนักแสดงสาธารณะ",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ - ค่าแสดงของนักแสดงสาธารณะ",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -235,7 +212,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ - ค่าเบี้ยประกันวินาศภัย",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ - ค่าเบี้ยประกันวินาศภัย",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -245,7 +221,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ - ค่าขนส่งที่มิใช่ค่าขนส่งสาธารณะ",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ - ค่าขนส่งที่มิใช่ค่าขนส่งสาธารณะ",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -255,7 +230,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ - ค่าซื้อสินค้าพืชไร่",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ - ค่าซื้อสินค้าพืชไร่",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -265,7 +239,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ - รางวัลในการประกวด แข่งขัน ชิงโชค",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ - รางวัลในการประกวด แข่งขัน ชิงโชค",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -275,7 +248,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ - รางวัล ส่วนลดหรือประโยชน์ใดๆ จากการส่งเสริมการขาย",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ - รางวัล ส่วนลดหรือประโยชน์ใดๆ จากการส่งเสริมการขาย",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,
@@ -285,7 +257,6 @@ INCOME_TYPES = (
 	{
 		"income_type_name": "8 อื่นๆ",
 		"income_type_code": "8",
-		"description_th": "อื่นๆ",
 		"pnd1": 0,
 		"pnd2": 0,
 		"pnd3": 1,

@@ -11,8 +11,6 @@
   "base_amount",
   "tax_rate",
   "tax_amount",
-  "accounting_evidence_section",
-  "gl_entry",
   "reference_section",
   "reference_doc_doctype",
   "reference_doc",
@@ -55,22 +53,9 @@
    "read_only": 1
   },
   {
-   "fieldname": "accounting_evidence_section",
-   "fieldtype": "Section Break",
-   "label": "Accounting Evidence"
-  },
-  {
-   "fieldname": "gl_entry",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "GL Entry",
-   "mandatory_depends_on": "eval:doc.docstatus == 1",
-   "options": "GL Entry"
-  },
-  {
    "fieldname": "reference_section",
    "fieldtype": "Section Break",
-   "label": "Source Document"
+   "label": "Reference"
   },
   {
    "fieldname": "reference_doc_doctype",
@@ -105,7 +90,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-08-06 14:11:12.879178",
+ "modified": "2026-08-06 19:16:47.014724",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
  "name": "Withholding Tax Entry Item",

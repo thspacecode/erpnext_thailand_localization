@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ERPNext Thailand Localization VERSION\n"
 "Report-Msgid-Bugs-To: p@spacecode.co.th\n"
-"POT-Creation-Date: 2026-08-06 08:45+0000\n"
+"POT-Creation-Date: 2026-08-06 12:13+0000\n"
 "PO-Revision-Date: 2026-08-06 08:45+0000\n"
 "Last-Translator: p@spacecode.co.th\n"
 "Language: th\n"
@@ -18,11 +18,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#. Label of the accounting_evidence_section (Section Break) field in DocType
-#. 'Withholding Tax Entry Item'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/withholding_tax_entry_item/withholding_tax_entry_item.json
-msgid "Accounting Evidence"
-msgstr "หลักฐานทางบัญชี"
+#. Option for the 'Income Type Code' (Select) field in DocType 'Thai
+#. Withholding Tax Income Type'
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
+msgid "4 ก"
+msgstr ""
+
+#. Option for the 'Income Type Code' (Select) field in DocType 'Thai
+#. Withholding Tax Income Type'
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
+msgid "4 ข"
+msgstr ""
 
 #. Name of a role
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/purchase_withholding_tax_entry/purchase_withholding_tax_entry.json
@@ -38,7 +44,7 @@ msgstr "ผู้จัดการฝ่ายบัญชี"
 msgid "Accounts User"
 msgstr "ผู้ใช้ฝ่ายบัญชี"
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:47
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:49
 msgid "Address {0} is not linked to {1} {2}."
 msgstr "ที่อยู่ {0} ไม่ได้เชื่อมโยงกับ {1} {2}"
 
@@ -65,6 +71,12 @@ msgstr "ไฟล์แนบหนังสือรับรอง"
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.py:26
 msgid "Certificate Attachment is required before submission."
 msgstr "ต้องแนบหนังสือรับรองก่อนส่งเอกสาร"
+
+#. Label of the certificate_section (Section Break) field in DocType 'Sales
+#. Withholding Tax Entry'
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.json
+msgid "Certificate Details"
+msgstr "รายละเอียดหนังสือรับรอง"
 
 #. Label of the certificate_number (Data) field in DocType 'Sales Withholding
 #. Tax Entry'
@@ -97,8 +109,16 @@ msgstr "บริษัท"
 msgid "Company Currency"
 msgstr "สกุลเงินของบริษัท"
 
-#: erpnext_thailand_localization/public/js/payment_entry.js:20
-#: erpnext_thailand_localization/public/js/payment_entry.js:37
+#. Label of the company_section (Section Break) field in DocType 'Purchase
+#. Withholding Tax Entry'
+#. Label of the company_section (Section Break) field in DocType 'Sales
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/purchase_withholding_tax_entry/purchase_withholding_tax_entry.json
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.json
+msgid "Company Details"
+msgstr "รายละเอียดบริษัท"
+
+#: erpnext_thailand_localization/public/js/payment_entry.js:19
+#: erpnext_thailand_localization/public/js/payment_entry.js:35
 msgid "Create"
 msgstr "สร้าง"
 
@@ -119,16 +139,17 @@ msgstr "ที่อยู่ลูกค้า"
 msgid "Customer Details"
 msgstr "รายละเอียดลูกค้า"
 
+#. Label of the default_thai_withholding_tax_rate (Percent) field in DocType
+#. 'Thai Withholding Tax Income Type'
+#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
+msgid "Default Thai Withholding Tax Rate (%)"
+msgstr ""
+
 #. Label of the disabled (Check) field in DocType 'Thai Withholding Tax Income
 #. Type'
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
 msgid "Disabled"
 msgstr "ปิดใช้งาน"
-
-#. Label of the gl_entry (Link) field in DocType 'Withholding Tax Entry Item'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/withholding_tax_entry_item/withholding_tax_entry_item.json
-msgid "GL Entry"
-msgstr "รายการบัญชีแยกประเภท"
 
 #. Label of the income_type (Link) field in DocType 'Withholding Tax Entry
 #. Item'
@@ -136,8 +157,8 @@ msgstr "รายการบัญชีแยกประเภท"
 msgid "Income Type"
 msgstr "ประเภทเงินได้"
 
-#. Label of the income_type_code (Data) field in DocType 'Thai Withholding Tax
-#. Income Type'
+#. Label of the income_type_code (Select) field in DocType 'Thai Withholding
+#. Tax Income Type'
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
 msgid "Income Type Code"
 msgstr "รหัสประเภทเงินได้"
@@ -202,14 +223,6 @@ msgstr "ภ.ง.ด. 54"
 msgid "Payment Date"
 msgstr "วันที่ชำระเงิน"
 
-#. Label of the payment_entry (Link) field in DocType 'Purchase Withholding Tax
-#. Entry'
-#. Label of the payment_entry (Link) field in DocType 'Sales Withholding Tax
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/purchase_withholding_tax_entry/purchase_withholding_tax_entry.json
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.json
-msgid "Payment Entry"
-msgstr "รายการชำระเงิน"
-
 #: erpnext_thailand_localization/thai_withholding_tax/payment_entry.py:22
 msgid "Payment Entry {0} is not eligible to create a {1}."
 msgstr "รายการชำระเงิน {0} ไม่เข้าเงื่อนไขสำหรับสร้าง {1}"
@@ -248,12 +261,12 @@ msgstr "รายการเอกสารอ้างอิง"
 msgid "Reference Item Type"
 msgstr "ประเภทรายการเอกสารอ้างอิง"
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:53
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:55
 msgid "Row {0}"
 msgstr "แถว {0}"
 
 #. Name of a DocType
-#: erpnext_thailand_localization/public/js/payment_entry.js:30
+#: erpnext_thailand_localization/public/js/payment_entry.js:29
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.json
 msgid "Sales Withholding Tax Entry"
 msgstr "รายการภาษีหัก ณ ที่จ่ายฝั่งขาย"
@@ -261,8 +274,8 @@ msgstr "รายการภาษีหัก ณ ที่จ่ายฝั�
 #. Label of the reference_section (Section Break) field in DocType 'Withholding
 #. Tax Entry Item'
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/withholding_tax_entry_item/withholding_tax_entry_item.json
-msgid "Source Document"
-msgstr "เอกสารต้นทาง"
+msgid "Reference"
+msgstr "เอกสารอ้างอิง"
 
 #. Label of the supplier (Link) field in DocType 'Purchase Withholding Tax
 #. Entry'
@@ -300,18 +313,6 @@ msgstr "จำนวนภาษี"
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/withholding_tax_entry_item/withholding_tax_entry_item.json
 msgid "Tax Rate (%)"
 msgstr "อัตราภาษี (%)"
-
-#. Label of the return_types_section (Section Break) field in DocType 'Thai
-#. Withholding Tax Income Type'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
-msgid "Tax Returns"
-msgstr "แบบยื่นภาษี"
-
-#. Label of the description_th (Small Text) field in DocType 'Thai Withholding
-#. Tax Income Type'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
-msgid "Thai Description"
-msgstr "คำอธิบายภาษาไทย"
 
 #. Label of the custom_thai_withholding_tax_section (Section Break) field in
 #. DocType 'Item'
@@ -377,7 +378,7 @@ msgstr "รายการภาษีหัก ณ ที่จ่าย"
 msgid "Withholding Tax Items"
 msgstr "รายการภาษีหัก ณ ที่จ่าย"
 
-#: erpnext_thailand_localization/thai_withholding_tax/payment_entry.py:27
+#: erpnext_thailand_localization/thai_withholding_tax/payment_entry.py:28
 msgid "You do not have permission to create a {0}."
 msgstr "คุณไม่มีสิทธิ์สร้าง {0}"
 
@@ -389,50 +390,31 @@ msgstr "{0}: ต้องระบุเอกสารอ้างอิงเ�
 msgid "{0}: Base Amount must be greater than zero."
 msgstr "{0}: จำนวนเงินที่จ่าย/ได้รับต้องมากกว่าศูนย์"
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:110
-msgid "{0}: GL Entry does not exist."
-msgstr "{0}: ไม่พบรายการบัญชีแยกประเภท"
-
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:112
-msgid "{0}: GL Entry is cancelled."
-msgstr "{0}: รายการบัญชีแยกประเภทถูกยกเลิกแล้ว"
-
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:114
-msgid "{0}: GL Entry must belong to Company {1}."
-msgstr "{0}: รายการบัญชีแยกประเภทต้องเป็นของบริษัท {1}"
-
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:119
-msgid "{0}: GL Entry must belong to Payment Entry {1}."
-msgstr "{0}: รายการบัญชีแยกประเภทต้องเป็นของรายการชำระเงิน {1}"
-
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:73
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:74
 msgid "{0}: Reference Document Type and Reference Document must be provided together."
 msgstr "{0}: ต้องระบุประเภทเอกสารอ้างอิงและเอกสารอ้างอิงพร้อมกัน"
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:79
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:80
 msgid "{0}: Reference Item Type and Reference Item must be provided together."
 msgstr "{0}: ต้องระบุประเภทรายการเอกสารอ้างอิงและรายการเอกสารอ้างอิงพร้อมกัน"
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:100
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:102
 msgid "{0}: Reference Item does not belong to the selected Reference Document."
 msgstr "{0}: รายการเอกสารอ้างอิงไม่ได้อยู่ในเอกสารอ้างอิงที่เลือก"
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:95
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:96
 msgid "{0}: Reference Item does not exist."
 msgstr "{0}: ไม่พบรายการเอกสารอ้างอิง"
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:65
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:67
 msgid "{0}: Tax Amount must be greater than zero."
 msgstr "{0}: จำนวนภาษีต้องมากกว่าศูนย์"
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:63
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:64
 msgid "{0}: Tax Rate must be greater than zero and no greater than 100."
 msgstr "{0}: อัตราภาษีต้องมากกว่าศูนย์และไม่เกิน 100"
 
-#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:57
+#: erpnext_thailand_localization/thai_withholding_tax/withholding_tax_entry.py:58
 msgid "{0}: {1} is required."
 msgstr "{0}: ต้องระบุ {1}"
-
-msgid "Thai Value Added Tax"
-msgstr "ภาษีมูลค่าเพิ่มไทย"
 

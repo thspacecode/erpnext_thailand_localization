@@ -8,14 +8,6 @@ frappe.ui.form.on("Purchase Withholding Tax Entry", {
 			filters: { link_doctype: "Supplier", link_name: frm.doc.supplier },
 		}));
 		frm.set_query("income_type", "items", () => ({ filters: { disabled: 0 } }));
-		frm.set_query("gl_entry", "items", () => {
-			const filters = { company: frm.doc.company, is_cancelled: 0 };
-			if (frm.doc.payment_entry) {
-				filters.voucher_type = "Payment Entry";
-				filters.voucher_no = frm.doc.payment_entry;
-			}
-			return { filters };
-		});
 	},
 	items_remove(frm) {
 		frm.set_value({

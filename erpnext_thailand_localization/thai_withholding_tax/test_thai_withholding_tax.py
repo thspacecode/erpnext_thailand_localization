@@ -33,11 +33,72 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 
 		self.assertTrue(frappe.get_meta("Purchase Withholding Tax Entry").is_submittable)
 		self.assertTrue(frappe.get_meta("Sales Withholding Tax Entry").is_submittable)
-		self.assertTrue(frappe.get_meta("Withholding Tax Entry Item").istable)
 
-		income_permissions = {
-			row.role: row for row in frappe.get_meta("Thai Withholding Tax Income Type").permissions
-		}
+		for doctype, party_field in (
+			("Purchase Withholding Tax Entry", "supplier"),
+			("Sales Withholding Tax Entry", "customer"),
+		):
+			meta = frappe.get_meta(doctype, cached=False)
+			field_order = [field.fieldname for field in meta.fields]
+			self.assertEqual(
+				field_order[field_order.index("company_section") : field_order.index("party_section")],
+				["company_section", "company", "company_currency", "company_column", "payment_date"],
+			)
+			self.assertEqual(
+				field_order[field_order.index("party_section") : field_order.index("items_section")],
+				["party_section", party_field, "party_column", f"{party_field}_address"],
+			)
+			self.assertFalse(meta.has_field("payment_entry"))
+
+		sales_meta = frappe.get_meta("Sales Withholding Tax Entry", cached=False)
+		sales_field_order = [field.fieldname for field in sales_meta.fields]
+		self.assertEqual(
+			sales_field_order[
+				sales_field_order.index("certificate_section") : sales_field_order.index("company_section")
+			],
+			[
+				"certificate_section",
+				"certificate_number",
+				"certificate_column",
+				"certificate_attachment",
+			],
+		)
+
+		item_meta = frappe.get_meta("Withholding Tax Entry Item", cached=False)
+		self.assertTrue(item_meta.istable)
+		self.assertFalse(item_meta.has_field("gl_entry"))
+		self.assertFalse(item_meta.has_field("accounting_evidence_section"))
+		self.assertEqual(item_meta.get_field("reference_section").label, "Reference")
+
+		income_type_meta = frappe.get_meta("Thai Withholding Tax Income Type", cached=False)
+		self.assertEqual(
+			[field.fieldname for field in income_type_meta.fields[:7]],
+			[
+				"income_type_name",
+				"disabled",
+				"income_type_section",
+				"income_type_code",
+				"default_thai_withholding_tax_rate",
+				"return_types_section",
+				"pnd1",
+			],
+		)
+		self.assertFalse(income_type_meta.get_field("income_type_section").label)
+		self.assertFalse(income_type_meta.get_field("return_types_section").label)
+		income_type_code = income_type_meta.get_field("income_type_code")
+		self.assertEqual(income_type_code.fieldtype, "Select")
+		self.assertEqual(
+			income_type_code.options.split("\n"),
+			["1", "2", "3", "4 ก", "4 ข", "4", "5", "6", "7", "8"],
+		)
+		self.assertEqual(
+			income_type_meta.get_field("default_thai_withholding_tax_rate").fieldtype,
+			"Percent",
+		)
+		self.assertFalse(income_type_meta.has_field("thai_withholding_tax_rate"))
+		self.assertFalse(income_type_meta.has_field("description_th"))
+
+		income_permissions = {row.role: row for row in income_type_meta.permissions}
 		self.assertTrue(income_permissions["Accounts User"].read)
 		self.assertFalse(income_permissions["Accounts User"].create)
 		for doctype in ("Purchase Withholding Tax Entry", "Sales Withholding Tax Entry"):
@@ -71,7 +132,7 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 			actual = frappe.db.get_value(
 				"Thai Withholding Tax Income Type",
 				expected["income_type_name"],
-				["income_type_code", "description_th", "pnd1", "pnd2", "pnd3", "pnd53", "pnd54"],
+				["income_type_code", "pnd1", "pnd2", "pnd3", "pnd53", "pnd54"],
 				as_dict=True,
 			)
 			self.assertIsNotNone(actual)
@@ -207,7 +268,6 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 		self.assertEqual(target.payment_date, source.posting_date)
 		self.assertEqual(target.get(party_field), party)
 		self.assertEqual(target.get(address_field), "Address A")
-		self.assertEqual(target.payment_entry, source.name)
 		self.assertEqual(target.items, [])
 		source.check_permission.assert_called_once_with("read")
 
@@ -284,23 +344,9 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 		):
 			doc.validate_certificate()
 
-	def test_gl_and_reference_integrity(self):
+	def test_reference_integrity(self):
 		doc = frappe.new_doc("Purchase Withholding Tax Entry")
-		doc.company = "Company A"
-		doc.payment_entry = "PAY-0001"
-		item = frappe._dict(gl_entry="GL-0001", idx=1)
-
-		with patch.object(
-			frappe.db,
-			"get_value",
-			return_value=frappe._dict(
-				company="Company A",
-				is_cancelled=0,
-				voucher_type="Payment Entry",
-				voucher_no="PAY-0001",
-			),
-		):
-			doc.validate_gl_entry(item, "Row 1")
+		item = frappe._dict(idx=1)
 
 		item.update(
 			{

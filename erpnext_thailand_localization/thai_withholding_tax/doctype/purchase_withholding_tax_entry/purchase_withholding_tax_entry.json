@@ -7,13 +7,15 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "company_section",
   "company",
   "company_currency",
+  "company_column",
   "payment_date",
   "party_section",
   "supplier",
+  "party_column",
   "supplier_address",
-  "payment_entry",
   "items_section",
   "items",
   "totals_section",
@@ -80,12 +82,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "payment_entry",
-   "fieldtype": "Link",
-   "label": "Payment Entry",
-   "options": "Payment Entry"
-  },
-  {
    "fieldname": "items_section",
    "fieldtype": "Section Break",
    "label": "Withholding Tax Items"
@@ -132,13 +128,26 @@
    "options": "Purchase Withholding Tax Entry",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "company_section",
+   "fieldtype": "Section Break",
+   "label": "Company Details"
+  },
+  {
+   "fieldname": "company_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "party_column",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-08-06 14:24:52.364184",
+ "modified": "2026-08-06 17:03:06.126132",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
  "name": "Purchase Withholding Tax Entry",

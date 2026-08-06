@@ -47,7 +47,6 @@ def make_withholding_tax_entry(
 			"payment_date": source_doc.posting_date,
 			party_field: source_doc.party,
 			address_field: party_address,
-			"payment_entry": source_doc.name,
 		}
 		for fieldname, value in values.items():
 			if not has_existing_target or not target.get(fieldname):

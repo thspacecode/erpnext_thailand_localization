@@ -7,15 +7,19 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "certificate_section",
   "certificate_number",
+  "certificate_column",
   "certificate_attachment",
+  "company_section",
   "company",
   "company_currency",
+  "company_column",
   "payment_date",
   "party_section",
   "customer",
+  "party_column",
   "customer_address",
-  "payment_entry",
   "items_section",
   "items",
   "totals_section",
@@ -96,12 +100,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "payment_entry",
-   "fieldtype": "Link",
-   "label": "Payment Entry",
-   "options": "Payment Entry"
-  },
-  {
    "fieldname": "items_section",
    "fieldtype": "Section Break",
    "label": "Withholding Tax Items"
@@ -148,13 +146,35 @@
    "options": "Sales Withholding Tax Entry",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "company_section",
+   "fieldtype": "Section Break",
+   "label": "Company Details"
+  },
+  {
+   "fieldname": "company_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "party_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "certificate_section",
+   "fieldtype": "Section Break",
+   "label": "Certificate Details"
+  },
+  {
+   "fieldname": "certificate_column",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-08-06 14:24:52.529589",
+ "modified": "2026-08-06 19:11:41.501461",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
  "name": "Sales Withholding Tax Entry",
