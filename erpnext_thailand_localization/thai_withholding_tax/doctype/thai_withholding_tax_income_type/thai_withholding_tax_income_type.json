@@ -14,6 +14,8 @@
   "income_type_section",
   "income_type_code",
   "default_thai_withholding_tax_rate",
+  "purchase_withholding_tax_account",
+  "sales_withholding_tax_account",
   "return_types_section",
   "pnd1",
   "pnd2",
@@ -93,6 +95,18 @@
    "fieldname": "default_thai_withholding_tax_rate",
    "fieldtype": "Percent",
    "label": "Default Thai Withholding Tax Rate (%)"
+  },
+  {
+   "fieldname": "purchase_withholding_tax_account",
+   "fieldtype": "Link",
+   "label": "Purchase Withholding Tax Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "sales_withholding_tax_account",
+   "fieldtype": "Link",
+   "label": "Sales Withholding Tax Account",
+   "options": "Account"
   }
  ],
  "grid_page_length": 50,

@@ -86,8 +86,7 @@ doctype_js = {"Payment Entry": "public/js/payment_entry.js"}
 # ------------
 
 # before_install = "erpnext_thailand_localization.install.before_install"
-after_install = "erpnext_thailand_localization.thai_withholding_tax.setup.seed_income_types"
-after_migrate = "erpnext_thailand_localization.thai_withholding_tax.setup.seed_income_types"
+after_install = "erpnext_thailand_localization.install.after_install"
 
 # Uninstallation
 # ------------
@@ -184,9 +183,9 @@ after_migrate = "erpnext_thailand_localization.thai_withholding_tax.setup.seed_i
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "erpnext_thailand_localization.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "erpnext_thailand_localization.thai_withholding_tax.api.get_payment_entry"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,

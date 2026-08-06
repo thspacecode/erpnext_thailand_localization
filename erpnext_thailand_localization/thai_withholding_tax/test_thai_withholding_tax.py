@@ -4,7 +4,10 @@ from unittest.mock import MagicMock, patch
 import frappe
 from frappe.tests import IntegrationTestCase
 
-from erpnext_thailand_localization.thai_withholding_tax.api import fetch_wht_detail
+from erpnext_thailand_localization.thai_withholding_tax.api import (
+	apply_thai_withholding_tax,
+	fetch_wht_detail,
+)
 from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
 	make_purchase_withholding_tax_entry,
 )
@@ -72,13 +75,15 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 
 		income_type_meta = frappe.get_meta("Thai Withholding Tax Income Type", cached=False)
 		self.assertEqual(
-			[field.fieldname for field in income_type_meta.fields[:7]],
+			[field.fieldname for field in income_type_meta.fields[:9]],
 			[
 				"income_type_name",
 				"disabled",
 				"income_type_section",
 				"income_type_code",
 				"default_thai_withholding_tax_rate",
+				"purchase_withholding_tax_account",
+				"sales_withholding_tax_account",
 				"return_types_section",
 				"pnd1",
 			],
@@ -95,6 +100,8 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 			income_type_meta.get_field("default_thai_withholding_tax_rate").fieldtype,
 			"Percent",
 		)
+		for fieldname in ("purchase_withholding_tax_account", "sales_withholding_tax_account"):
+			self.assertEqual(income_type_meta.get_field(fieldname).options, "Account")
 		self.assertFalse(income_type_meta.has_field("thai_withholding_tax_rate"))
 		self.assertFalse(income_type_meta.has_field("description_th"))
 
@@ -186,6 +193,107 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 			custom_thai_withholding_tax_rate=10,
 		)
 		self.assertEqual(fetch_wht_detail("ITEM-1"), {"income_type": None, "tax_rate": 0, "source": None})
+
+	def test_applies_thai_withholding_tax_to_invoice_payment_entries(self):
+		for invoice_doctype, payment_type, expected_amount, account_field in (
+			("Sales Invoice", "Receive", 3, "sales_withholding_tax_account"),
+			("Purchase Invoice", "Pay", -3, "purchase_withholding_tax_account"),
+		):
+			payment_entry, invoice = self.make_invoice_payment_entry(invoice_doctype, payment_type)
+
+			def get_cached_value(doctype, name, fieldname):
+				if doctype == "Thai Withholding Tax Income Type" and fieldname == account_field:
+					return "Withholding Tax Account - TC"
+				return None
+
+			with (
+				patch(
+					"erpnext_thailand_localization.thai_withholding_tax.api.fetch_wht_detail",
+					return_value={"income_type": "Service", "tax_rate": 3, "source": "Item"},
+				),
+				patch(
+					"erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_value",
+					side_effect=get_cached_value,
+				),
+			):
+				apply_thai_withholding_tax(payment_entry, invoice)
+
+			self.assertEqual(payment_entry.paid_amount, 104)
+			self.assertEqual(payment_entry.received_amount, 104)
+			self.assertEqual(payment_entry.deductions[0].account, "Withholding Tax Account - TC")
+			self.assertEqual(payment_entry.deductions[0].amount, expected_amount)
+			self.assertEqual(payment_entry.difference_amount, 0)
+
+	def test_applies_withholding_tax_in_proportion_to_payment(self):
+		payment_entry, invoice = self.make_invoice_payment_entry("Sales Invoice", "Receive")
+		payment_entry.references[0].allocated_amount = 53.5
+		payment_entry.paid_amount = payment_entry.received_amount = 53.5
+
+		with (
+			patch(
+				"erpnext_thailand_localization.thai_withholding_tax.api.fetch_wht_detail",
+				return_value={"income_type": "Service", "tax_rate": 3, "source": "Item Group"},
+			),
+			patch(
+				"erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_value",
+				return_value="Withholding Tax Account - TC",
+			),
+		):
+			apply_thai_withholding_tax(payment_entry, invoice)
+
+		self.assertEqual(payment_entry.paid_amount, 52)
+		self.assertEqual(payment_entry.received_amount, 52)
+		self.assertEqual(payment_entry.deductions[0].amount, 1.5)
+		self.assertEqual(payment_entry.difference_amount, 0)
+
+	def test_requires_withholding_tax_account(self):
+		payment_entry, invoice = self.make_invoice_payment_entry("Sales Invoice", "Receive")
+		with (
+			patch(
+				"erpnext_thailand_localization.thai_withholding_tax.api.fetch_wht_detail",
+				return_value={"income_type": "Service", "tax_rate": 3, "source": "Item"},
+			),
+			patch(
+				"erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_value",
+				return_value=None,
+			),
+			self.assertRaisesRegex(frappe.ValidationError, "Sales Withholding Tax Account"),
+		):
+			apply_thai_withholding_tax(payment_entry, invoice)
+
+	def make_invoice_payment_entry(self, invoice_doctype, payment_type):
+		payment_entry = frappe.new_doc("Payment Entry")
+		payment_entry.update(
+			{
+				"company": "Test Company",
+				"cost_center": "Test Cost Center - TC",
+				"payment_type": payment_type,
+				"paid_from_account_currency": "THB",
+				"paid_to_account_currency": "THB",
+				"source_exchange_rate": 1,
+				"target_exchange_rate": 1,
+				"paid_amount": 107,
+				"received_amount": 107,
+			}
+		)
+		payment_entry.append(
+			"references",
+			{
+				"reference_doctype": invoice_doctype,
+				"reference_name": "INV-0001",
+				"allocated_amount": 107,
+				"exchange_rate": 1,
+			},
+		)
+		invoice = frappe._dict(
+			doctype=invoice_doctype,
+			name="INV-0001",
+			company_currency="THB",
+			base_grand_total=107,
+			grand_total=107,
+			items=[frappe._dict(item_code="SERVICE", base_net_amount=100)],
+		)
+		return payment_entry, invoice
 
 	def test_purchase_and_sales_payment_entry_mappers(self):
 		self.assert_mapper(
