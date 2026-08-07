@@ -11,8 +11,13 @@ class WithholdingTaxEntry(Document):
 
 	def validate(self):
 		self.calculate_totals()
-		if self.docstatus == 1:
-			self.validate_submission()
+
+	def before_submit(self):
+		self.validate_party_address()
+		for item in self.items:
+			row_label = _("Row {0}").format(item.idx)
+			self.validate_item(item, row_label)
+			self.validate_reference(item, row_label)
 
 	def calculate_totals(self):
 		precision = self.precision("tax_amount", "items")
@@ -25,11 +30,6 @@ class WithholdingTaxEntry(Document):
 		self.total_tax_amount = flt(
 			sum(flt(item.tax_amount) for item in self.items), self.precision("total_tax_amount")
 		)
-
-	def validate_submission(self):
-		self.validate_party_address()
-		for item in self.items:
-			self.validate_item(item)
 
 	def validate_party_address(self):
 		party = self.get(self.party_field)
@@ -51,8 +51,7 @@ class WithholdingTaxEntry(Document):
 				)
 			)
 
-	def validate_item(self, item):
-		row_label = _("Row {0}").format(item.idx)
+	def validate_item(self, item, row_label):
 		for fieldname in ("income_type", "base_amount", "tax_rate", "tax_amount"):
 			if item.get(fieldname) in (None, ""):
 				frappe.throw(_("{0}: {1} is required.").format(row_label, _(item.meta.get_label(fieldname))))
@@ -65,8 +64,6 @@ class WithholdingTaxEntry(Document):
 			)
 		if flt(item.tax_amount) <= 0:
 			frappe.throw(_("{0}: Tax Amount must be greater than zero.").format(row_label))
-
-		self.validate_reference(item, row_label)
 
 	def validate_reference(self, item, row_label):
 		if bool(item.reference_doc_doctype) != bool(item.reference_doc):

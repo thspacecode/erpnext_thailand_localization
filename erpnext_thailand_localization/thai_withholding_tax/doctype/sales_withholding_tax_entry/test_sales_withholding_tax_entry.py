@@ -1,20 +1,29 @@
 # Copyright (c) 2026, SpaceCode Co., Ltd. and Contributors
 # See license.txt
 
-# import frappe
-from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
+import frappe
+from frappe.model.document import Document
 
-# On ERPNextThaiTestSuite, the doctype test records and all
-# link-field test record dependencies are recursively loaded
-# Use these module variables to add/remove to/from that list
-EXTRA_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
-IGNORE_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
+from erpnext_thailand_localization.thai_withholding_tax.model.t_withholding_tax_entry import (
+	WithholdingTaxEntryTest,
+)
 
 
-class IntegrationTestSalesWithholdingTaxEntry(ERPNextThaiTestSuite):
-	"""
-	Integration tests for SalesWithholdingTaxEntry.
-	Use this class for testing interactions between multiple components.
-	"""
-
-	pass
+class IntegrationTestSalesWithholdingTaxEntry(WithholdingTaxEntryTest.TestCase):
+	def get_base_doc(self) -> Document:
+		return frappe.get_doc(
+			{
+				"doctype": "Sales Withholding Tax Entry",
+				"company_currency": "THB",
+				"customer": "Lackawanna County",
+				"customer_address": "Lackawanna County-Billing",
+				"items": [
+					{
+						"income_type": "Service",
+						"base_amount": 1000,
+						"tax_rate": 3,
+						"tax_amount": 30,
+					}
+				],
+			}
+		)
