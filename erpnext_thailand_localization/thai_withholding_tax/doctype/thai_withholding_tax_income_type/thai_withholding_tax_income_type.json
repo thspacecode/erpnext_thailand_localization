@@ -12,17 +12,16 @@
   "income_type_name",
   "disabled",
   "income_type_section",
-  "income_type_code",
   "default_thai_withholding_tax_rate",
-  "purchase_withholding_tax_account",
-  "sales_withholding_tax_account",
+  "thai_withholding_tax_rate_by_category",
   "return_types_section",
   "pnd1",
   "pnd2",
   "pnd_column_break",
   "pnd3",
   "pnd53",
-  "pnd54"
+  "pnd54",
+  "thai_withholding_tax_category_pnd"
  ],
  "fields": [
   {
@@ -32,14 +31,6 @@
    "label": "Income Type Name",
    "reqd": 1,
    "unique": 1
-  },
-  {
-   "fieldname": "income_type_code",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Income Type Code",
-   "options": "1\n2\n3\n4 \u0e01\n4 \u0e02\n4\n5\n6\n7\n8",
-   "reqd": 1
   },
   {
    "fieldname": "return_types_section",
@@ -93,26 +84,27 @@
   },
   {
    "fieldname": "default_thai_withholding_tax_rate",
-   "fieldtype": "Percent",
-   "label": "Default Thai Withholding Tax Rate (%)"
+   "fieldtype": "Select",
+   "label": "Default Thai Withholding Tax Rate (%)",
+   "options": "\n0\n0.5\n0.75\n1\n2\n3\n5\n10\n15"
   },
   {
-   "fieldname": "purchase_withholding_tax_account",
-   "fieldtype": "Link",
-   "label": "Purchase Withholding Tax Account",
-   "options": "Account"
+   "fieldname": "thai_withholding_tax_category_pnd",
+   "fieldtype": "Table",
+   "label": "Thai Withholding Tax Category PND",
+   "options": "Thai Withholding Tax Category Pnd"
   },
   {
-   "fieldname": "sales_withholding_tax_account",
-   "fieldtype": "Link",
-   "label": "Sales Withholding Tax Account",
-   "options": "Account"
+   "fieldname": "thai_withholding_tax_rate_by_category",
+   "fieldtype": "Table",
+   "label": "Thai Withholding Tax Rate by Category",
+   "options": "Thai Withholding Tax Rate by Category"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-06 19:13:25.521254",
+ "modified": "2026-08-07 07:55:43.135288",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
  "name": "Thai Withholding Tax Income Type",
@@ -152,7 +144,6 @@
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "search_fields": "income_type_code",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],

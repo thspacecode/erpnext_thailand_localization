@@ -10,6 +10,25 @@ app_license = "mit"
 
 required_apps = ["erpnext"]
 
+fixtures = [
+	{
+		"doctype": "Thai Withholding Tax Category",
+		"filters": [
+			[
+				"name",
+				"in",
+				[
+					"Individual - Domestic",
+					"Juristic Person - Domestic",
+					"Foundation or Association",
+					"Individual - Foreign",
+					"Government or Tax-Exempt Entity",
+				],
+			]
+		],
+	}
+]
+
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{

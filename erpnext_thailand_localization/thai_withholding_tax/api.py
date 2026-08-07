@@ -7,31 +7,93 @@ from frappe.utils import flt
 
 
 @frappe.whitelist()
-def fetch_wht_detail(item_code: str) -> dict:
+def fetch_wht_detail(
+	item_code: str,
+	party_type: str | None = None,
+	party: str | None = None,
+	company: str | None = None,
+) -> dict:
 	item = frappe.get_doc("Item", item_code)
 	item.check_permission("read")
+	category = get_thai_withholding_tax_category(party_type, party, company)
 
 	if item.custom_thai_withholding_tax_income_type:
 		return {
 			"income_type": item.custom_thai_withholding_tax_income_type,
-			"tax_rate": flt(item.custom_thai_withholding_tax_rate),
+			"tax_rate": get_wht_rate(
+				item.custom_thai_withholding_tax_income_type,
+				item.custom_thai_withholding_tax_rate,
+				item.get("custom_thai_withholding_tax_rate_by_category"),
+				category,
+			),
 			"source": "Item",
 		}
 
-	group_values = frappe.db.get_value(
-		"Item Group",
-		item.item_group,
-		["custom_thai_withholding_tax_income_type", "custom_thai_withholding_tax_rate"],
-		as_dict=True,
-	)
-	if group_values and group_values.custom_thai_withholding_tax_income_type:
+	item_group = frappe.get_cached_doc("Item Group", item.item_group)
+	if item_group.custom_thai_withholding_tax_income_type:
 		return {
-			"income_type": group_values.custom_thai_withholding_tax_income_type,
-			"tax_rate": flt(group_values.custom_thai_withholding_tax_rate),
+			"income_type": item_group.custom_thai_withholding_tax_income_type,
+			"tax_rate": get_wht_rate(
+				item_group.custom_thai_withholding_tax_income_type,
+				item_group.custom_thai_withholding_tax_rate,
+				item_group.get("custom_thai_withholding_tax_rate_by_category"),
+				category,
+			),
 			"source": "Item Group",
 		}
 
 	return {"income_type": None, "tax_rate": 0, "source": None}
+
+
+def get_thai_withholding_tax_category(
+	party_type: str | None,
+	party: str | None,
+	company: str | None,
+) -> str | None:
+	if party_type == "Supplier" and party:
+		return frappe.get_cached_value("Supplier", party, "custom_thai_withholding_tax_category")
+
+	if company:
+		return frappe.get_cached_value("Company", company, "custom_thai_withholding_tax_category")
+
+	if party_type in ("Customer", "Supplier") and party:
+		return frappe.get_cached_value(party_type, party, "custom_thai_withholding_tax_category")
+
+	return None
+
+
+def get_wht_rate(
+	income_type: str,
+	configured_rate,
+	configured_rates_by_category=None,
+	category: str | None = None,
+) -> float:
+	category_rate = get_rate_by_category(configured_rates_by_category, category)
+	if category_rate is not None:
+		return category_rate
+
+	if configured_rate is not None and str(configured_rate).strip():
+		return flt(configured_rate)
+
+	income_type_doc = frappe.get_cached_doc("Thai Withholding Tax Income Type", income_type)
+	category_rate = get_rate_by_category(
+		income_type_doc.get("thai_withholding_tax_rate_by_category"), category
+	)
+	if category_rate is not None:
+		return category_rate
+
+	return flt(income_type_doc.default_thai_withholding_tax_rate)
+
+
+def get_rate_by_category(rates_by_category, category: str | None) -> float | None:
+	if not category:
+		return None
+
+	for row in rates_by_category or []:
+		if row.thai_withholding_tax_category == category:
+			return flt(row.rate)
+
+	return None
 
 
 @frappe.whitelist()
@@ -70,11 +132,6 @@ def get_payment_entry(
 
 
 def apply_thai_withholding_tax(payment_entry, invoice):
-	account_field = (
-		"sales_withholding_tax_account"
-		if invoice.doctype == "Sales Invoice"
-		else "purchase_withholding_tax_account"
-	)
 	payment_ratio = get_payment_ratio(payment_entry, invoice)
 	if not payment_ratio:
 		return
@@ -82,6 +139,10 @@ def apply_thai_withholding_tax(payment_entry, invoice):
 	cost_center = payment_entry.cost_center or frappe.get_cached_value(
 		"Company", payment_entry.company, "cost_center"
 	)
+	party_type = "Customer" if invoice.doctype == "Sales Invoice" else "Supplier"
+	party_field = frappe.scrub(party_type)
+	party = invoice.get(party_field)
+	category = get_thai_withholding_tax_category(party_type, party, payment_entry.company)
 	item_details = {}
 	deductions = {}
 
@@ -90,7 +151,12 @@ def apply_thai_withholding_tax(payment_entry, invoice):
 			continue
 
 		if item.item_code not in item_details:
-			item_details[item.item_code] = fetch_wht_detail(item.item_code)
+			item_details[item.item_code] = fetch_wht_detail(
+				item.item_code,
+				party_type=party_type,
+				party=party,
+				company=payment_entry.company,
+			)
 		detail = item_details[item.item_code]
 		income_type = detail.get("income_type")
 		rate = flt(detail.get("tax_rate"))
@@ -104,14 +170,12 @@ def apply_thai_withholding_tax(payment_entry, invoice):
 		if not tax_amount:
 			continue
 
-		account = frappe.get_cached_value("Thai Withholding Tax Income Type", income_type, account_field)
-		if not account:
-			frappe.throw(
-				_("Please set {0} for Thai Withholding Tax Income Type {1}.").format(
-					_(frappe.unscrub(account_field)), frappe.bold(income_type)
-				)
-			)
-
+		account = get_withholding_tax_account(
+			payment_entry.company,
+			invoice.doctype,
+			income_type,
+			category,
+		)
 		key = (account, cost_center, income_type, rate)
 		deductions[key] = flt(
 			deductions.get(key, 0) + tax_amount,
@@ -143,6 +207,58 @@ def apply_thai_withholding_tax(payment_entry, invoice):
 		payment_entry.precision("received_amount"),
 	)
 	payment_entry.set_amounts()
+
+
+def get_withholding_tax_account(
+	company: str,
+	invoice_doctype: str,
+	income_type: str,
+	category: str | None,
+) -> str:
+	if invoice_doctype == "Sales Invoice":
+		account_field = "sales_withholding_tax_account"
+	else:
+		if not category:
+			frappe.throw(
+				_("Please set Thai Withholding Tax Category for the supplier."),
+			)
+
+		pnd = frappe.db.get_value(
+			"Thai Withholding Tax Category Pnd",
+			{
+				"parent": income_type,
+				"parenttype": "Thai Withholding Tax Income Type",
+				"parentfield": "thai_withholding_tax_category_pnd",
+				"thai_withholding_tax_category": category,
+			},
+			"pnd",
+		)
+		if not pnd:
+			frappe.throw(
+				_("Please set PND for Thai Withholding Tax Category {0} on Income Type {1}.").format(
+					frappe.bold(category), frappe.bold(income_type)
+				)
+			)
+
+		account_field = {
+			"PND 3": "purchase_withholding_tax_pnd3_account",
+			"PND 53": "purchase_withholding_tax_pnd53_account",
+			"PND 54": "purchase_withholding_tax_pnd54_account",
+		}.get(pnd)
+		if not account_field:
+			frappe.throw(
+				_("Purchase withholding tax account is not supported for {0}.").format(frappe.bold(pnd))
+			)
+
+	account = frappe.get_cached_value("Company", company, account_field)
+	if not account:
+		frappe.throw(
+			_("Please set {0} for Company {1}.").format(
+				_(frappe.unscrub(account_field)), frappe.bold(company)
+			)
+		)
+
+	return account
 
 
 def get_payment_ratio(payment_entry, invoice) -> float:

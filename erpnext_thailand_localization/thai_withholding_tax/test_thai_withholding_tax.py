@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 import frappe
 from frappe.tests import IntegrationTestCase
 
+from erpnext_thailand_localization.initial_data import SetupInitialData
 from erpnext_thailand_localization.thai_withholding_tax.api import (
 	apply_thai_withholding_tax,
 	fetch_wht_detail,
@@ -15,7 +16,6 @@ from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholdin
 	make_sales_withholding_tax_entry,
 )
 from erpnext_thailand_localization.thai_withholding_tax.income_types import INCOME_TYPES
-from erpnext_thailand_localization.thai_withholding_tax.setup import seed_income_types
 
 
 class TestThaiWithholdingTax(IntegrationTestCase):
@@ -75,33 +75,26 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 
 		income_type_meta = frappe.get_meta("Thai Withholding Tax Income Type", cached=False)
 		self.assertEqual(
-			[field.fieldname for field in income_type_meta.fields[:9]],
+			[field.fieldname for field in income_type_meta.fields[:7]],
 			[
 				"income_type_name",
 				"disabled",
 				"income_type_section",
-				"income_type_code",
 				"default_thai_withholding_tax_rate",
-				"purchase_withholding_tax_account",
-				"sales_withholding_tax_account",
+				"thai_withholding_tax_rate_by_category",
 				"return_types_section",
 				"pnd1",
 			],
 		)
 		self.assertFalse(income_type_meta.get_field("income_type_section").label)
 		self.assertFalse(income_type_meta.get_field("return_types_section").label)
-		income_type_code = income_type_meta.get_field("income_type_code")
-		self.assertEqual(income_type_code.fieldtype, "Select")
-		self.assertEqual(
-			income_type_code.options.split("\n"),
-			["1", "2", "3", "4 ก", "4 ข", "4", "5", "6", "7", "8"],
-		)
-		self.assertEqual(
-			income_type_meta.get_field("default_thai_withholding_tax_rate").fieldtype,
-			"Percent",
-		)
-		for fieldname in ("purchase_withholding_tax_account", "sales_withholding_tax_account"):
-			self.assertEqual(income_type_meta.get_field(fieldname).options, "Account")
+		self.assertFalse(income_type_meta.has_field("income_type_code"))
+		rate_options = ["", "0", "0.5", "0.75", "1", "2", "3", "5", "10", "15"]
+		default_rate = income_type_meta.get_field("default_thai_withholding_tax_rate")
+		self.assertEqual(default_rate.fieldtype, "Select")
+		self.assertEqual(default_rate.options.split("\n"), rate_options)
+		self.assertFalse(income_type_meta.has_field("purchase_withholding_tax_account"))
+		self.assertFalse(income_type_meta.has_field("sales_withholding_tax_account"))
 		self.assertFalse(income_type_meta.has_field("thai_withholding_tax_rate"))
 		self.assertFalse(income_type_meta.has_field("description_th"))
 
@@ -116,30 +109,44 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 			self.assertTrue(permissions["Accounts Manager"].cancel)
 
 	def test_custom_fields_and_hidden_generic_fields(self):
+		rate_options = ["", "0", "0.5", "0.75", "1", "2", "3", "5", "10", "15"]
 		for doctype in ("Item", "Item Group"):
 			meta = frappe.get_meta(doctype, cached=False)
 			self.assertEqual(
 				meta.get_field("custom_thai_withholding_tax_income_type").options,
 				"Thai Withholding Tax Income Type",
 			)
-			self.assertEqual(meta.get_field("custom_thai_withholding_tax_rate").fieldtype, "Percent")
+			rate = meta.get_field("custom_thai_withholding_tax_rate")
+			self.assertEqual(rate.fieldtype, "Select")
+			self.assertEqual(rate.options.split("\n"), rate_options)
+			rate_by_category = meta.get_field("custom_thai_withholding_tax_rate_by_category")
+			self.assertEqual(rate_by_category.fieldtype, "Table")
+			self.assertEqual(rate_by_category.options, "Thai Withholding Tax Rate by Category")
+			field_order = [field.fieldname for field in meta.fields]
+			self.assertEqual(
+				field_order.index("custom_thai_withholding_tax_rate_by_category"),
+				field_order.index("custom_thai_withholding_tax_rate") + 1,
+			)
 
 		item_meta = frappe.get_meta("Item", cached=False)
 		self.assertTrue(item_meta.get_field("purchase_tax_withholding_category").hidden)
 		self.assertTrue(item_meta.get_field("sales_tax_withholding_category").hidden)
 
-	def test_income_type_seed_is_complete_and_idempotent(self):
-		report = seed_income_types()
-		self.assertEqual(report["created"], [])
-		self.assertEqual(len(report["skipped"]), 29)
-		self.assertEqual(len(INCOME_TYPES), 29)
-		self.assertEqual(frappe.db.count("Thai Withholding Tax Income Type"), 29)
+	def test_initial_data_is_complete_and_idempotent(self):
+		doctype = "Thai Withholding Tax Income Type"
+		report = SetupInitialData().make()
+		self.assertEqual(report["created"], {})
+		self.assertEqual(report["updated"], {})
+		self.assertEqual(len(report["skipped"][doctype]), 10)
+		self.assertEqual(len(INCOME_TYPES), 10)
+		self.assertEqual(frappe.db.count(doctype), 10)
+		self.assertFalse(frappe.db.exists(doctype, {"name": ["like", "% - %"]}))
 
 		for expected in INCOME_TYPES:
 			actual = frappe.db.get_value(
 				"Thai Withholding Tax Income Type",
 				expected["income_type_name"],
-				["income_type_code", "pnd1", "pnd2", "pnd3", "pnd53", "pnd54"],
+				["pnd1", "pnd2", "pnd3", "pnd53", "pnd54"],
 				as_dict=True,
 			)
 			self.assertIsNotNone(actual)
@@ -160,51 +167,95 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 		self.assertEqual(doc.total_base_amount, 1250.55)
 		self.assertEqual(doc.total_tax_amount, 31.25)
 
-	@patch("erpnext_thailand_localization.thai_withholding_tax.api.frappe.db.get_value")
+	@patch("erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_value")
+	@patch("erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_doc")
 	@patch("erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_doc")
-	def test_fetch_wht_detail_keeps_defaults_at_one_level(self, get_doc, get_value):
+	def test_fetch_wht_detail_uses_category_and_keeps_defaults_at_one_level(
+		self, get_doc, get_cached_doc, get_cached_value
+	):
 		item = frappe._dict(
+			name="ITEM-1",
 			custom_thai_withholding_tax_income_type="Item Income",
 			custom_thai_withholding_tax_rate=0,
+			custom_thai_withholding_tax_rate_by_category=[],
 			item_group="Services",
 			check_permission=MagicMock(),
 		)
+		item_income = frappe._dict(
+			default_thai_withholding_tax_rate="5",
+			thai_withholding_tax_rate_by_category=[
+				frappe._dict(thai_withholding_tax_category="Juristic", rate="2")
+			],
+		)
+		item_group = frappe._dict(
+			custom_thai_withholding_tax_income_type="Group Income",
+			custom_thai_withholding_tax_rate=3.5,
+			custom_thai_withholding_tax_rate_by_category=[],
+		)
+		group_income = frappe._dict(
+			default_thai_withholding_tax_rate="10",
+			thai_withholding_tax_rate_by_category=[],
+		)
 		get_doc.return_value = item
+		get_cached_doc.side_effect = lambda doctype, name: {
+			("Item Group", "Services"): item_group,
+			("Thai Withholding Tax Income Type", "Item Income"): item_income,
+			("Thai Withholding Tax Income Type", "Group Income"): group_income,
+		}[(doctype, name)]
+		get_cached_value.side_effect = lambda doctype, name, fieldname: {
+			("Supplier", "SUP-1"): "Individual",
+			("Company", "Company A"): "Juristic",
+		}[(doctype, name)]
 
 		self.assertEqual(
 			fetch_wht_detail("ITEM-1"),
 			{"income_type": "Item Income", "tax_rate": 0.0, "source": "Item"},
 		)
-		get_value.assert_not_called()
-		item.check_permission.assert_called_once_with("read")
+
+		item.custom_thai_withholding_tax_rate = ""
+		self.assertEqual(
+			fetch_wht_detail("ITEM-1", "Customer", "CUS-1", "Company A"),
+			{"income_type": "Item Income", "tax_rate": 2.0, "source": "Item"},
+		)
+
+		item.custom_thai_withholding_tax_rate_by_category = [
+			frappe._dict(thai_withholding_tax_category="Individual", rate="1")
+		]
+		self.assertEqual(
+			fetch_wht_detail("ITEM-1", "Supplier", "SUP-1", "Company A"),
+			{"income_type": "Item Income", "tax_rate": 1.0, "source": "Item"},
+		)
 
 		item.custom_thai_withholding_tax_income_type = None
-		get_value.return_value = frappe._dict(
-			custom_thai_withholding_tax_income_type="Group Income",
-			custom_thai_withholding_tax_rate=3.5,
-		)
 		self.assertEqual(
 			fetch_wht_detail("ITEM-1"),
 			{"income_type": "Group Income", "tax_rate": 3.5, "source": "Item Group"},
 		)
 
-		get_value.return_value = frappe._dict(
-			custom_thai_withholding_tax_income_type=None,
-			custom_thai_withholding_tax_rate=10,
-		)
+		item_group.custom_thai_withholding_tax_income_type = None
 		self.assertEqual(fetch_wht_detail("ITEM-1"), {"income_type": None, "tax_rate": 0, "source": None})
+		item.check_permission.assert_called_with("read")
 
 	def test_applies_thai_withholding_tax_to_invoice_payment_entries(self):
 		for invoice_doctype, payment_type, expected_amount, account_field in (
 			("Sales Invoice", "Receive", 3, "sales_withholding_tax_account"),
-			("Purchase Invoice", "Pay", -3, "purchase_withholding_tax_account"),
+			("Purchase Invoice", "Pay", -3, "purchase_withholding_tax_pnd53_account"),
 		):
 			payment_entry, invoice = self.make_invoice_payment_entry(invoice_doctype, payment_type)
 
 			def get_cached_value(doctype, name, fieldname):
-				if doctype == "Thai Withholding Tax Income Type" and fieldname == account_field:
+				if fieldname == "custom_thai_withholding_tax_category":
+					return "Juristic"
+				if doctype == "Company" and fieldname == account_field:
 					return "Withholding Tax Account - TC"
 				return None
+
+			db_get_value = frappe.db.get_value
+
+			def get_value(doctype, *args, **kwargs):
+				if doctype == "Thai Withholding Tax Category Pnd":
+					return "PND 53"
+				return db_get_value(doctype, *args, **kwargs)
 
 			with (
 				patch(
@@ -214,6 +265,10 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 				patch(
 					"erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_value",
 					side_effect=get_cached_value,
+				),
+				patch(
+					"erpnext_thailand_localization.thai_withholding_tax.api.frappe.db.get_value",
+					side_effect=get_value,
 				),
 			):
 				apply_thai_withholding_tax(payment_entry, invoice)
@@ -288,6 +343,8 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 		invoice = frappe._dict(
 			doctype=invoice_doctype,
 			name="INV-0001",
+			customer="Customer A",
+			supplier="Supplier A",
 			company_currency="THB",
 			base_grand_total=107,
 			grand_total=107,

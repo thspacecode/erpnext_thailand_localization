@@ -16,18 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#. Option for the 'Income Type Code' (Select) field in DocType 'Thai
-#. Withholding Tax Income Type'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
-msgid "4 ก"
-msgstr ""
-
-#. Option for the 'Income Type Code' (Select) field in DocType 'Thai
-#. Withholding Tax Income Type'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
-msgid "4 ข"
-msgstr ""
-
 #. Name of a role
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/purchase_withholding_tax_entry/purchase_withholding_tax_entry.json
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/sales_withholding_tax_entry/sales_withholding_tax_entry.json
@@ -155,12 +143,6 @@ msgstr ""
 #. Item'
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/withholding_tax_entry_item/withholding_tax_entry_item.json
 msgid "Income Type"
-msgstr ""
-
-#. Label of the income_type_code (Select) field in DocType 'Thai Withholding
-#. Tax Income Type'
-#: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
-msgid "Income Type Code"
 msgstr ""
 
 #. Label of the income_type_name (Data) field in DocType 'Thai Withholding Tax
