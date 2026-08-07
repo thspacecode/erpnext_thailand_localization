@@ -2,10 +2,11 @@
 # See license.txt
 
 import frappe
-from frappe.tests import IntegrationTestCase
+
+from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
 
 
-class IntegrationTestThaiWithholdingTaxCategory(IntegrationTestCase):
+class IntegrationTestThaiWithholdingTaxCategory(ERPNextThaiTestSuite):
 	def test_initial_categories_exist(self):
 		expected_categories = {
 			"Individual - Domestic",

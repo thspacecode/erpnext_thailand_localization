@@ -29,7 +29,7 @@ class BaseImporter(ABC):
 				self.report[change_type].setdefault(doctype, []).extend(names)
 		return self.report
 
-	def csv_loader(self, filename: str) -> Report:
+	def csv_loader(self, filename: str, csv_replacements: dict[str, str] | None = None) -> Report:
 		"""Create or update DocType records from a CSV file.
 
 		File naming convention:
@@ -45,6 +45,18 @@ class BaseImporter(ABC):
 
 		        class SetupInitialData(BaseImporter):
 		            data_csv_path = Path(__file__).parent / "data_csv"
+
+		CSV replacements:
+		Pass replacements when loading a CSV to resolve environment-specific values::
+
+		        importer.csv_loader(
+		            "Example Parent",
+		            csv_replacements={"company": "Example Company"},
+		        )
+
+		Replacement keys are automatically enclosed as ``{{ key }}``. Every occurrence
+		of a placeholder in parent and child values is replaced before type casting and
+		document lookup.
 
 		Column naming convention:
 		- Parent columns use Frappe fieldnames, not field labels (for example,
@@ -94,6 +106,13 @@ class BaseImporter(ABC):
 			caster = casters.get(fieldname)
 			return caster(value) if caster else value
 
+		def prepare_csv_value(value: str | None) -> str | None:
+			if value is None:
+				return None
+			for key, replacement in (csv_replacements or {}).items():
+				value = value.replace(f"{{{{ {key} }}}}", replacement)
+			return value
+
 		def values_match(actual, expected):
 			if not isinstance(expected, list):
 				return actual == expected
@@ -125,6 +144,7 @@ class BaseImporter(ABC):
 
 		with file_path.open(encoding="utf-8", newline="") as csv_file:
 			for row in csv.DictReader(csv_file):
+				row = {column: prepare_csv_value(value) for column, value in row.items()}
 				scalar = {
 					column: cast(parent_casters, column, value)
 					for column, value in row.items()

@@ -1,0 +1,3 @@
+name,price_list_name,currency,enabled,selling,buying
+Standard Selling,Standard Selling,THB,1,1,0
+Standard Buying,Standard Buying,THB,1,0,1

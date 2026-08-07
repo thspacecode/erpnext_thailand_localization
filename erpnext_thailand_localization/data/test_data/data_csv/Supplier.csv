@@ -1,0 +1,5 @@
+name,supplier_name,supplier_type,supplier_group,country,tax_id,custom_thai_withholding_tax_category
+Hammermill Paper Company,Hammermill Paper Company,Company,Services,Thailand,0105555000003,Juristic Person - Domestic
+Serenity by Jan,Serenity by Jan,Company,Services,Thailand,0105555000006,Juristic Person - Domestic
+Athlead,Athlead,Company,Services,Thailand,0105555000007,Juristic Person - Domestic
+Aaron Grandy,Aaron Grandy,Individual,Services,Thailand,1101700000003,Individual - Domestic

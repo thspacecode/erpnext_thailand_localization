@@ -2,9 +2,9 @@ import importlib
 from unittest.mock import MagicMock, patch
 
 import frappe
-from frappe.tests import IntegrationTestCase
 
-from erpnext_thailand_localization.initial_data import SetupInitialData
+from erpnext_thailand_localization.data.initial_data import SetupInitialData
+from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
 from erpnext_thailand_localization.thai_withholding_tax.api import (
 	apply_thai_withholding_tax,
 	fetch_wht_detail,
@@ -17,7 +17,7 @@ from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholdin
 )
 
 
-class TestThaiWithholdingTax(IntegrationTestCase):
+class TestThaiWithholdingTax(ERPNextThaiTestSuite):
 	def test_modules_and_metadata(self):
 		for module_name in ("Thai Withholding Tax", "Thai Value Added Tax"):
 			module = frappe.get_doc("Module Def", module_name)
