@@ -15,12 +15,6 @@
   "default_thai_withholding_tax_rate",
   "thai_withholding_tax_rate_by_category",
   "return_types_section",
-  "pnd1",
-  "pnd2",
-  "pnd_column_break",
-  "pnd3",
-  "pnd53",
-  "pnd54",
   "thai_withholding_tax_category_pnd"
  ],
  "fields": [
@@ -35,41 +29,6 @@
   {
    "fieldname": "return_types_section",
    "fieldtype": "Section Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "pnd1",
-   "fieldtype": "Check",
-   "in_list_view": 1,
-   "label": "PND 1"
-  },
-  {
-   "default": "0",
-   "fieldname": "pnd2",
-   "fieldtype": "Check",
-   "label": "PND 2"
-  },
-  {
-   "fieldname": "pnd_column_break",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "pnd3",
-   "fieldtype": "Check",
-   "label": "PND 3"
-  },
-  {
-   "default": "0",
-   "fieldname": "pnd53",
-   "fieldtype": "Check",
-   "label": "PND 53"
-  },
-  {
-   "default": "0",
-   "fieldname": "pnd54",
-   "fieldtype": "Check",
-   "label": "PND 54"
   },
   {
    "default": "0",
@@ -104,7 +63,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-07 07:55:43.135288",
+ "modified": "2026-08-07 08:08:20.829422",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
  "name": "Thai Withholding Tax Income Type",

@@ -1,0 +1,87 @@
+{
+ "app": "erpnext_thailand_localization",
+ "creation": "2026-08-07 09:18:52.997060",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "header_icon": "receipt-text",
+ "idx": 0,
+ "items": [
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "notepad-text",
+   "indent": 1,
+   "keep_closed": 0,
+   "label": "Entry",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Sales WHT Entry",
+   "link_to": "Sales Withholding Tax Entry",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Purchase WHT Entry",
+   "link_to": "Purchase Withholding Tax Entry",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "database",
+   "indent": 1,
+   "keep_closed": 0,
+   "label": "Setup",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "WHT Income Type",
+   "link_to": "Thai Withholding Tax Income Type",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "WHT Category",
+   "link_to": "Thai Withholding Tax Category",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-08-07 08:39:17.669409",
+ "modified_by": "Administrator",
+ "module": "Thai Withholding Tax",
+ "name": "Thai WHT",
+ "owner": "Administrator",
+ "standard": 1,
+ "title": "Thai WHT"
+}

@@ -6,7 +6,7 @@ from frappe.tests import IntegrationTestCase
 
 
 class IntegrationTestThaiWithholdingTaxCategory(IntegrationTestCase):
-	def test_fixture_categories_exist(self):
+	def test_initial_categories_exist(self):
 		expected_categories = {
 			"Individual - Domestic",
 			"Juristic Person - Domestic",

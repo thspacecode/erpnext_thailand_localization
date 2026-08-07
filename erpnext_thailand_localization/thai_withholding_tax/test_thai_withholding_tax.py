@@ -15,7 +15,6 @@ from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withhol
 from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
 	make_sales_withholding_tax_entry,
 )
-from erpnext_thailand_localization.thai_withholding_tax.income_types import INCOME_TYPES
 
 
 class TestThaiWithholdingTax(IntegrationTestCase):
@@ -83,7 +82,7 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 				"default_thai_withholding_tax_rate",
 				"thai_withholding_tax_rate_by_category",
 				"return_types_section",
-				"pnd1",
+				"thai_withholding_tax_category_pnd",
 			],
 		)
 		self.assertFalse(income_type_meta.get_field("income_type_section").label)
@@ -133,26 +132,30 @@ class TestThaiWithholdingTax(IntegrationTestCase):
 		self.assertTrue(item_meta.get_field("sales_tax_withholding_category").hidden)
 
 	def test_initial_data_is_complete_and_idempotent(self):
-		doctype = "Thai Withholding Tax Income Type"
+		category_doctype = "Thai Withholding Tax Category"
+		income_type_doctype = "Thai Withholding Tax Income Type"
+		expected_income_types = {
+			"1 เงินเดือนค่าจ้าง เบี้ยเลี้ยง",
+			"2 ค่าธรรมเนียม ค่านายหน้า",
+			"3 ค่าแห่งลิขสิทธิ์",
+			"4 ก ดอกเบี้ย",
+			"4 ข เงินปันผล",
+			"4 อื่นๆ",
+			"5 ค่าเช่า",
+			"6 เงินได้จากวิชาชีพอิสระ",
+			"7 การรับเหมาที่ผู้รับเหมาต้องลงทุนด้วยการจัดหาสัมภาระ",
+			"8 อื่นๆ",
+		}
+
 		report = SetupInitialData().make()
 		self.assertEqual(report["created"], {})
 		self.assertEqual(report["updated"], {})
-		self.assertEqual(len(report["skipped"][doctype]), 10)
-		self.assertEqual(len(INCOME_TYPES), 10)
-		self.assertEqual(frappe.db.count(doctype), 10)
-		self.assertFalse(frappe.db.exists(doctype, {"name": ["like", "% - %"]}))
-
-		for expected in INCOME_TYPES:
-			actual = frappe.db.get_value(
-				"Thai Withholding Tax Income Type",
-				expected["income_type_name"],
-				["pnd1", "pnd2", "pnd3", "pnd53", "pnd54"],
-				as_dict=True,
-			)
-			self.assertIsNotNone(actual)
-			for fieldname, value in expected.items():
-				if fieldname != "income_type_name":
-					self.assertEqual(actual[fieldname], value)
+		self.assertEqual(len(report["skipped"][category_doctype]), 5)
+		self.assertEqual(len(report["skipped"][income_type_doctype]), 10)
+		self.assertSetEqual(
+			set(frappe.get_all(income_type_doctype, pluck="name")),
+			expected_income_types,
+		)
 
 	def test_server_calculation_overwrites_tax_and_updates_totals(self):
 		doc = frappe.new_doc("Purchase Withholding Tax Entry")

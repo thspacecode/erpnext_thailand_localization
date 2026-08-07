@@ -28,6 +28,11 @@ class IntegrationTestThaiWithholdingTaxIncomeType(IntegrationTestCase):
 		self.assertFalse(meta.has_field("sales_withholding_tax_account"))
 		self.assertFalse(meta.has_field("purchase_withholding_tax_account"))
 
+	def test_pnd_check_fields_are_removed(self):
+		meta = frappe.get_meta("Thai Withholding Tax Income Type", cached=False)
+		for fieldname in ("pnd1", "pnd2", "pnd3", "pnd53", "pnd54", "pnd_column_break"):
+			self.assertFalse(meta.has_field(fieldname))
+
 	def test_rate_by_category_child_table(self):
 		income_type_meta = frappe.get_meta("Thai Withholding Tax Income Type", cached=False)
 		table_field = income_type_meta.get_field("thai_withholding_tax_rate_by_category")
@@ -66,7 +71,7 @@ class IntegrationTestThaiWithholdingTaxIncomeType(IntegrationTestCase):
 		)
 		self.assertEqual(
 			child_meta.get_field("pnd").options.splitlines(),
-			["PND 1", "PND 2", "PND 3", "PND 53", "PND 54"],
+			["", "PND 1", "PND 2", "PND 3", "PND 53", "PND 54"],
 		)
 
 	def test_company_withholding_tax_fields(self):
