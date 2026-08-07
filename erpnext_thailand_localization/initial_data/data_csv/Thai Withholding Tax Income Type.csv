@@ -1,11 +1,27 @@
-income_type_name,disabled
-1 เงินเดือนค่าจ้าง เบี้ยเลี้ยง,0
-2 ค่าธรรมเนียม ค่านายหน้า,0
-3 ค่าแห่งลิขสิทธิ์,0
-4 ก ดอกเบี้ย,0
-4 ข เงินปันผล,0
-4 อื่นๆ,0
-5 ค่าเช่า,0
-6 เงินได้จากวิชาชีพอิสระ,0
-7 การรับเหมาที่ผู้รับเหมาต้องลงทุนด้วยการจัดหาสัมภาระ,0
-8 อื่นๆ,0
+income_type_name,disabled,default_thai_withholding_tax_rate,[thai_withholding_tax_category_pnd]thai_withholding_tax_category,[thai_withholding_tax_category_pnd]pnd
+1 เงินเดือนค่าจ้าง เบี้ยเลี้ยง,1,0,,
+2 ค่าธรรมเนียม ค่านายหน้า,1,0,,
+3 ค่าแห่งลิขสิทธิ์,1,3,,
+4 ก ดอกเบี้ย,1,15,,
+4 ข เงินปันผล,1,10,,
+4 อื่นๆ,1,15,,
+5 ค่าเช่า,0,5,Individual - Domestic,PND 3
+,,,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Individual - Foreign,PND 54
+,,,Government or Tax-Exempt Entity,PND 53
+6 เงินได้จากวิชาชีพอิสระ,0,3,Individual - Domestic,PND 3
+,,,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Individual - Foreign,PND 54
+,,,Government or Tax-Exempt Entity,PND 53
+7 การรับเหมาที่ผู้รับเหมาต้องลงทุนด้วยการจัดหาสัมภาระ,0,3,Individual - Domestic,PND 3
+,,,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Individual - Foreign,PND 54
+,,,Government or Tax-Exempt Entity,PND 53
+8 อื่นๆ,0,3,Individual - Domestic,PND 3
+,,,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Individual - Foreign,PND 54
+,,,Government or Tax-Exempt Entity,PND 53
