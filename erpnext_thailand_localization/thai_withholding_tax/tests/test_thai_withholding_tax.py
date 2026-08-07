@@ -5,15 +5,15 @@ import frappe
 
 from erpnext_thailand_localization.data.initial_data import SetupInitialData
 from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
-from erpnext_thailand_localization.thai_withholding_tax.api import (
-	apply_thai_withholding_tax,
-	fetch_wht_detail,
-)
 from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
 	make_purchase_withholding_tax_entry,
 )
 from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
 	make_sales_withholding_tax_entry,
+)
+from erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax import (
+	apply_thai_withholding_tax,
+	fetch_wht_detail,
 )
 
 
@@ -170,9 +170,11 @@ class TestThaiWithholdingTax(ERPNextThaiTestSuite):
 		self.assertEqual(doc.total_base_amount, 1250.55)
 		self.assertEqual(doc.total_tax_amount, 31.25)
 
-	@patch("erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_value")
-	@patch("erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_doc")
-	@patch("erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_doc")
+	@patch(
+		"erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax.frappe.get_cached_value"
+	)
+	@patch("erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax.frappe.get_cached_doc")
+	@patch("erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax.frappe.get_doc")
 	def test_fetch_wht_detail_uses_category_and_keeps_defaults_at_one_level(
 		self, get_doc, get_cached_doc, get_cached_value
 	):
@@ -262,15 +264,15 @@ class TestThaiWithholdingTax(ERPNextThaiTestSuite):
 
 			with (
 				patch(
-					"erpnext_thailand_localization.thai_withholding_tax.api.fetch_wht_detail",
+					"erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax.fetch_wht_detail",
 					return_value={"income_type": "Service", "tax_rate": 3, "source": "Item"},
 				),
 				patch(
-					"erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_value",
+					"erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax.frappe.get_cached_value",
 					side_effect=get_cached_value,
 				),
 				patch(
-					"erpnext_thailand_localization.thai_withholding_tax.api.frappe.db.get_value",
+					"erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax.frappe.db.get_value",
 					side_effect=get_value,
 				),
 			):
@@ -289,11 +291,11 @@ class TestThaiWithholdingTax(ERPNextThaiTestSuite):
 
 		with (
 			patch(
-				"erpnext_thailand_localization.thai_withholding_tax.api.fetch_wht_detail",
+				"erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax.fetch_wht_detail",
 				return_value={"income_type": "Service", "tax_rate": 3, "source": "Item Group"},
 			),
 			patch(
-				"erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_value",
+				"erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax.frappe.get_cached_value",
 				return_value="Withholding Tax Account - TC",
 			),
 		):
@@ -308,11 +310,11 @@ class TestThaiWithholdingTax(ERPNextThaiTestSuite):
 		payment_entry, invoice = self.make_invoice_payment_entry("Sales Invoice", "Receive")
 		with (
 			patch(
-				"erpnext_thailand_localization.thai_withholding_tax.api.fetch_wht_detail",
+				"erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax.fetch_wht_detail",
 				return_value={"income_type": "Service", "tax_rate": 3, "source": "Item"},
 			),
 			patch(
-				"erpnext_thailand_localization.thai_withholding_tax.api.frappe.get_cached_value",
+				"erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax.frappe.get_cached_value",
 				return_value=None,
 			),
 			self.assertRaisesRegex(frappe.ValidationError, "Sales Withholding Tax Account"),
@@ -417,15 +419,15 @@ class TestThaiWithholdingTax(ERPNextThaiTestSuite):
 
 		with (
 			patch(
-				"erpnext_thailand_localization.thai_withholding_tax.payment_entry.frappe.get_doc",
+				"erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.frappe.get_doc",
 				side_effect=get_doc,
 			),
 			patch(
-				"erpnext_thailand_localization.thai_withholding_tax.payment_entry.frappe.has_permission",
+				"erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.frappe.has_permission",
 				return_value=True,
 			),
 			patch(
-				"erpnext_thailand_localization.thai_withholding_tax.payment_entry.get_mapped_doc",
+				"erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.get_mapped_doc",
 				side_effect=map_doc,
 			),
 		):
@@ -454,7 +456,7 @@ class TestThaiWithholdingTax(ERPNextThaiTestSuite):
 			)
 			with (
 				patch(
-					"erpnext_thailand_localization.thai_withholding_tax.payment_entry.frappe.get_doc",
+					"erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.frappe.get_doc",
 					return_value=source,
 				),
 				self.assertRaises(frappe.ValidationError),
@@ -474,7 +476,7 @@ class TestThaiWithholdingTax(ERPNextThaiTestSuite):
 		)
 		with (
 			patch(
-				"erpnext_thailand_localization.thai_withholding_tax.payment_entry.frappe.get_doc",
+				"erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.frappe.get_doc",
 				return_value=source,
 			),
 			self.assertRaises(frappe.PermissionError),
@@ -484,11 +486,11 @@ class TestThaiWithholdingTax(ERPNextThaiTestSuite):
 		source.check_permission = MagicMock()
 		with (
 			patch(
-				"erpnext_thailand_localization.thai_withholding_tax.payment_entry.frappe.get_doc",
+				"erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.frappe.get_doc",
 				return_value=source,
 			),
 			patch(
-				"erpnext_thailand_localization.thai_withholding_tax.payment_entry.frappe.has_permission",
+				"erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.frappe.has_permission",
 				return_value=False,
 			),
 			self.assertRaises(frappe.PermissionError),

@@ -4,8 +4,12 @@
 import frappe
 from frappe import _
 
-from erpnext_thailand_localization.thai_withholding_tax.payment_entry import make_withholding_tax_entry
-from erpnext_thailand_localization.thai_withholding_tax.withholding_tax_entry import WithholdingTaxEntry
+from erpnext_thailand_localization.thai_withholding_tax.model.withholding_tax_entry import (
+	WithholdingTaxEntry,
+)
+from erpnext_thailand_localization.thai_withholding_tax.service.payment_entry import (
+	make_withholding_tax_entry,
+)
 
 
 class SalesWithholdingTaxEntry(WithholdingTaxEntry):

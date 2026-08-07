@@ -10,6 +10,20 @@ app_license = "mit"
 
 required_apps = ["erpnext"]
 
+# Automatically update python controller files with type annotations for this app.
+export_python_type_annotations = True
+
+# Include js in doctype views
+doctype_js = {"Payment Entry": "public/js/payment_entry.js"}
+
+# Installation
+after_install = "erpnext_thailand_localization.install.after_install"
+
+# Overriding Methods
+override_whitelisted_methods = {
+	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "erpnext_thailand_localization.thai_withholding_tax.override_whitelist_method.get_payment_entry.get_payment_entry"
+}
+
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
@@ -43,7 +57,6 @@ required_apps = ["erpnext"]
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-doctype_js = {"Payment Entry": "public/js/payment_entry.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -86,7 +99,6 @@ doctype_js = {"Payment Entry": "public/js/payment_entry.js"}
 # ------------
 
 # before_install = "erpnext_thailand_localization.install.before_install"
-after_install = "erpnext_thailand_localization.install.after_install"
 
 # Uninstallation
 # ------------
@@ -180,13 +192,6 @@ after_install = "erpnext_thailand_localization.install.after_install"
 # 	"Task": "erpnext_thailand_localization.custom.task.CustomTaskMixin"
 # }
 
-# Overriding Methods
-# ------------------------------
-#
-override_whitelisted_methods = {
-	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "erpnext_thailand_localization.thai_withholding_tax.api.get_payment_entry"
-}
-#
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
@@ -243,9 +248,6 @@ override_whitelisted_methods = {
 # auth_hooks = [
 # 	"erpnext_thailand_localization.auth.validate"
 # ]
-
-# Automatically update python controller files with type annotations for this app.
-# export_python_type_annotations = True
 
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs

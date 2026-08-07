@@ -6,9 +6,11 @@ from frappe.utils import add_days, getdate, now_datetime
 from frappe.utils.file_manager import save_file
 
 from erpnext_thailand_localization.data.abc import BaseImporter, Report
-from erpnext_thailand_localization.thai_withholding_tax.api import get_payment_entry
 from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
 	make_sales_withholding_tax_entry,
+)
+from erpnext_thailand_localization.thai_withholding_tax.override_whitelist_method.get_payment_entry import (
+	get_payment_entry,
 )
 
 
