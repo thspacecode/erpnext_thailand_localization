@@ -1,13 +1,25 @@
+from unittest.mock import patch
+
 import frappe
 
 from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
 from erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax import (
 	apply_thai_withholding_tax,
 	fetch_wht_detail,
+	get_thai_withholding_tax_category,
 )
 
 
 class TestWithholdingTax(ERPNextThaiTestSuite):
+	def test_party_withholding_tax_category_takes_precedence_over_company(self):
+		with patch.object(frappe, "get_cached_value", return_value="Party Category") as get_cached_value:
+			category = get_thai_withholding_tax_category("Customer", "Vance Refrigeration", "Dunder Mifflin")
+
+		self.assertEqual(category, "Party Category")
+		get_cached_value.assert_called_once_with(
+			"Customer", "Vance Refrigeration", "custom_thai_withholding_tax_category"
+		)
+
 	def test_fetch_wht_detail(self):
 		self.assertEqual(
 			fetch_wht_detail(

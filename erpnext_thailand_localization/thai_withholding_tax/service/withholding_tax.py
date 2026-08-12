@@ -47,14 +47,11 @@ def get_thai_withholding_tax_category(
 	party: str | None,
 	company: str | None,
 ) -> str | None:
-	if party_type == "Supplier" and party:
-		return frappe.get_cached_value("Supplier", party, "custom_thai_withholding_tax_category")
+	if party_type in ("Customer", "Supplier") and party:
+		return frappe.get_cached_value(party_type, party, "custom_thai_withholding_tax_category")
 
 	if company:
 		return frappe.get_cached_value("Company", company, "custom_thai_withholding_tax_category")
-
-	if party_type in ("Customer", "Supplier") and party:
-		return frappe.get_cached_value(party_type, party, "custom_thai_withholding_tax_category")
 
 	return None
 
