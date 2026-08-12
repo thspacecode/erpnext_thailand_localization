@@ -12,7 +12,7 @@ class WithholdingTaxEntryTest:
 		@abstractmethod
 		def get_base_doc(self) -> Document:
 			"""Return a new document for the concrete entry type."""
-			raise NotImplementedError
+			pass
 
 		def test_calculate_totals(self):
 			doc = self.get_base_doc()
