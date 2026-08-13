@@ -38,6 +38,26 @@ frappe.ui.form.on("Payment Entry", {
 	},
 
 	async custom_get_withholding_tax_from_references(frm) {
+		const has_existing_withholding_tax = (frm.doc.deductions || []).some(
+			(row) => row.custom_is_withholding_tax_entry
+		);
+
+		if (has_existing_withholding_tax) {
+			const should_override = await new Promise((resolve) => {
+				frappe.confirm(
+					__(
+						"This will override the existing withholding tax entries. Do you want to continue?"
+					),
+					() => resolve(true),
+					() => resolve(false)
+				);
+			});
+
+			if (!should_override) {
+				return;
+			}
+		}
+
 		const { message: deductions = [] } = await frappe.call({
 			method: "erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.get_withholding_tax_from_references",
 			args: { doc: frm.doc },
