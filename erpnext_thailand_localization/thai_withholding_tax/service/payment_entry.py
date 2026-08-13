@@ -38,32 +38,41 @@ def make_withholding_tax_entry(
 	party_doc = frappe.get_doc(party_type, source.party)
 	party_doc.check_permission("read")
 
-	invoice_doctype = "Sales Invoice" if party_type == "Customer" else "Purchase Invoice"
-	invoice_party_field = frappe.scrub(party_type)
-	invoice_address_field = f"{invoice_party_field}_address"
-	reference_invoices = []
+	reference_doctypes = (
+		("Sales Invoice", "Sales Order")
+		if party_type == "Customer"
+		else ("Purchase Invoice", "Purchase Order")
+	)
+	party_reference_field = frappe.scrub(party_type)
+	party_address_field = f"{party_reference_field}_address"
+	reference_documents = []
 	for reference in source.get("references") or []:
-		if reference.reference_doctype != invoice_doctype:
+		if reference.reference_doctype not in reference_doctypes:
 			continue
 
-		invoice = frappe.get_doc(invoice_doctype, reference.reference_name)
-		invoice.check_permission("read")
-		if invoice.company != source.company or invoice.get(invoice_party_field) != source.party:
+		reference_document = frappe.get_doc(reference.reference_doctype, reference.reference_name)
+		reference_document.check_permission("read")
+		if (
+			reference_document.company != source.company
+			or reference_document.get(party_reference_field) != source.party
+		):
 			frappe.throw(
 				_("Referenced {0} {1} does not belong to this Company and {2}.").format(
-					_(invoice_doctype), frappe.bold(invoice.name), _(party_type)
+					_(reference_document.doctype), frappe.bold(reference_document.name), _(party_type)
 				)
 			)
-		reference_invoices.append(invoice)
+		reference_documents.append(reference_document)
 
-	invoice_addresses = [invoice.get(invoice_address_field) for invoice in reference_invoices]
+	reference_addresses = [
+		reference_document.get(party_address_field) for reference_document in reference_documents
+	]
 	party_address = (
-		invoice_addresses[0]
-		if invoice_addresses and all(address == invoice_addresses[0] for address in invoice_addresses)
+		reference_addresses[0]
+		if reference_addresses and all(address == reference_addresses[0] for address in reference_addresses)
 		else None
 	)
 	if not party_address:
-		party_address = party_doc.get(f"{invoice_party_field}_primary_address")
+		party_address = party_doc.get(f"{party_reference_field}_primary_address")
 	if party_address:
 		frappe.get_doc("Address", party_address).check_permission("read")
 
@@ -84,25 +93,25 @@ def make_withholding_tax_entry(
 				target.set(fieldname, value)
 
 		item_details = {}
-		for invoice in reference_invoices:
-			payment_ratio = get_payment_ratio(source_doc, invoice)
+		for reference_document in reference_documents:
+			payment_ratio = get_payment_ratio(source_doc, reference_document)
 			if not payment_ratio:
 				continue
 
-			for invoice_item in invoice.get("items") or []:
-				if not invoice_item.item_code:
+			for reference_item in reference_document.get("items") or []:
+				if not reference_item.item_code:
 					continue
-				if invoice_item.item_code not in item_details:
-					item_details[invoice_item.item_code] = fetch_wht_detail(
-						invoice_item.item_code,
+				if reference_item.item_code not in item_details:
+					item_details[reference_item.item_code] = fetch_wht_detail(
+						reference_item.item_code,
 						party_type=party_type,
 						party=source_doc.party,
 						company=source_doc.company,
 					)
 
-				detail = item_details[invoice_item.item_code]
+				detail = item_details[reference_item.item_code]
 				base_amount = flt(
-					flt(invoice_item.base_net_amount) * payment_ratio,
+					flt(reference_item.base_net_amount) * payment_ratio,
 					target.precision("base_amount", "items"),
 				)
 				tax_rate = flt(detail.get("tax_rate"))
@@ -115,10 +124,10 @@ def make_withholding_tax_entry(
 						"income_type": detail.get("income_type"),
 						"base_amount": base_amount,
 						"tax_rate": tax_rate,
-						"reference_doc_doctype": invoice.doctype,
-						"reference_doc": invoice.name,
-						"reference_doc_item_doctype": invoice_item.doctype,
-						"reference_doc_item": invoice_item.name,
+						"reference_doc_doctype": reference_document.doctype,
+						"reference_doc": reference_document.name,
+						"reference_doc_item_doctype": reference_item.doctype,
+						"reference_doc_item": reference_item.name,
 					},
 				)
 

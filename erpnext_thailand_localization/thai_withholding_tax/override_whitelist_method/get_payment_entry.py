@@ -32,12 +32,12 @@ def get_payment_entry(
 		created_from_payment_request=created_from_payment_request,
 	)
 
-	if dt not in ("Sales Invoice", "Purchase Invoice"):
+	if dt not in ("Sales Invoice", "Sales Order", "Purchase Invoice", "Purchase Order"):
 		return payment_entry
 
-	invoice = frappe.get_doc(dt, dn)
-	invoice.check_permission("read")
-	if not invoice.get("is_return"):
-		apply_thai_withholding_tax(payment_entry, invoice)
+	reference_document = frappe.get_doc(dt, dn)
+	reference_document.check_permission("read")
+	if not reference_document.get("is_return"):
+		apply_thai_withholding_tax(payment_entry, reference_document)
 
 	return payment_entry

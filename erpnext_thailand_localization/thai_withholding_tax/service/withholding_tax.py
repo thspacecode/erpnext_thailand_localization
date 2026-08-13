@@ -90,22 +90,22 @@ def get_rate_by_category(rates_by_category, category: str | None) -> float | Non
 	return None
 
 
-def apply_thai_withholding_tax(payment_entry, invoice):
-	payment_ratio = get_payment_ratio(payment_entry, invoice)
+def apply_thai_withholding_tax(payment_entry, reference_document):
+	payment_ratio = get_payment_ratio(payment_entry, reference_document)
 	if not payment_ratio:
 		return
 
 	cost_center = payment_entry.cost_center or frappe.get_cached_value(
 		"Company", payment_entry.company, "cost_center"
 	)
-	party_type = "Customer" if invoice.doctype == "Sales Invoice" else "Supplier"
+	party_type = "Customer" if reference_document.doctype in ("Sales Invoice", "Sales Order") else "Supplier"
 	party_field = frappe.scrub(party_type)
-	party = invoice.get(party_field)
+	party = reference_document.get(party_field)
 	category = get_thai_withholding_tax_category(party_type, party, payment_entry.company)
 	item_details = {}
 	deductions = {}
 
-	for item in invoice.get("items"):
+	for item in reference_document.get("items"):
 		if not item.item_code:
 			continue
 
@@ -131,7 +131,7 @@ def apply_thai_withholding_tax(payment_entry, invoice):
 
 		account = get_withholding_tax_account(
 			payment_entry.company,
-			invoice.doctype,
+			reference_document.doctype,
 			income_type,
 			category,
 		)
@@ -144,7 +144,7 @@ def apply_thai_withholding_tax(payment_entry, invoice):
 	if not deductions:
 		return
 
-	sign = 1 if invoice.doctype == "Sales Invoice" else -1
+	sign = 1 if reference_document.doctype in ("Sales Invoice", "Sales Order") else -1
 	for (account, row_cost_center, income_type, rate), amount in deductions.items():
 		payment_entry.append(
 			"deductions",
@@ -170,11 +170,11 @@ def apply_thai_withholding_tax(payment_entry, invoice):
 
 def get_withholding_tax_account(
 	company: str,
-	invoice_doctype: str,
+	reference_doctype: str,
 	income_type: str,
 	category: str | None,
 ) -> str:
-	if invoice_doctype == "Sales Invoice":
+	if reference_doctype in ("Sales Invoice", "Sales Order"):
 		account_field = "sales_withholding_tax_account"
 	else:
 		if not category:
@@ -220,23 +220,26 @@ def get_withholding_tax_account(
 	return account
 
 
-def get_payment_ratio(payment_entry, invoice) -> float:
+def get_payment_ratio(payment_entry, reference_document) -> float:
 	party_account_currency = (
 		payment_entry.paid_from_account_currency
 		if payment_entry.payment_type == "Receive"
 		else payment_entry.paid_to_account_currency
 	)
-	if party_account_currency == invoice.company_currency:
-		invoice_total = invoice.get("base_rounded_total") or invoice.get("base_grand_total")
+	if party_account_currency == reference_document.company_currency:
+		reference_total = reference_document.get("base_rounded_total") or reference_document.get(
+			"base_grand_total"
+		)
 	else:
-		invoice_total = invoice.get("rounded_total") or invoice.get("grand_total")
+		reference_total = reference_document.get("rounded_total") or reference_document.get("grand_total")
 
 	allocated_amount = sum(
 		abs(flt(reference.allocated_amount))
 		for reference in payment_entry.get("references")
-		if reference.reference_doctype == invoice.doctype and reference.reference_name == invoice.name
+		if reference.reference_doctype == reference_document.doctype
+		and reference.reference_name == reference_document.name
 	)
-	if not invoice_total or not allocated_amount:
+	if not reference_total or not allocated_amount:
 		return 0
 
-	return min(allocated_amount / abs(flt(invoice_total)), 1)
+	return min(allocated_amount / abs(flt(reference_total)), 1)

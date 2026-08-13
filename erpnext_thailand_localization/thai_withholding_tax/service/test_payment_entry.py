@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 import frappe
-from frappe.utils import getdate
+from frappe.utils import add_days, getdate
 
 from erpnext_thailand_localization.data.test_data.bootstrap_test_data import BaseTestRecord
 from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
@@ -44,7 +44,9 @@ class PaymentEntryTest:
 			self.assertEqual(entry.items[0].income_type, income_type)
 			self.assertEqual(entry.items[0].base_amount, base_amount)
 			self.assertEqual(entry.items[0].tax_rate, tax_rate)
+			self.assertEqual(entry.items[0].reference_doc_doctype, invoice.doctype)
 			self.assertEqual(entry.items[0].reference_doc, invoice.name)
+			self.assertEqual(entry.items[0].reference_doc_item_doctype, invoice.items[0].doctype)
 			self.assertEqual(entry.items[0].reference_doc_item, invoice.items[0].name)
 
 		@staticmethod
@@ -88,6 +90,19 @@ class TestSellingPaymentEntry(PaymentEntryTest.TestCase):
 			)
 		)
 
+	def make_order(self, customer, item_code, amount):
+		return self.insert_invoice(
+			{
+				"doctype": "Sales Order",
+				"company": self.company,
+				"customer": customer,
+				"delivery_date": add_days(getdate(), 1),
+				"currency": self.company_currency,
+				"conversion_rate": 1,
+				"items": [{"item_code": item_code, "qty": 1, "rate": amount}],
+			}
+		)
+
 	def test_make_sales_withholding_tax_entry_for_partial_payment(self):
 		invoice = self.make_invoice(
 			self.customer,
@@ -113,6 +128,27 @@ class TestSellingPaymentEntry(PaymentEntryTest.TestCase):
 		)
 		self.assertEqual(entry.total_base_amount, 6000)
 		self.assertEqual(entry.total_tax_amount, 300)
+
+	def test_make_sales_withholding_tax_entry_from_sales_order(self):
+		order = self.make_order(self.customer, self.item_code, 12000)
+		payment_entry = self.make_payment_entry(order)
+
+		entry = make_sales_withholding_tax_entry(payment_entry.name)
+
+		self.assert_withholding_tax_entry(
+			entry,
+			payment_entry,
+			order,
+			party_field="customer",
+			party=self.customer,
+			address_field="customer_address",
+			address=self.customer_address,
+			income_type=self.income_type,
+			base_amount=12000,
+			tax_rate=5,
+		)
+		self.assertEqual(entry.total_base_amount, 12000)
+		self.assertEqual(entry.total_tax_amount, 600)
 
 	def test_make_withholding_tax_entry_requires_submitted_payment_entry(self):
 		invoice = self.make_invoice(
@@ -142,6 +178,19 @@ class TestBuyingPaymentEntry(PaymentEntryTest.TestCase):
 			)
 		)
 
+	def make_order(self, supplier, item_code, amount):
+		return self.insert_invoice(
+			{
+				"doctype": "Purchase Order",
+				"company": self.company,
+				"supplier": supplier,
+				"schedule_date": add_days(getdate(), 1),
+				"currency": self.company_currency,
+				"conversion_rate": 1,
+				"items": [{"item_code": item_code, "qty": 1, "rate": amount}],
+			}
+		)
+
 	def test_make_purchase_withholding_tax_entry(self):
 		invoice = self.make_invoice(
 			self.supplier,
@@ -165,6 +214,27 @@ class TestBuyingPaymentEntry(PaymentEntryTest.TestCase):
 			base_amount=5000,
 			tax_rate=3,
 		)
+
+	def test_make_purchase_withholding_tax_entry_from_purchase_order(self):
+		order = self.make_order(self.supplier, self.item_code, 5000)
+		payment_entry = self.make_payment_entry(order)
+
+		entry = make_purchase_withholding_tax_entry(payment_entry.name)
+
+		self.assert_withholding_tax_entry(
+			entry,
+			payment_entry,
+			order,
+			party_field="supplier",
+			party=self.supplier,
+			address_field="supplier_address",
+			address=self.supplier_address,
+			income_type=self.income_type,
+			base_amount=5000,
+			tax_rate=3,
+		)
+		self.assertEqual(entry.total_base_amount, 5000)
+		self.assertEqual(entry.total_tax_amount, 150)
 
 	def test_make_withholding_tax_entry_requires_submitted_payment_entry(self):
 		invoice = self.make_invoice(
