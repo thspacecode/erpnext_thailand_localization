@@ -6,6 +6,9 @@ from frappe.utils import add_days, getdate, now_datetime
 from frappe.utils.file_manager import save_file
 
 from erpnext_thailand_localization.data.abc import BaseImporter, Report
+from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
+	make_purchase_withholding_tax_entry,
+)
 from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
 	make_sales_withholding_tax_entry,
 )
@@ -97,6 +100,12 @@ class BaseTestRecord:
 		return payment_entry.as_dict()
 
 	@staticmethod
+	def purchase_withholding_tax_entry(payment_entry: Document) -> dict:
+		entry = make_purchase_withholding_tax_entry(payment_entry.name)
+		entry.naming_series = "PWHT-.YYYY.-.#####"
+		return entry.as_dict()
+
+	@staticmethod
 	def sales_withholding_tax_entry(
 		invoice: Document,
 		payment_entry: Document,
@@ -162,7 +171,12 @@ class BootStrapTestData(BaseImporter):
 		payment_entries = self.make_payment_entry(paper_invoice)
 		self.make_sales_withholding_tax_entry(paper_invoice, payment_entries[0])
 
-		self.make_purchase_invoice()
+		purchase_invoices = self.make_purchase_invoice()
+		paid_purchase_invoice = next(
+			invoice for invoice in purchase_invoices if invoice.bill_no == "AG-LEGAL-CONSULTING-PAID-001"
+		)
+		purchase_payment = self.make_payment_entry(paid_purchase_invoice)[0]
+		self.make_purchase_withholding_tax_entry(purchase_payment)
 
 		return self.report
 
@@ -282,7 +296,13 @@ class BootStrapTestData(BaseImporter):
 		records = [
 			self.m.purchase_invoice(
 				supplier="Aaron Grandy",
-				supplier_invoice_no="AG-LEGAL-CONSULTING-001",
+				supplier_invoice_no="AG-LEGAL-CONSULTING-UNPAID-001",
+				items=[("LEGAL-CONSULTING-SERVICE", 5000)],
+				posting_date=self.now,
+			),
+			self.m.purchase_invoice(
+				supplier="Aaron Grandy",
+				supplier_invoice_no="AG-LEGAL-CONSULTING-PAID-001",
 				items=[("LEGAL-CONSULTING-SERVICE", 5000)],
 				posting_date=self.now,
 			),
@@ -308,6 +328,17 @@ class BootStrapTestData(BaseImporter):
 		documents = []
 		for r in records:
 			doc = frappe.new_doc("Payment Entry")
+			doc.update(r)
+			doc.insert()
+			doc.submit()
+			documents.append(doc)
+		return documents
+
+	def make_purchase_withholding_tax_entry(self, payment_entry):
+		records = [self.m.purchase_withholding_tax_entry(payment_entry)]
+		documents = []
+		for r in records:
+			doc = frappe.new_doc("Purchase Withholding Tax Entry")
 			doc.update(r)
 			doc.insert()
 			doc.submit()
