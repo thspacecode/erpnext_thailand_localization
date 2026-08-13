@@ -233,9 +233,6 @@ class BootStrapTestMasterData(BaseImporter):
 				"purchase_withholding_tax_pnd53_account": (
 					f"Purchase Withholding Tax PND 53 Payable - {self.company_abbr}"
 				),
-				"purchase_withholding_tax_pnd54_account": (
-					f"Purchase Withholding Tax PND 54 Payable - {self.company_abbr}"
-				),
 			}
 		)
 		company.save()

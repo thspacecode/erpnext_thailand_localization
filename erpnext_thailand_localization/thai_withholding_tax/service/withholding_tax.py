@@ -213,7 +213,6 @@ def get_withholding_tax_account(
 		account_field = {
 			"PND 3": "purchase_withholding_tax_pnd3_account",
 			"PND 53": "purchase_withholding_tax_pnd53_account",
-			"PND 54": "purchase_withholding_tax_pnd54_account",
 		}.get(pnd)
 		if not account_field:
 			frappe.throw(

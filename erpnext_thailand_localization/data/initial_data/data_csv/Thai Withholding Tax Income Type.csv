@@ -8,20 +8,16 @@ income_type_name,disabled,default_thai_withholding_tax_rate,[thai_withholding_ta
 5 ค่าเช่า,0,5,Individual - Domestic,PND 3
 ,,,Juristic Person - Domestic,PND 53
 ,,,Foundation or Association,PND 53
-,,,Individual - Foreign,PND 54
 ,,,Government or Tax-Exempt Entity,PND 53
 6 เงินได้จากวิชาชีพอิสระ,0,3,Individual - Domestic,PND 3
 ,,,Juristic Person - Domestic,PND 53
 ,,,Foundation or Association,PND 53
-,,,Individual - Foreign,PND 54
 ,,,Government or Tax-Exempt Entity,PND 53
 7 การรับเหมาที่ผู้รับเหมาต้องลงทุนด้วยการจัดหาสัมภาระ,0,3,Individual - Domestic,PND 3
 ,,,Juristic Person - Domestic,PND 53
 ,,,Foundation or Association,PND 53
-,,,Individual - Foreign,PND 54
 ,,,Government or Tax-Exempt Entity,PND 53
 8 อื่นๆ,0,3,Individual - Domestic,PND 3
 ,,,Juristic Person - Domestic,PND 53
 ,,,Foundation or Association,PND 53
-,,,Individual - Foreign,PND 54
 ,,,Government or Tax-Exempt Entity,PND 53

@@ -24,7 +24,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "PND",
-   "options": "\nPND 1\nPND 2\nPND 3\nPND 53\nPND 54",
+   "options": "\nPND 1\nPND 2\nPND 3\nPND 53",
    "reqd": 1
   }
  ],
