@@ -131,7 +131,7 @@ class BaseTestRecord:
 		return entry.as_dict()
 
 
-class BootStrapTestData(BaseImporter):
+class BootStrapTestMasterData(BaseImporter):
 	"""Set up reusable ERPNext prerequisites for development and tests."""
 
 	data_csv_path = Path(__file__).parent / "data_csv"
@@ -145,9 +145,9 @@ class BootStrapTestData(BaseImporter):
 		self.company = "Dunder Mifflin"
 		self.company_abbr = "DM"
 
-	def make(self, base_test_record=None) -> Report:
-		self.m = base_test_record or BaseTestRecord
+		self.m = BaseTestRecord
 
+	def make(self) -> Report:
 		self.define_share_val()
 
 		self.hotfix_standard_price()
@@ -164,19 +164,7 @@ class BootStrapTestData(BaseImporter):
 		self.make_item()
 		self.make_party_addresses()
 
-		sales_invoices = self.make_sales_invoice()
-		paper_invoice = next(
-			invoice for invoice in sales_invoices if invoice.customer == "Dunmore High School"
-		)
-		payment_entries = self.make_payment_entry(paper_invoice)
-		self.make_sales_withholding_tax_entry(paper_invoice, payment_entries[0])
-
-		purchase_invoices = self.make_purchase_invoice()
-		paid_purchase_invoice = next(
-			invoice for invoice in purchase_invoices if invoice.bill_no == "AG-LEGAL-CONSULTING-PAID-001"
-		)
-		purchase_payment = self.make_payment_entry(paid_purchase_invoice)[0]
-		self.make_purchase_withholding_tax_entry(purchase_payment)
+		frappe.db.commit()  # nosemgrep
 
 		return self.report
 
@@ -263,6 +251,75 @@ class BootStrapTestData(BaseImporter):
 
 	def make_party_addresses(self):
 		self.csv_loader("Address")
+
+	# ---
+	# Helper Method
+	# ---
+
+	def get_root_account(self, root_type: str) -> str:
+		root_accounts = [
+			account
+			for account in frappe.get_all(
+				"Account",
+				filters={"company": self.company, "root_type": root_type, "is_group": 1},
+				fields=["name", "account_name", "parent_account"],
+				order_by="lft asc",
+			)
+			if not account.parent_account
+		]
+		if not root_accounts:
+			frappe.throw(f"No {root_type} root account exists for Company {self.company}.")
+
+		matching_root = next(
+			(account for account in root_accounts if account.account_name == root_type),
+			root_accounts[0],
+		)
+		return matching_root.name
+
+	def get_leaf_account(self, root_type: str, account_type: str | None = None) -> str:
+		filters = {
+			"company": self.company,
+			"root_type": root_type,
+			"is_group": 0,
+			"disabled": 0,
+		}
+		if account_type:
+			filters["account_type"] = account_type
+
+		account = frappe.db.get_value("Account", filters, "name", order_by="lft asc")
+		if not account and account_type:
+			filters.pop("account_type")
+			account = frappe.db.get_value("Account", filters, "name", order_by="lft asc")
+		if not account:
+			frappe.throw(f"No active {root_type} account exists for Company {self.company}.")
+		return account
+
+	def get_company_account(self, default_field: str, root_type: str, account_type: str) -> str:
+		account = frappe.get_cached_value("Company", self.company, default_field)
+		if account and not frappe.get_cached_value("Account", account, "is_group"):
+			return account
+		return self.get_leaf_account(root_type, account_type)
+
+
+class BootStrapDevData(BootStrapTestMasterData):
+	def make(self) -> Report:
+		self.define_share_val()
+
+		sales_invoices = self.make_sales_invoice()
+		paper_invoice = next(
+			invoice for invoice in sales_invoices if invoice.customer == "Dunmore High School"
+		)
+		payment_entries = self.make_payment_entry(paper_invoice)
+		self.make_sales_withholding_tax_entry(paper_invoice, payment_entries[0])
+
+		purchase_invoices = self.make_purchase_invoice()
+		paid_purchase_invoice = next(
+			invoice for invoice in purchase_invoices if invoice.bill_no == "AG-LEGAL-CONSULTING-PAID-001"
+		)
+		purchase_payment = self.make_payment_entry(paid_purchase_invoice)[0]
+		self.make_purchase_withholding_tax_entry(purchase_payment)
+
+		return self.report
 
 	def make_sales_invoice(self):
 		records = [
@@ -382,56 +439,11 @@ class BootStrapTestData(BaseImporter):
 			documents.append(doc)
 		return documents
 
-	# ---
-	# Helper Method
-	# ---
-
-	def get_root_account(self, root_type: str) -> str:
-		root_accounts = [
-			account
-			for account in frappe.get_all(
-				"Account",
-				filters={"company": self.company, "root_type": root_type, "is_group": 1},
-				fields=["name", "account_name", "parent_account"],
-				order_by="lft asc",
-			)
-			if not account.parent_account
-		]
-		if not root_accounts:
-			frappe.throw(f"No {root_type} root account exists for Company {self.company}.")
-
-		matching_root = next(
-			(account for account in root_accounts if account.account_name == root_type),
-			root_accounts[0],
-		)
-		return matching_root.name
-
-	def get_leaf_account(self, root_type: str, account_type: str | None = None) -> str:
-		filters = {
-			"company": self.company,
-			"root_type": root_type,
-			"is_group": 0,
-			"disabled": 0,
-		}
-		if account_type:
-			filters["account_type"] = account_type
-
-		account = frappe.db.get_value("Account", filters, "name", order_by="lft asc")
-		if not account and account_type:
-			filters.pop("account_type")
-			account = frappe.db.get_value("Account", filters, "name", order_by="lft asc")
-		if not account:
-			frappe.throw(f"No active {root_type} account exists for Company {self.company}.")
-		return account
-
-	def get_company_account(self, default_field: str, root_type: str, account_type: str) -> str:
-		account = frappe.get_cached_value("Company", self.company, default_field)
-		if account and not frappe.get_cached_value("Account", account, "is_group"):
-			return account
-		return self.get_leaf_account(root_type, account_type)
-
 
 def execute():
-	from erpnext_thailand_localization.tests.utils import boot_strap_test_data
-
-	return boot_strap_test_data.report
+	master_data = BootStrapTestMasterData().make()
+	dev_data = BootStrapDevData().make()
+	return {
+		"master_data": master_data.report,
+		"dev_data": dev_data.report,
+	}

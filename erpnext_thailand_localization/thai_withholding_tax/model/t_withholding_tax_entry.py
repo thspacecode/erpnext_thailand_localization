@@ -4,7 +4,7 @@ import frappe
 from frappe.model.document import Document
 
 from erpnext_thailand_localization.data.test_data.bootstrap_test_data import BaseTestRecord
-from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
+from erpnext_thailand_localization.tests.utils import ERPNextThaiTestSuite
 
 
 class WithholdingTaxEntryTest:

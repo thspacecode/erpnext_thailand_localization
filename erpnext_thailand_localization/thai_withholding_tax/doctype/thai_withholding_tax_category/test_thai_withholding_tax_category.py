@@ -3,7 +3,7 @@
 
 import frappe
 
-from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
+from erpnext_thailand_localization.tests.utils import ERPNextThaiTestSuite
 
 
 class IntegrationTestThaiWithholdingTaxCategory(ERPNextThaiTestSuite):

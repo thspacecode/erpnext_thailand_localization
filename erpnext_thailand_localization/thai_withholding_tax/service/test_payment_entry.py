@@ -4,12 +4,15 @@ import frappe
 from frappe.utils import add_days, getdate
 
 from erpnext_thailand_localization.data.test_data.bootstrap_test_data import BaseTestRecord
-from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
+from erpnext_thailand_localization.tests.utils import ERPNextThaiTestSuite
 from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
 	make_purchase_withholding_tax_entry,
 )
 from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
 	make_sales_withholding_tax_entry,
+)
+from erpnext_thailand_localization.thai_withholding_tax.service.payment_entry import (
+	get_withholding_tax_from_references,
 )
 
 
@@ -247,3 +250,96 @@ class TestBuyingPaymentEntry(PaymentEntryTest.TestCase):
 
 		with self.assertRaisesRegex(frappe.ValidationError, "must be submitted"):
 			make_purchase_withholding_tax_entry(payment_entry.name)
+
+
+class TestGetWithholdingTaxFromReferences(PaymentEntryTest.TestCase):
+	supplier = "Aaron Grandy"
+	item_code = "LEGAL-CONSULTING-SERVICE"
+	income_type = "6 เงินได้จากวิชาชีพอิสระ"
+
+	def make_invoice(self, supplier, reference_number, item_code, amount):
+		return self.insert_invoice(
+			BaseTestRecord.purchase_invoice(
+				supplier=supplier,
+				supplier_invoice_no=reference_number,
+				items=[(item_code, amount)],
+			)
+		)
+
+	def test_single_reference(self):
+		invoice = self.make_invoice(
+			self.supplier,
+			"TEST-GET-WHT-FROM-REFERENCES",
+			self.item_code,
+			5000,
+		)
+		payment_entry = self.make_payment_entry(invoice, allocated_amount=2500, submit=False)
+
+		deductions = get_withholding_tax_from_references(payment_entry.as_dict())
+
+		self.assertEqual(len(deductions), 1)
+		self.assertEqual(deductions[0]["amount"], -75)
+		self.assertEqual(deductions[0]["custom_base_amount"], 2500)
+		self.assertEqual(deductions[0]["custom_income_type"], self.income_type)
+		self.assertEqual(deductions[0]["custom_tax_rate"], 3)
+		self.assertEqual(deductions[0]["custom_reference_document_type"], invoice.doctype)
+		self.assertEqual(deductions[0]["custom_reference_document"], invoice.name)
+		self.assertEqual(deductions[0]["custom_reference_item_type"], invoice.items[0].doctype)
+		self.assertEqual(deductions[0]["custom_reference_item"], invoice.items[0].name)
+		self.assertEqual(deductions[0]["custom_item_code"], self.item_code)
+
+	def test_multiple_references_exclude_items_without_withholding_tax(self):
+		invoices = [
+			self.make_invoice(
+				self.supplier,
+				"TEST-GET-WHT-MULTIPLE-LEGAL",
+				self.item_code,
+				5000,
+			),
+			self.make_invoice(
+				self.supplier,
+				"TEST-GET-WHT-MULTIPLE-AUDIT",
+				"AUDIT-FEE",
+				4000,
+			),
+			self.make_invoice(
+				self.supplier,
+				"TEST-GET-WHT-MULTIPLE-PAPER",
+				"DM-PREMIUM-COPY-PAPER",
+				2000,
+			),
+		]
+		allocated_amounts = [2500, 1000, 500]
+		payment_entry = self.make_payment_entry(
+			invoices[0], allocated_amount=allocated_amounts[0], submit=False
+		)
+		for invoice, allocated_amount in zip(invoices[1:], allocated_amounts[1:], strict=True):
+			payment_entry.append(
+				"references",
+				{
+					"reference_doctype": invoice.doctype,
+					"reference_name": invoice.name,
+					"total_amount": invoice.grand_total,
+					"outstanding_amount": invoice.outstanding_amount,
+					"allocated_amount": allocated_amount,
+					"exchange_rate": 1,
+				},
+			)
+
+		deductions = get_withholding_tax_from_references(payment_entry.as_dict())
+
+		self.assertEqual(len(deductions), 2)
+		self.assertEqual(
+			[
+				(
+					deduction["custom_reference_document"],
+					deduction["custom_base_amount"],
+					deduction["amount"],
+				)
+				for deduction in deductions
+			],
+			[
+				(invoices[0].name, 2500, -75),
+				(invoices[1].name, 1000, -30),
+			],
+		)

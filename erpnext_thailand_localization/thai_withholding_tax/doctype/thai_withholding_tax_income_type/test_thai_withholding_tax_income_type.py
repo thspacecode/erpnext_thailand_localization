@@ -5,7 +5,7 @@ import json
 
 import frappe
 
-from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
+from erpnext_thailand_localization.tests.utils import ERPNextThaiTestSuite
 
 # On ERPNextThaiTestSuite, the doctype test records and all
 # link-field test record dependencies are recursively loaded

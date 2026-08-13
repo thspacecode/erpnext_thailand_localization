@@ -90,22 +90,22 @@ def get_rate_by_category(rates_by_category, category: str | None) -> float | Non
 	return None
 
 
-def apply_thai_withholding_tax(payment_entry, reference_document):
+def get_reference_withholding_tax_deductions(payment_entry, reference_document) -> list[dict]:
 	payment_ratio = get_payment_ratio(payment_entry, reference_document)
 	if not payment_ratio:
-		return
+		return []
 
 	cost_center = payment_entry.cost_center or frappe.get_cached_value(
 		"Company", payment_entry.company, "cost_center"
 	)
 	party_type = "Customer" if reference_document.doctype in ("Sales Invoice", "Sales Order") else "Supplier"
-	party_field = frappe.scrub(party_type)
-	party = reference_document.get(party_field)
+	party = reference_document.get(frappe.scrub(party_type))
 	category = get_thai_withholding_tax_category(party_type, party, payment_entry.company)
 	item_details = {}
-	deductions = {}
+	deductions = []
+	sign = 1 if reference_document.doctype in ("Sales Invoice", "Sales Order") else -1
 
-	for item in reference_document.get("items"):
+	for item in reference_document.get("items") or []:
 		if not item.item_code:
 			continue
 
@@ -119,44 +119,55 @@ def apply_thai_withholding_tax(payment_entry, reference_document):
 		detail = item_details[item.item_code]
 		income_type = detail.get("income_type")
 		rate = flt(detail.get("tax_rate"))
-		if not income_type or not rate:
+		base_amount = flt(
+			flt(item.base_net_amount) * payment_ratio,
+			payment_entry.precision("amount", "deductions"),
+		)
+		if not income_type or not rate or not base_amount:
 			continue
 
 		tax_amount = flt(
-			flt(item.base_net_amount) * payment_ratio * rate / 100,
+			base_amount * rate / 100,
 			payment_entry.precision("amount", "deductions"),
 		)
 		if not tax_amount:
 			continue
 
-		account = get_withholding_tax_account(
-			payment_entry.company,
-			reference_document.doctype,
-			income_type,
-			category,
-		)
-		key = (account, cost_center, income_type, rate)
-		deductions[key] = flt(
-			deductions.get(key, 0) + tax_amount,
-			payment_entry.precision("amount", "deductions"),
+		deductions.append(
+			{
+				"account": get_withholding_tax_account(
+					payment_entry.company,
+					reference_document.doctype,
+					income_type,
+					category,
+				),
+				"cost_center": cost_center,
+				"amount": tax_amount * sign,
+				"description": _("Thai Withholding Tax: {0} ({1}%)").format(income_type, rate),
+				"custom_is_withholding_tax_entry": 1,
+				"custom_income_type": income_type,
+				"custom_tax_rate": rate,
+				"custom_base_amount": base_amount,
+				"custom_reference_document_type": reference_document.doctype,
+				"custom_reference_document": reference_document.name,
+				"custom_reference_item_type": item.doctype,
+				"custom_reference_item": item.name,
+				"custom_item_code": item.item_code,
+			}
 		)
 
+	return deductions
+
+
+def apply_thai_withholding_tax(payment_entry, reference_document):
+	deductions = get_reference_withholding_tax_deductions(payment_entry, reference_document)
 	if not deductions:
 		return
 
-	sign = 1 if reference_document.doctype in ("Sales Invoice", "Sales Order") else -1
-	for (account, row_cost_center, income_type, rate), amount in deductions.items():
-		payment_entry.append(
-			"deductions",
-			{
-				"account": account,
-				"cost_center": row_cost_center,
-				"amount": amount * sign,
-				"description": _("Thai Withholding Tax: {0} ({1}%)").format(income_type, rate),
-			},
-		)
+	for deduction in deductions:
+		payment_entry.append("deductions", deduction)
 
-	total_tax = sum(deductions.values())
+	total_tax = sum(abs(flt(deduction["amount"])) for deduction in deductions)
 	payment_entry.paid_amount = flt(
 		payment_entry.paid_amount - total_tax / (flt(payment_entry.source_exchange_rate) or 1),
 		payment_entry.precision("paid_amount"),

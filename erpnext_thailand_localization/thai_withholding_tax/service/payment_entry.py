@@ -6,7 +6,62 @@ from frappe.utils import flt
 from erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax import (
 	fetch_wht_detail,
 	get_payment_ratio,
+	get_reference_withholding_tax_deductions,
 )
+
+
+@frappe.whitelist()
+def get_withholding_tax_from_references(doc) -> list[dict]:
+	payment_entry = frappe.get_doc(frappe.parse_json(doc))
+	if payment_entry.doctype != "Payment Entry":
+		frappe.throw(_("Only Payment Entry documents are supported."))
+	if payment_entry.docstatus != 0:
+		frappe.throw(_("Withholding tax can only be fetched for a draft Payment Entry."))
+	if payment_entry.payment_type not in ("Pay", "Receive"):
+		frappe.throw(_("Withholding tax is not supported for Internal Transfer."))
+
+	expected_party_type = "Customer" if payment_entry.payment_type == "Receive" else "Supplier"
+	if payment_entry.party_type != expected_party_type or not payment_entry.party:
+		frappe.throw(
+			_("Payment Type {0} requires Party Type {1} to fetch withholding tax.").format(
+				_(payment_entry.payment_type), _(expected_party_type)
+			)
+		)
+	if not payment_entry.has_permission("write"):
+		frappe.throw(_("You do not have permission to edit this Payment Entry."), frappe.PermissionError)
+
+	reference_doctypes = (
+		("Sales Invoice", "Sales Order")
+		if payment_entry.payment_type == "Receive"
+		else ("Purchase Invoice", "Purchase Order")
+	)
+	deductions = []
+	seen_references = set()
+	for reference in payment_entry.get("references") or []:
+		key = (reference.reference_doctype, reference.reference_name)
+		if (
+			reference.reference_doctype not in reference_doctypes
+			or not reference.reference_name
+			or not flt(reference.allocated_amount)
+			or key in seen_references
+		):
+			continue
+		seen_references.add(key)
+
+		reference_document = frappe.get_doc(*key)
+		reference_document.check_permission("read")
+		if (
+			reference_document.company != payment_entry.company
+			or reference_document.get(frappe.scrub(payment_entry.party_type)) != payment_entry.party
+		):
+			frappe.throw(
+				_("Referenced {0} {1} does not belong to this Company and Party.").format(
+					_(reference_document.doctype), frappe.bold(reference_document.name)
+				)
+			)
+		deductions.extend(get_reference_withholding_tax_deductions(payment_entry, reference_document))
+
+	return deductions
 
 
 def make_withholding_tax_entry(

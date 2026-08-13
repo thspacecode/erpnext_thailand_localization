@@ -6,7 +6,7 @@ from erpnext.accounts.doctype.payment_entry.payment_entry import (
 )
 from frappe.utils import add_days, nowdate
 
-from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
+from erpnext_thailand_localization.tests.utils import ERPNextThaiTestSuite
 from erpnext_thailand_localization.thai_withholding_tax.override_whitelist_method.get_payment_entry import (
 	get_payment_entry,
 )

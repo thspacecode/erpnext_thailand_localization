@@ -1,3 +1,3 @@
-from .bootstrap_test_data import BaseTestRecord, BootStrapTestData
+from .bootstrap_test_data import BaseTestRecord, BootStrapTestMasterData, BootStrapDevData
 
-__all__ = ["BaseTestRecord", "BootStrapTestData"]
+__all__ = ["BaseTestRecord", "BootStrapTestMasterData", "BootstrapDevData"]

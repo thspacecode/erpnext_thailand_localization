@@ -1,20 +1,16 @@
+import unittest
 import uuid
 from contextlib import contextmanager
 
 import frappe
 from frappe.model.document import Document
-from frappe.tests import IntegrationTestCase
 from frappe.tests.utils import load_test_records_for
 
 
-class ERPNextThaiTestSuite(IntegrationTestCase):
+class ERPNextThaiTestSuite(unittest.TestCase):
 	"""
 	Copied from ERPNextThaiTestSuite, we can't import from erpnext.tests.utils
 	because it'll init ERPNext's BootStrapTestData class which we don't want.
-
-	This class should inherit from Frappe's IntegrationTestCase if not
-	`before_tests` hooks won't get run.
-	(before_tests hooks only fire for "integration" and "old-frappe-test-class-category" categories (see runner.py:100-108).)
 	"""
 
 	@classmethod
@@ -27,11 +23,13 @@ class ERPNextThaiTestSuite(IntegrationTestCase):
 
 	@classmethod
 	def setUpClass(cls):
-		super().setUpClass()
 		cls.globalTestRecords = {}
 
 	def tearDown(self):
 		frappe.db.rollback()
+		frappe.local.request_cache.clear()
+		if hasattr(frappe.local, "future_sle"):
+			frappe.local.future_sle.clear()
 
 	def load_test_records(self, doctype):
 		if doctype not in self.globalTestRecords:
