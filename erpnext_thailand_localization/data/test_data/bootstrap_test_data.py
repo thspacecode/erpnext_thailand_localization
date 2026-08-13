@@ -440,10 +440,17 @@ class BootStrapDevData(BootStrapTestMasterData):
 		return documents
 
 
-def execute():
+def bootstrap_all_data():
 	master_data = BootStrapTestMasterData().make()
 	dev_data = BootStrapDevData().make()
 	return {
-		"master_data": master_data.report,
-		"dev_data": dev_data.report,
+		"master_data": master_data,
+		"dev_data": dev_data,
+	}
+
+
+def bootstrap_dev_data():
+	dev_data = BootStrapDevData().make()
+	return {
+		"dev_data": dev_data,
 	}

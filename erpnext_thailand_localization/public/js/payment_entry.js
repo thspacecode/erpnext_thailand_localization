@@ -1,12 +1,5 @@
 frappe.ui.form.on("Payment Entry", {
 	refresh(frm) {
-		frm.toggle_display(
-			"custom_get_withholding_tax_from_references",
-			frm.doc.docstatus === 0 &&
-				["Pay", "Receive"].includes(frm.doc.payment_type) &&
-				(frm.doc.references || []).some((reference) => flt(reference.allocated_amount))
-		);
-
 		if (frm.doc.docstatus !== 1) {
 			return;
 		}

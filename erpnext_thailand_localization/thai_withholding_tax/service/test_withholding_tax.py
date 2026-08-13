@@ -18,6 +18,46 @@ from erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax 
 
 
 class TestWithholdingTax(ERPNextThaiTestSuite):
+	def assert_withholding_tax_deduction(
+		self,
+		deduction,
+		reference_document,
+		expected_amount,
+		expected_account,
+		expected_income_type,
+		expected_rate,
+		expected_base_amount,
+	):
+		reference_item = reference_document.get("items")[0]
+		self.assertEqual(
+			{
+				"account": deduction.account,
+				"amount": deduction.amount,
+				"custom_is_withholding_tax_entry": deduction.custom_is_withholding_tax_entry,
+				"custom_income_type": deduction.custom_income_type,
+				"custom_tax_rate": deduction.custom_tax_rate,
+				"custom_base_amount": deduction.custom_base_amount,
+				"custom_reference_document_type": deduction.custom_reference_document_type,
+				"custom_reference_document": deduction.custom_reference_document,
+				"custom_reference_item_type": deduction.custom_reference_item_type,
+				"custom_reference_item": deduction.custom_reference_item,
+				"custom_item_code": deduction.custom_item_code,
+			},
+			{
+				"account": expected_account,
+				"amount": expected_amount,
+				"custom_is_withholding_tax_entry": 1,
+				"custom_income_type": expected_income_type,
+				"custom_tax_rate": expected_rate,
+				"custom_base_amount": expected_base_amount,
+				"custom_reference_document_type": reference_document.doctype,
+				"custom_reference_document": reference_document.name,
+				"custom_reference_item_type": reference_item.doctype,
+				"custom_reference_item": reference_item.name,
+				"custom_item_code": reference_item.item_code,
+			},
+		)
+
 	def test_party_withholding_tax_category_takes_precedence_over_company(self):
 		with patch.object(frappe, "get_cached_value", return_value="Party Category") as get_cached_value:
 			category = get_thai_withholding_tax_category("Customer", "Vance Refrigeration", "Dunder Mifflin")
@@ -39,13 +79,15 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 		)
 
 	def test_applies_thai_withholding_tax_to_invoice_and_order_payment_entries(self):
-		for reference_document, expected_amount, expected_account in (
+		for reference_document, expected_amount, expected_account, expected_income_type, expected_rate in (
 			(
 				self.make_reference_document(
 					"Sales Invoice", "Customer", "Vance Refrigeration", "WAREHOUSE-RENT", 12000
 				),
 				600,
 				"Sales Withholding Tax Receivable - DM",
+				"5 ค่าเช่า",
+				5,
 			),
 			(
 				self.make_reference_document(
@@ -53,6 +95,8 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 				),
 				600,
 				"Sales Withholding Tax Receivable - DM",
+				"5 ค่าเช่า",
+				5,
 			),
 			(
 				self.make_reference_document(
@@ -64,6 +108,8 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 				),
 				-150,
 				"Purchase Withholding Tax PND 3 Payable - DM",
+				"6 เงินได้จากวิชาชีพอิสระ",
+				3,
 			),
 			(
 				self.make_reference_document(
@@ -75,21 +121,33 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 				),
 				-150,
 				"Purchase Withholding Tax PND 3 Payable - DM",
+				"6 เงินได้จากวิชาชีพอิสระ",
+				3,
 			),
 		):
 			payment_entry = self.make_reference_payment_entry(reference_document)
 
 			apply_thai_withholding_tax(payment_entry, reference_document)
 
-			self.assertEqual(payment_entry.deductions[0].account, expected_account)
-			self.assertEqual(payment_entry.deductions[0].amount, expected_amount)
+			self.assert_withholding_tax_deduction(
+				payment_entry.deductions[0],
+				reference_document,
+				expected_amount,
+				expected_account,
+				expected_income_type,
+				expected_rate,
+				reference_document.grand_total,
+			)
 			self.assertEqual(payment_entry.difference_amount, 0)
 
 	def test_order_payment_entry_override_applies_withholding_tax(self):
-		for order, expected_amount in (
+		for order, expected_amount, expected_account, expected_income_type, expected_rate in (
 			(
 				self.make_order("Sales Order", "Customer", "Vance Refrigeration", "WAREHOUSE-RENT", 12000),
 				600,
+				"Sales Withholding Tax Receivable - DM",
+				"5 ค่าเช่า",
+				5,
 			),
 			(
 				self.make_order(
@@ -100,6 +158,9 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 					5000,
 				),
 				-150,
+				"Purchase Withholding Tax PND 3 Payable - DM",
+				"6 เงินได้จากวิชาชีพอิสระ",
+				3,
 			),
 		):
 			bank_account = frappe.get_cached_value("Company", order.company, "default_cash_account")
@@ -111,7 +172,15 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 			)
 
 			self.assertEqual(len(withholding_payment_entry.deductions), 1)
-			self.assertEqual(withholding_payment_entry.deductions[0].amount, expected_amount)
+			self.assert_withholding_tax_deduction(
+				withholding_payment_entry.deductions[0],
+				order,
+				expected_amount,
+				expected_account,
+				expected_income_type,
+				expected_rate,
+				order.base_grand_total,
+			)
 			self.assertEqual(withholding_payment_entry.difference_amount, 0)
 			self.assertEqual(
 				withholding_payment_entry.paid_amount,
@@ -184,7 +253,14 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 			company_currency="THB",
 			base_grand_total=amount,
 			grand_total=amount,
-			items=[frappe._dict(item_code=item_code, base_net_amount=amount)],
+			items=[
+				frappe._dict(
+					doctype=f"{doctype} Item",
+					name="TEST-WHT-INVOICE-ITEM",
+					item_code=item_code,
+					base_net_amount=amount,
+				)
+			],
 			**{frappe.scrub(party_type): party},
 		)
 
