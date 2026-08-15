@@ -47,6 +47,8 @@ frappe.ui.form.on("Purchase Withholding Tax Entry", {
 				party: frm.doc.supplier || undefined,
 			},
 			read_only_setters: ["company", "party"],
+			get_query_method:
+				"erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.get_payment_entries_with_pending_withholding_tax",
 			get_query_filters: {
 				docstatus: 1,
 				payment_type: "Pay",

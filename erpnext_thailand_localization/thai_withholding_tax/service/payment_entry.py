@@ -77,6 +77,96 @@ def get_withholding_tax_from_references(
 	return deductions
 
 
+@frappe.whitelist()
+def has_existing_withholding_tax_entry(payment_entry: str) -> bool:
+	document = frappe.get_doc("Payment Entry", payment_entry)
+	document.check_permission("read")
+
+	return bool(
+		frappe.db.exists(
+			"Withholding Tax Entry Item",
+			{
+				"reference_doc_doctype": "Payment Entry",
+				"reference_doc": payment_entry,
+				"parenttype": [
+					"in",
+					["Sales Withholding Tax Entry", "Purchase Withholding Tax Entry"],
+				],
+				"docstatus": ["<", 2],
+			},
+		)
+	)
+
+
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def get_payment_entries_with_pending_withholding_tax(
+	doctype: str,
+	txt: str,
+	searchfield: str,
+	start: int,
+	page_len: int,
+	filters: dict,
+	as_dict: bool = False,
+) -> list[object]:
+	if doctype != "Payment Entry":
+		frappe.throw(_("Only Payment Entry documents are supported."))
+
+	payment_type = filters.get("payment_type")
+	party_type = filters.get("party_type")
+	if (payment_type, party_type) not in (("Receive", "Customer"), ("Pay", "Supplier")):
+		frappe.throw(_("Payment Type and Party Type are not eligible for withholding tax."))
+
+	payment_entry = frappe.qb.DocType("Payment Entry")
+	deduction = frappe.qb.DocType("Payment Entry Deduction")
+	entry_item = frappe.qb.DocType("Withholding Tax Entry Item")
+
+	claimed_deductions = (
+		frappe.qb.from_(entry_item)
+		.select(entry_item.reference_doc_item)
+		.where(
+			(entry_item.reference_doc_item_doctype == "Payment Entry Deduction")
+			& entry_item.parenttype.isin(["Sales Withholding Tax Entry", "Purchase Withholding Tax Entry"])
+			& (entry_item.docstatus < 2)
+			& entry_item.reference_doc_item.isnotnull()
+		)
+	)
+	pending_payment_entries = (
+		frappe.qb.from_(deduction)
+		.select(deduction.parent)
+		.where(
+			(deduction.parenttype == "Payment Entry")
+			& (deduction.parentfield == "deductions")
+			& (deduction.custom_is_withholding_tax_entry == 1)
+			& deduction.custom_income_type.isnotnull()
+			& (deduction.custom_income_type != "")
+			& (deduction.custom_base_amount > 0)
+			& (deduction.custom_tax_rate > 0)
+			& deduction.name.notin(claimed_deductions)
+		)
+	)
+
+	query = frappe.qb.get_query(
+		"Payment Entry",
+		fields=["name", "company", "party", "posting_date"],
+		filters=filters,
+		ignore_permissions=False,
+	)
+	query = (
+		query.where(
+			(payment_entry.docstatus == 1)
+			& (payment_entry.payment_type == payment_type)
+			& (payment_entry.party_type == party_type)
+			& payment_entry.name.isin(pending_payment_entries)
+			& payment_entry[searchfield].like(f"%{txt}%")
+		)
+		.orderby(payment_entry[searchfield])
+		.limit(page_len)
+		.offset(start)
+	)
+	return query.run(as_dict=as_dict)
+
+
 def map_payment_entry_deductions(
 	payment_entry: "PaymentEntry", withholding_tax_entry: "WithholdingTaxEntry"
 ) -> None:
@@ -85,14 +175,40 @@ def map_payment_entry_deductions(
 		for item in withholding_tax_entry.get("items") or []
 		if item.reference_doc_item_doctype == "Payment Entry Deduction"
 	}
-	for deduction in payment_entry.get("deductions") or []:
-		if (
-			not deduction.custom_is_withholding_tax_entry
-			or not deduction.custom_income_type
-			or not flt(deduction.custom_base_amount)
-			or not flt(deduction.custom_tax_rate)
-			or deduction.name in existing_deductions
-		):
+	eligible_deductions = [
+		deduction
+		for deduction in payment_entry.get("deductions") or []
+		if deduction.custom_is_withholding_tax_entry
+		and deduction.custom_income_type
+		and flt(deduction.custom_base_amount) > 0
+		and flt(deduction.custom_tax_rate) > 0
+		and deduction.name not in existing_deductions
+	]
+	claimed_rows = (
+		frappe.get_all(
+			"Withholding Tax Entry Item",
+			filters={
+				"reference_doc_item_doctype": "Payment Entry Deduction",
+				"reference_doc_item": ["in", [deduction.name for deduction in eligible_deductions]],
+				"parenttype": [
+					"in",
+					["Sales Withholding Tax Entry", "Purchase Withholding Tax Entry"],
+				],
+				"docstatus": ["<", 2],
+			},
+			fields=["reference_doc_item", "parent", "parenttype"],
+		)
+		if eligible_deductions
+		else []
+	)
+	claimed_deductions = {
+		row.reference_doc_item
+		for row in claimed_rows
+		if row.parent != withholding_tax_entry.name or row.parenttype != withholding_tax_entry.doctype
+	}
+
+	for deduction in eligible_deductions:
+		if deduction.name in claimed_deductions:
 			continue
 
 		withholding_tax_entry.append(

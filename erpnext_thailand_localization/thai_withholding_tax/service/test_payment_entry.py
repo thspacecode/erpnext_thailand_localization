@@ -22,6 +22,7 @@ from erpnext_thailand_localization.thai_withholding_tax.override_whitelist_metho
 	get_payment_entry,
 )
 from erpnext_thailand_localization.thai_withholding_tax.service.payment_entry import (
+	get_payment_entries_with_pending_withholding_tax,
 	get_withholding_tax_from_references,
 )
 
@@ -52,9 +53,7 @@ def create_payment_entry_from_reference(
 	*,
 	submit: bool = True,
 ) -> "PaymentEntry":
-	bank_account = frappe.get_cached_value(
-		"Company", reference_document.company, "default_cash_account"
-	)
+	bank_account = frappe.get_cached_value("Company", reference_document.company, "default_cash_account")
 	posting_date = getdate()
 	payment_entry = get_payment_entry(
 		reference_document.doctype,
@@ -426,6 +425,41 @@ class TestSalesPaymentEntryDeductionMapping(PaymentEntryDeductionMappingTestCase
 		entry = make_sales_withholding_tax_entry(payment_entry.name, target_doc=entry)
 		self.assertEqual(len(entry.items), 1)
 
+	def test_pending_payment_entry_query_tracks_active_entries(self) -> None:
+		payment_entry, entry = self.make_payment_and_entry()
+		filters = {
+			"docstatus": 1,
+			"payment_type": "Receive",
+			"party_type": "Customer",
+			"company": payment_entry.company,
+			"party": payment_entry.party,
+		}
+
+		def get_pending_payment_entries() -> set[str]:
+			return {
+				row.name
+				for row in get_payment_entries_with_pending_withholding_tax(
+					"Payment Entry", "", "name", 0, 20, filters, as_dict=True
+				)
+			}
+
+		with self.subTest("returns a Payment Entry with an unclaimed deduction"):
+			self.assertIn(payment_entry.name, get_pending_payment_entries())
+
+		entry.insert()
+		with self.subTest("hides a Payment Entry claimed by an active entry"):
+			self.assertNotIn(payment_entry.name, get_pending_payment_entries())
+
+		with self.subTest("does not map a deduction claimed by another active entry"):
+			duplicate = make_sales_withholding_tax_entry(payment_entry.name)
+			self.assertFalse(duplicate.items)
+
+		entry.db_set("docstatus", 2)
+		for item in entry.items:
+			item.db_set("docstatus", 2)
+		with self.subTest("returns a Payment Entry after its entry is cancelled"):
+			self.assertIn(payment_entry.name, get_pending_payment_entries())
+
 	def test_rejects_mismatched_target_party_and_company(self) -> None:
 		payment_entry, entry = self.make_payment_and_entry()
 
@@ -481,11 +515,11 @@ class TestPurchasePaymentEntryDeductionMapping(PaymentEntryDeductionMappingTestC
 
 	def test_cross_document_duplicate_and_cancellation_reuse(self) -> None:
 		payment_entry, entry = self.make_payment_and_entry()
+		duplicate = make_purchase_withholding_tax_entry(payment_entry.name)
 		entry.supplier_address = entry.supplier_address or "Aaron Grandy-Billing"
 		entry.insert()
 
-		with self.subTest("rejects a deduction referenced by another active entry"):
-			duplicate = make_purchase_withholding_tax_entry(payment_entry.name)
+		with self.subTest("rejects a concurrently mapped deduction referenced by another active entry"):
 			duplicate.supplier_address = duplicate.supplier_address or "Aaron Grandy-Billing"
 			with self.assertRaisesRegex(frappe.ValidationError, "already referenced"):
 				duplicate.insert()
