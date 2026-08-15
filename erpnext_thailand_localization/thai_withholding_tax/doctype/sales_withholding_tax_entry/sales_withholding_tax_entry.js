@@ -27,7 +27,7 @@ frappe.ui.form.on("Sales Withholding Tax Entry", {
 	},
 
 	add_get_items_from_payment_entry_button(frm) {
-		if (frm.doc.docstatus === 0 && frm.doc.company && frm.doc.customer) {
+		if (frm.doc.docstatus === 0 && frm.doc.company) {
 			frm.add_custom_button(
 				__("Payment Entry"),
 				() => frm.trigger("get_items_from_payment_entry"),
@@ -42,17 +42,28 @@ frappe.ui.form.on("Sales Withholding Tax Entry", {
 			source_doctype: "Payment Entry",
 			target: frm,
 			date_field: "posting_date",
-			setters: {
-				company: frm.doc.company || undefined,
-				party: frm.doc.customer || undefined,
-			},
-			read_only_setters: ["company", "party"],
+			setters: [
+				{
+					fieldname: "company",
+					fieldtype: "Link",
+					label: __("Company"),
+					options: "Company",
+					default: frm.doc.company,
+					read_only: 1,
+				},
+				{
+					fieldname: "party",
+					fieldtype: "Link",
+					label: __("Customer"),
+					options: "Customer",
+					default: frm.doc.customer || undefined,
+					read_only: Boolean(frm.doc.customer),
+				},
+			],
 			get_query_filters: {
 				docstatus: 1,
 				payment_type: "Receive",
 				party_type: "Customer",
-				company: frm.doc.company,
-				party: frm.doc.customer,
 			},
 		});
 	},
