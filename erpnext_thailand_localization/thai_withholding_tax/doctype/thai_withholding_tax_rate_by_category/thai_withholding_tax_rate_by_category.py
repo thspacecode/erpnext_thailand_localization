@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class ThaiWithholdingTaxRatebyCategory(Document):
+class ThaiWithholdingTaxRateByCategory(Document):
 	pass

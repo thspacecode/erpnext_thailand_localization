@@ -1,20 +1,25 @@
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
 import frappe
-from frappe.model.document import Document
 
-from erpnext_thailand_localization.data.test_data.bootstrap_test_data import BaseTestRecord
+from erpnext_thailand_localization.tests.factories import PurchaseInvoiceFactory
 from erpnext_thailand_localization.tests.utils import ERPNextThaiTestSuite
+
+if TYPE_CHECKING:
+	from erpnext_thailand_localization.thai_withholding_tax.model.withholding_tax_entry import (
+		WithholdingTaxEntry,
+	)
 
 
 class WithholdingTaxEntryTest:
 	class TestCase(ERPNextThaiTestSuite, ABC):
 		@abstractmethod
-		def get_base_doc(self) -> Document:
+		def get_base_doc(self) -> "WithholdingTaxEntry":
 			"""Return a new document for the concrete entry type."""
 			pass
 
-		def test_calculate_totals(self):
+		def test_calculate_totals(self) -> None:
 			doc = self.get_base_doc()
 			doc.set(
 				"items",
@@ -31,7 +36,7 @@ class WithholdingTaxEntryTest:
 			self.assertEqual(doc.total_base_amount, 1250.55)
 			self.assertEqual(doc.total_tax_amount, 31.25)
 
-		def test_validate_party_address(self):
+		def test_validate_party_address(self) -> None:
 			doc = self.get_base_doc()
 
 			with self.subTest("linked address"):
@@ -42,7 +47,7 @@ class WithholdingTaxEntryTest:
 				with self.assertRaisesRegex(frappe.ValidationError, "is not linked"):
 					doc.validate_party_address()
 
-		def test_validate_item(self):
+		def test_validate_item(self) -> None:
 			doc = self.get_base_doc()
 
 			with self.subTest("valid item"):
@@ -53,17 +58,20 @@ class WithholdingTaxEntryTest:
 				with self.assertRaisesRegex(frappe.ValidationError, "no greater than 100"):
 					doc.validate_item(doc.items[0], "Row 1")
 
-		def test_validate_reference(self):
+		def test_validate_reference(self) -> None:
 			doc = self.get_base_doc()
-			reference_doc = frappe.get_doc(
-				BaseTestRecord.purchase_invoice(
-					supplier="Aaron Grandy",
-					supplier_invoice_no="TEST-WHT-REFERENCE",
-					items=[("LEGAL-CONSULTING-SERVICE", 5000)],
-				)
+			reference_doc = PurchaseInvoiceFactory.create(
+				supplier="Aaron Grandy",
+				bill_no="TEST-WHT-REFERENCE",
+				items=[
+					{
+						"item_code": "LEGAL-CONSULTING-SERVICE",
+						"qty": 1,
+						"rate": 5000,
+						"price_list_rate": 5000,
+					}
+				],
 			)
-			reference_doc.set_missing_values()
-			reference_doc.insert()
 			reference_item = reference_doc.items[0]
 			doc.items[0].update(
 				{

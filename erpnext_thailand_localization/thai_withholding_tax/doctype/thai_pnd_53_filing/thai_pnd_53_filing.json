@@ -1,0 +1,436 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-08-13 14:43:59.365100",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "filing_section",
+  "company",
+  "company_address",
+  "company_currency",
+  "period_column",
+  "tax_period",
+  "filing_type",
+  "additional_filing_no",
+  "legal_basis",
+  "attachment_format",
+  "company_snapshot_section",
+  "company_name",
+  "company_tax_id",
+  "company_branch_code",
+  "company_identity_column",
+  "company_address_line1",
+  "company_address_line2",
+  "company_subdistrict",
+  "company_district",
+  "company_province",
+  "company_postal_code",
+  "company_country",
+  "items_section",
+  "items",
+  "summary_section",
+  "recipient_count",
+  "attachment_page_count",
+  "summary_column",
+  "total_base_amount",
+  "total_tax_amount",
+  "surcharge_amount",
+  "grand_total",
+  "declaration_section",
+  "authorized_signatory",
+  "signatory_name",
+  "declaration_column",
+  "signatory_position",
+  "declaration_date",
+  "signature_image",
+  "filing_tracking_section",
+  "filing_status",
+  "filed_date",
+  "filing_reference",
+  "filing_tracking_column",
+  "filing_receipt",
+  "filing_notes",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "PND53-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Naming Series",
+   "options": "PND53-.YYYY.-.#####",
+   "reqd": 1
+  },
+  {
+   "fieldname": "filing_section",
+   "fieldtype": "Section Break",
+   "label": "Filing Details"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company_address",
+   "fieldtype": "Link",
+   "label": "Company Address",
+   "options": "Address",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "company.default_currency",
+   "fetch_if_empty": 1,
+   "fieldname": "company_currency",
+   "fieldtype": "Link",
+   "label": "Company Currency",
+   "options": "Currency",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "period_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Any date in the filing month; saved as the first day of that month.",
+   "fieldname": "tax_period",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Tax Period",
+   "reqd": 1
+  },
+  {
+   "default": "Normal",
+   "fieldname": "filing_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Filing Type",
+   "options": "Normal\nAdditional",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.filing_type == 'Additional'",
+   "fieldname": "additional_filing_no",
+   "fieldtype": "Int",
+   "label": "Additional Filing No.",
+   "mandatory_depends_on": "eval:doc.filing_type == 'Additional'",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "legal_basis",
+   "fieldtype": "Select",
+   "label": "Legal Basis",
+   "options": "Section 3 Tredecim\nSection 65 Quater\nSection 69 Bis",
+   "reqd": 1
+  },
+  {
+   "default": "Paper",
+   "fieldname": "attachment_format",
+   "fieldtype": "Select",
+   "label": "Attachment Format",
+   "options": "Paper\nComputer Media",
+   "reqd": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "company_snapshot_section",
+   "fieldtype": "Section Break",
+   "label": "Company Taxpayer Snapshot"
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company Legal Name",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "company_tax_id",
+   "fieldtype": "Data",
+   "label": "Company Tax ID",
+   "reqd": 1
+  },
+  {
+   "default": "00000",
+   "fieldname": "company_branch_code",
+   "fieldtype": "Data",
+   "label": "Company Branch Code",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company_identity_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company_address_line1",
+   "fieldtype": "Data",
+   "label": "Address Line 1",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_address_line2",
+   "fieldtype": "Data",
+   "label": "Address Line 2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_subdistrict",
+   "fieldtype": "Data",
+   "label": "Subdistrict",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_district",
+   "fieldtype": "Data",
+   "label": "District",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_province",
+   "fieldtype": "Data",
+   "label": "Province",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_postal_code",
+   "fieldtype": "Data",
+   "label": "Postal Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "read_only": 1
+  },
+  {
+   "fieldname": "items_section",
+   "fieldtype": "Section Break",
+   "label": "Withholding Tax Items"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Thai PND 53 Filing Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "summary_section",
+   "fieldtype": "Section Break",
+   "label": "Tax Summary"
+  },
+  {
+   "fieldname": "recipient_count",
+   "fieldtype": "Int",
+   "label": "Recipient Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "attachment_page_count",
+   "fieldtype": "Int",
+   "label": "Attachment Page Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "summary_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_base_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Base Amount",
+   "options": "company_currency",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "total_tax_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Tax Amount",
+   "options": "company_currency",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "surcharge_amount",
+   "fieldtype": "Currency",
+   "label": "Surcharge Amount",
+   "non_negative": 1,
+   "options": "company_currency"
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total",
+   "options": "company_currency",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "declaration_section",
+   "fieldtype": "Section Break",
+   "label": "Declaration"
+  },
+  {
+   "fieldname": "authorized_signatory",
+   "fieldtype": "Link",
+   "label": "Authorized Signatory",
+   "options": "User"
+  },
+  {
+   "fieldname": "signatory_name",
+   "fieldtype": "Data",
+   "label": "Signatory Name"
+  },
+  {
+   "fieldname": "declaration_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "signatory_position",
+   "fieldtype": "Data",
+   "label": "Position"
+  },
+  {
+   "fieldname": "declaration_date",
+   "fieldtype": "Date",
+   "label": "Declaration Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "signature_image",
+   "fieldtype": "Attach Image",
+   "label": "Signature Image"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "filing_tracking_section",
+   "fieldtype": "Section Break",
+   "label": "Filing Tracking"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Prepared",
+   "fieldname": "filing_status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Filing Status",
+   "options": "Prepared\nFiled\nAccepted\nRejected",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "filed_date",
+   "fieldtype": "Date",
+   "label": "Filed Date"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "filing_reference",
+   "fieldtype": "Data",
+   "label": "Revenue Department Reference"
+  },
+  {
+   "fieldname": "filing_tracking_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "filing_receipt",
+   "fieldtype": "Attach",
+   "label": "Filing Receipt"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "filing_notes",
+   "fieldtype": "Small Text",
+   "label": "Filing Notes"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Thai PND 53 Filing",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-08-13 14:43:59.365100",
+ "modified_by": "Administrator",
+ "module": "Thai Withholding Tax",
+ "name": "Thai PND 53 Filing",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "search_fields": "company,tax_period,filing_type,filing_status",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

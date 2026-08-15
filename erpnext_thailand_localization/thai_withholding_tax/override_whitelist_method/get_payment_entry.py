@@ -1,7 +1,13 @@
+from typing import TYPE_CHECKING
+
 import frappe
 from erpnext.accounts.doctype.payment_entry.payment_entry import (
 	get_payment_entry as erpnext_get_payment_entry,
 )
+
+if TYPE_CHECKING:
+	from erpnext.accounts.doctype.payment_entry.payment_entry import PaymentEntry
+	from frappe.utils import DateTimeLikeObject
 
 from erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax import (
 	apply_thai_withholding_tax,
@@ -10,16 +16,16 @@ from erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax 
 
 @frappe.whitelist()
 def get_payment_entry(
-	dt,
-	dn,
-	party_amount=None,
-	bank_account=None,
-	bank_amount=None,
-	party_type=None,
-	payment_type=None,
-	reference_date=None,
-	created_from_payment_request=False,
-):
+	dt: str,
+	dn: str,
+	party_amount: float | None = None,
+	bank_account: str | None = None,
+	bank_amount: float | None = None,
+	party_type: str | None = None,
+	payment_type: str | None = None,
+	reference_date: "DateTimeLikeObject | None" = None,
+	created_from_payment_request: bool = False,
+) -> "PaymentEntry":
 	payment_entry = erpnext_get_payment_entry(
 		dt=dt,
 		dn=dn,

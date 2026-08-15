@@ -56,8 +56,8 @@
   {
    "fieldname": "thai_withholding_tax_rate_by_category",
    "fieldtype": "Table",
-   "label": "Thai Withholding Tax Rate by Category",
-   "options": "Thai Withholding Tax Rate by Category"
+   "label": "Thai Withholding Tax Rate By Category",
+   "options": "Thai Withholding Tax Rate By Category"
   }
  ],
  "grid_page_length": 50,

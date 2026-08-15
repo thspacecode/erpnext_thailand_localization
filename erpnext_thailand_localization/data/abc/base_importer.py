@@ -1,26 +1,34 @@
 import csv
 import re
 from abc import ABC, abstractmethod
+from collections.abc import Callable, Mapping, MutableMapping
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal, TypedDict
 
 import frappe
 
 ChangeType = Literal["created", "updated", "skipped"]
-Report = dict[ChangeType, dict[str, list[str]]]
+type ChangesByDocType = MutableMapping[str, list[str]]
+type Caster = Callable[[str], int | float]
+
+
+class Report(TypedDict):
+	created: ChangesByDocType
+	updated: ChangesByDocType
+	skipped: ChangesByDocType
 
 
 class BaseImporter(ABC):
 	data_csv_path: Path | None = None
 
-	def __init__(self):
+	def __init__(self) -> None:
 		self.report: Report = {
 			"created": {},
 			"updated": {},
 			"skipped": {},
 		}
 
-	def record_change(self, change_type: ChangeType, doctype: str, name: str):
+	def record_change(self, change_type: ChangeType, doctype: str, name: str) -> None:
 		self.report[change_type].setdefault(doctype, []).append(name)
 
 	def merge_report(self, report: Report) -> Report:
@@ -29,7 +37,7 @@ class BaseImporter(ABC):
 				self.report[change_type].setdefault(doctype, []).extend(names)
 		return self.report
 
-	def csv_loader(self, filename: str, csv_replacements: dict[str, str] | None = None) -> Report:
+	def csv_loader(self, filename: str, csv_replacements: Mapping[str, str] | None = None) -> Report:
 		"""Create or update DocType records from a CSV file.
 
 		File naming convention:
@@ -93,7 +101,7 @@ class BaseImporter(ABC):
 		int_types = {"Int", "Check"}
 		float_types = {"Float", "Currency", "Percent", "Duration"}
 
-		def build_casters(dt):
+		def build_casters(dt: str) -> Mapping[str, Caster]:
 			casters = {}
 			for field in frappe.get_meta(dt).fields:
 				if field.fieldtype in int_types:
@@ -102,7 +110,7 @@ class BaseImporter(ABC):
 					casters[field.fieldname] = float
 			return casters
 
-		def cast(casters, fieldname, value):
+		def cast(casters: Mapping[str, Caster], fieldname: str, value: str) -> str | int | float:
 			caster = casters.get(fieldname)
 			return caster(value) if caster else value
 
@@ -113,7 +121,7 @@ class BaseImporter(ABC):
 				value = value.replace(f"{{{{ {key} }}}}", replacement)
 			return value
 
-		def values_match(actual, expected):
+		def values_match(actual: Any, expected: Any) -> bool:
 			if not isinstance(expected, list):
 				return actual == expected
 			if len(actual or []) != len(expected):
@@ -123,7 +131,7 @@ class BaseImporter(ABC):
 				for actual_row, expected_row in zip(actual, expected, strict=True)
 			)
 
-		def get_record_name(values):
+		def get_record_name(values: Mapping[str, Any]) -> str:
 			if values.get("name"):
 				return values["name"]
 			autoname = parent_meta.autoname or ""

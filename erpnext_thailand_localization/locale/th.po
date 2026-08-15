@@ -564,7 +564,7 @@ msgstr "อัตราภาษีหัก ณ ที่จ่ายไทย 
 #: erpnext_thailand_localization/thai_withholding_tax/custom/item_group.json
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_income_type/thai_withholding_tax_income_type.json
 #: erpnext_thailand_localization/thai_withholding_tax/doctype/thai_withholding_tax_rate_by_category/thai_withholding_tax_rate_by_category.json
-msgid "Thai Withholding Tax Rate by Category"
+msgid "Thai Withholding Tax Rate By Category"
 msgstr ""
 
 #: erpnext_thailand_localization/thai_withholding_tax/service/withholding_tax.py:146

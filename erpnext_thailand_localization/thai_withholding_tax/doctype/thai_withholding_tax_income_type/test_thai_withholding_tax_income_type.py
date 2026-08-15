@@ -19,4 +19,5 @@ class IntegrationTestThaiWithholdingTaxIncomeType(ERPNextThaiTestSuite):
 	Integration tests for ThaiWithholdingTaxIncomeType.
 	Use this class for testing interactions between multiple components.
 	"""
+
 	pass

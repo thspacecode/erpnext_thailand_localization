@@ -19,7 +19,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Entry",
-   "link_count": 2,
+   "link_count": 4,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
@@ -40,6 +40,26 @@
    "label": "Purchase WHT Entry",
    "link_count": 0,
    "link_to": "Purchase Withholding Tax Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PND 3 Return",
+   "link_count": 0,
+   "link_to": "Thai PND 3 Filing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PND 53 Return",
+   "link_count": 0,
+   "link_to": "Thai PND 53 Filing",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"

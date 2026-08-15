@@ -1,10 +1,16 @@
 import unittest
 import uuid
+from collections.abc import Callable, Iterator, MutableMapping
 from contextlib import contextmanager
+from typing import TYPE_CHECKING, Any
 
 import frappe
-from frappe.model.document import Document
 from frappe.tests.utils import load_test_records_for
+
+from erpnext_thailand_localization.types import Json
+
+if TYPE_CHECKING:
+	from frappe.model.document import Document
 
 
 class ERPNextThaiTestSuite(unittest.TestCase):
@@ -14,37 +20,39 @@ class ERPNextThaiTestSuite(unittest.TestCase):
 	"""
 
 	@classmethod
-	def registerAs(cls, _as):
-		def decorator(cm_func):
+	def registerAs(
+		cls, _as: Callable[[Callable[..., Any]], Any]
+	) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+		def decorator(cm_func: Callable[..., Any]) -> Callable[..., Any]:
 			setattr(cls, cm_func.__name__, _as(cm_func))
 			return cm_func
 
 		return decorator
 
 	@classmethod
-	def setUpClass(cls):
+	def setUpClass(cls) -> None:
 		cls.globalTestRecords = {}
 
-	def tearDown(self):
+	def tearDown(self) -> None:
 		frappe.db.rollback()
 		frappe.local.request_cache.clear()
 		if hasattr(frappe.local, "future_sle"):
 			frappe.local.future_sle.clear()
 
-	def load_test_records(self, doctype):
+	def load_test_records(self, doctype: str) -> None:
 		if doctype not in self.globalTestRecords:
 			records = load_test_records_for(doctype)
 			self.globalTestRecords[doctype] = records[doctype]
 
 	@staticmethod
-	def insert_doc(doc_dict) -> Document:
+	def insert_doc(doc_dict: "Json[Document]") -> "Document":
 		doc = frappe.new_doc(doctype=doc_dict.get("doctype"))
 		doc.update(doc_dict)
 		doc.save()
 		return doc
 
 	@contextmanager
-	def set_user(self, user: str):
+	def set_user(self, user: str) -> Iterator[None]:
 		try:
 			old_user = frappe.session.user
 			frappe.set_user(user)
@@ -53,7 +61,7 @@ class ERPNextThaiTestSuite(unittest.TestCase):
 			frappe.set_user(old_user)
 
 	@contextmanager
-	def set_flags(self, **flags):
+	def set_flags(self, **flags: Any) -> Iterator[None]:
 		"""Temporarily set `frappe.flags`, restoring the previous values on exit."""
 		previous = {name: frappe.flags.get(name) for name in flags}
 		try:
@@ -63,7 +71,7 @@ class ERPNextThaiTestSuite(unittest.TestCase):
 			frappe.flags.update(previous)
 
 	@contextmanager
-	def set_create_user(self, roles: list[str] | None = None):
+	def set_create_user(self, roles: list[str] | None = None) -> Iterator[str]:
 		"""Create an ephemeral User with the given roles and activate it as the
 		session user for the duration of the block.
 
@@ -86,7 +94,12 @@ class ERPNextThaiTestSuite(unittest.TestCase):
 
 @ERPNextThaiTestSuite.registerAs(staticmethod)
 @contextmanager
-def change_settings(doctype, settings_dict=None, /, **settings) -> None:
+def change_settings(
+	doctype: str,
+	settings_dict: MutableMapping[str, Any] | None = None,
+	/,
+	**settings: Any,
+) -> Iterator[None]:
 	"""Temporarily: change settings in a settings doctype."""
 	import copy
 

@@ -1,7 +1,7 @@
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import frappe
-from frappe.model.document import Document
 from frappe.utils import add_days, getdate, now_datetime
 from frappe.utils.file_manager import save_file
 
@@ -15,13 +15,30 @@ from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholdin
 from erpnext_thailand_localization.thai_withholding_tax.override_whitelist_method.get_payment_entry import (
 	get_payment_entry,
 )
+from erpnext_thailand_localization.types import Json
+
+if TYPE_CHECKING:
+	from erpnext.accounts.doctype.payment_entry.payment_entry import PaymentEntry
+	from erpnext.accounts.doctype.purchase_invoice.purchase_invoice import PurchaseInvoice
+	from erpnext.accounts.doctype.sales_invoice.sales_invoice import SalesInvoice
+	from frappe.model.document import Document
+	from frappe.utils import DateTimeLikeObject
+
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
+		PurchaseWithholdingTaxEntry,
+	)
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
+		SalesWithholdingTaxEntry,
+	)
+
+	type Invoice = SalesInvoice | PurchaseInvoice
 
 
 class BaseTestRecord:
 	"""Reusable base documents for tests and test-data bootstrap."""
 
 	@staticmethod
-	def insert_doc(doc_dict) -> Document:
+	def insert_doc(doc_dict: "Json[Document]") -> "Document":
 		doc = frappe.new_doc(doctype=doc_dict.get("doctype"))
 		doc.update(doc_dict)
 		doc.save()
@@ -32,8 +49,8 @@ class BaseTestRecord:
 		customer: str,
 		customer_po_no: str,
 		items: list[tuple[str, int]],
-		posting_date=None,
-	) -> dict:
+		posting_date: "DateTimeLikeObject | None" = None,
+	) -> "Json[SalesInvoice]":
 		posting_date = getdate(posting_date)
 		return {
 			"doctype": "Sales Invoice",
@@ -61,8 +78,8 @@ class BaseTestRecord:
 		supplier: str,
 		supplier_invoice_no: str,
 		items: list[tuple[str, int]],
-		posting_date=None,
-	) -> dict:
+		posting_date: "DateTimeLikeObject | None" = None,
+	) -> "Json[PurchaseInvoice]":
 		posting_date = getdate(posting_date)
 		return {
 			"doctype": "Purchase Invoice",
@@ -87,7 +104,11 @@ class BaseTestRecord:
 		}
 
 	@staticmethod
-	def payment_entry(invoice: Document, bank_account: str, posting_date=None) -> dict:
+	def payment_entry(
+		invoice: "Invoice",
+		bank_account: str,
+		posting_date: "DateTimeLikeObject | None" = None,
+	) -> "Json[PaymentEntry]":
 		posting_date = getdate(posting_date)
 		payment_entry = get_payment_entry(
 			invoice.doctype,
@@ -100,17 +121,19 @@ class BaseTestRecord:
 		return payment_entry.as_dict()
 
 	@staticmethod
-	def purchase_withholding_tax_entry(payment_entry: Document) -> dict:
+	def purchase_withholding_tax_entry(
+		payment_entry: "PaymentEntry",
+	) -> "Json[PurchaseWithholdingTaxEntry]":
 		entry = make_purchase_withholding_tax_entry(payment_entry.name)
 		entry.naming_series = "PWHT-.YYYY.-.#####"
 		return entry.as_dict()
 
 	@staticmethod
 	def sales_withholding_tax_entry(
-		invoice: Document,
-		payment_entry: Document,
+		invoice: "SalesInvoice",
+		payment_entry: "PaymentEntry",
 		certificate_number: str,
-	) -> dict:
+	) -> "Json[SalesWithholdingTaxEntry]":
 		delivery_item = next(item for item in invoice.items if item.item_code == "DELIVERY-SERVICE")
 		entry = make_sales_withholding_tax_entry(payment_entry.name)
 		entry.naming_series = "SWHT-.YYYY.-.#####"
@@ -136,7 +159,7 @@ class BootStrapTestMasterData(BaseImporter):
 
 	data_csv_path = Path(__file__).parent / "data_csv"
 
-	def define_share_val(self):
+	def define_share_val(self) -> None:
 		self.now = now_datetime()
 
 		# This mock company sells paper products.
@@ -172,11 +195,11 @@ class BootStrapTestMasterData(BaseImporter):
 	# Maker Method
 	# ---
 
-	def hotfix_standard_price(self):
+	def hotfix_standard_price(self) -> None:
 		"""Pre-seed ERPNext defaults required before its setup wizard runs."""
 		self.csv_loader("Price List")
 
-	def complete_setup_wizard(self):
+	def complete_setup_wizard(self) -> None:
 		if frappe.is_setup_complete():
 			return
 
@@ -198,7 +221,7 @@ class BootStrapTestMasterData(BaseImporter):
 			}
 		)
 
-	def complete_module_onboarding(self):
+	def complete_module_onboarding(self) -> None:
 		for name in frappe.get_all(
 			"Module Onboarding",
 			filters={"is_complete": 0},
@@ -209,7 +232,7 @@ class BootStrapTestMasterData(BaseImporter):
 				step.db_set("is_complete", 1)
 			doc.db_set("is_complete", 1)
 
-	def make_account(self):
+	def make_account(self) -> None:
 		self.csv_loader(
 			"Account",
 			csv_replacements={
@@ -220,7 +243,7 @@ class BootStrapTestMasterData(BaseImporter):
 			},
 		)
 
-	def update_company(self):
+	def update_company(self) -> None:
 		company = frappe.get_doc("Company", self.company)
 		company.update(
 			{
@@ -237,16 +260,16 @@ class BootStrapTestMasterData(BaseImporter):
 		)
 		company.save()
 
-	def make_customer(self):
+	def make_customer(self) -> None:
 		self.csv_loader("Customer")
 
-	def make_supplier(self):
+	def make_supplier(self) -> None:
 		self.csv_loader("Supplier")
 
-	def make_item(self):
+	def make_item(self) -> None:
 		self.csv_loader("Item")
 
-	def make_party_addresses(self):
+	def make_party_addresses(self) -> None:
 		self.csv_loader("Address")
 
 	# ---
@@ -318,7 +341,7 @@ class BootStrapDevData(BootStrapTestMasterData):
 
 		return self.report
 
-	def make_sales_invoice(self):
+	def make_sales_invoice(self) -> list["SalesInvoice"]:
 		records = [
 			self.m.sales_invoice(
 				customer="Dunmore High School",
@@ -346,7 +369,7 @@ class BootStrapDevData(BootStrapTestMasterData):
 			documents.append(doc)
 		return documents
 
-	def make_purchase_invoice(self):
+	def make_purchase_invoice(self) -> list["PurchaseInvoice"]:
 		records = [
 			self.m.purchase_invoice(
 				supplier="Aaron Grandy",
@@ -371,7 +394,7 @@ class BootStrapDevData(BootStrapTestMasterData):
 			documents.append(doc)
 		return documents
 
-	def make_payment_entry(self, invoice):
+	def make_payment_entry(self, invoice: "Invoice") -> list["PaymentEntry"]:
 		records = [
 			self.m.payment_entry(
 				invoice=invoice,
@@ -388,7 +411,9 @@ class BootStrapDevData(BootStrapTestMasterData):
 			documents.append(doc)
 		return documents
 
-	def make_purchase_withholding_tax_entry(self, payment_entry):
+	def make_purchase_withholding_tax_entry(
+		self, payment_entry: "PaymentEntry"
+	) -> list["PurchaseWithholdingTaxEntry"]:
 		records = [self.m.purchase_withholding_tax_entry(payment_entry)]
 		documents = []
 		for r in records:
@@ -399,7 +424,9 @@ class BootStrapDevData(BootStrapTestMasterData):
 			documents.append(doc)
 		return documents
 
-	def make_sales_withholding_tax_entry(self, invoice, payment_entry):
+	def make_sales_withholding_tax_entry(
+		self, invoice: "SalesInvoice", payment_entry: "PaymentEntry"
+	) -> list["SalesWithholdingTaxEntry"]:
 		certificate_number = "DUNMORE-WHT-0001"
 		records = [
 			self.m.sales_withholding_tax_entry(
@@ -435,19 +462,3 @@ class BootStrapDevData(BootStrapTestMasterData):
 			doc.submit()
 			documents.append(doc)
 		return documents
-
-
-def bootstrap_all_data():
-	master_data = BootStrapTestMasterData().make()
-	dev_data = BootStrapDevData().make()
-	return {
-		"master_data": master_data,
-		"dev_data": dev_data,
-	}
-
-
-def bootstrap_dev_data():
-	dev_data = BootStrapDevData().make()
-	return {
-		"dev_data": dev_data,
-	}

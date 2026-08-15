@@ -1,6 +1,33 @@
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Literal, TypedDict
+
 import frappe
 from frappe import _
 from frappe.utils import flt
+
+from erpnext_thailand_localization.types import Json
+
+if TYPE_CHECKING:
+	from erpnext.accounts.doctype.payment_entry.payment_entry import PaymentEntry
+	from erpnext.accounts.doctype.payment_entry_deduction.payment_entry_deduction import (
+		PaymentEntryDeduction,
+	)
+	from erpnext.accounts.doctype.purchase_invoice.purchase_invoice import PurchaseInvoice
+	from erpnext.accounts.doctype.sales_invoice.sales_invoice import SalesInvoice
+	from erpnext.buying.doctype.purchase_order.purchase_order import PurchaseOrder
+	from erpnext.selling.doctype.sales_order.sales_order import SalesOrder
+
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.thai_withholding_tax_rate_by_category.thai_withholding_tax_rate_by_category import (
+		ThaiWithholdingTaxRateByCategory,
+	)
+
+	type ReferenceDocument = SalesInvoice | SalesOrder | PurchaseInvoice | PurchaseOrder
+
+
+class WithholdingTaxDetail(TypedDict):
+	income_type: str | None
+	tax_rate: float
+	source: Literal["Item", "Item Group"] | None
 
 
 @frappe.whitelist()
@@ -9,7 +36,7 @@ def fetch_wht_detail(
 	party_type: str | None = None,
 	party: str | None = None,
 	company: str | None = None,
-) -> dict:
+) -> WithholdingTaxDetail:
 	item = frappe.get_doc("Item", item_code)
 	item.check_permission("read")
 	category = get_thai_withholding_tax_category(party_type, party, company)
@@ -58,8 +85,8 @@ def get_thai_withholding_tax_category(
 
 def get_wht_rate(
 	income_type: str,
-	configured_rate,
-	configured_rates_by_category=None,
+	configured_rate: str | float | None,
+	configured_rates_by_category: Sequence["ThaiWithholdingTaxRateByCategory"] | None = None,
 	category: str | None = None,
 ) -> float:
 	category_rate = get_rate_by_category(configured_rates_by_category, category)
@@ -79,7 +106,10 @@ def get_wht_rate(
 	return flt(income_type_doc.default_thai_withholding_tax_rate)
 
 
-def get_rate_by_category(rates_by_category, category: str | None) -> float | None:
+def get_rate_by_category(
+	rates_by_category: Sequence["ThaiWithholdingTaxRateByCategory"] | None,
+	category: str | None,
+) -> float | None:
 	if not category:
 		return None
 
@@ -90,7 +120,10 @@ def get_rate_by_category(rates_by_category, category: str | None) -> float | Non
 	return None
 
 
-def get_reference_withholding_tax_deductions(payment_entry, reference_document) -> list[dict]:
+def get_reference_withholding_tax_deductions(
+	payment_entry: "PaymentEntry",
+	reference_document: "ReferenceDocument",
+) -> list[Json["PaymentEntryDeduction"]]:
 	payment_ratio = get_payment_ratio(payment_entry, reference_document)
 	if not payment_ratio:
 		return []
@@ -159,7 +192,10 @@ def get_reference_withholding_tax_deductions(payment_entry, reference_document) 
 	return deductions
 
 
-def apply_thai_withholding_tax(payment_entry, reference_document):
+def apply_thai_withholding_tax(
+	payment_entry: "PaymentEntry",
+	reference_document: "ReferenceDocument",
+) -> None:
 	deductions = get_reference_withholding_tax_deductions(payment_entry, reference_document)
 	if not deductions:
 		return
@@ -230,7 +266,10 @@ def get_withholding_tax_account(
 	return account
 
 
-def get_payment_ratio(payment_entry, reference_document) -> float:
+def get_payment_ratio(
+	payment_entry: "PaymentEntry",
+	reference_document: "ReferenceDocument",
+) -> float:
 	party_account_currency = (
 		payment_entry.paid_from_account_currency
 		if payment_entry.payment_type == "Receive"

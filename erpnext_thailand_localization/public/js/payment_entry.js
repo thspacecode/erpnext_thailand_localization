@@ -1,10 +1,16 @@
 frappe.ui.form.on("Payment Entry", {
 	refresh(frm) {
-		if (frm.doc.docstatus !== 1) {
-			return;
-		}
+		frm.trigger("add_purchase_withholding_tax_entry_button");
+		frm.trigger("add_sales_withholding_tax_entry_button");
+	},
 
+	async custom_get_withholding_tax_from_references(frm) {
+		await frm.trigger("get_withholding_tax_from_references");
+	},
+
+	add_purchase_withholding_tax_entry_button(frm) {
 		if (
+			frm.doc.docstatus === 1 &&
 			frm.doc.payment_type === "Pay" &&
 			frm.doc.party_type === "Supplier" &&
 			frappe.model.can_create("Purchase Withholding Tax Entry")
@@ -19,8 +25,11 @@ frappe.ui.form.on("Payment Entry", {
 				__("Create")
 			);
 		}
+	},
 
+	add_sales_withholding_tax_entry_button(frm) {
 		if (
+			frm.doc.docstatus === 1 &&
 			frm.doc.payment_type === "Receive" &&
 			frm.doc.party_type === "Customer" &&
 			frappe.model.can_create("Sales Withholding Tax Entry")
@@ -37,7 +46,7 @@ frappe.ui.form.on("Payment Entry", {
 		}
 	},
 
-	async custom_get_withholding_tax_from_references(frm) {
+	async get_withholding_tax_from_references(frm) {
 		const has_existing_withholding_tax = (frm.doc.deductions || []).some(
 			(row) => row.custom_is_withholding_tax_entry
 		);

@@ -1,6 +1,9 @@
 # Copyright (c) 2026, SpaceCode Co., Ltd. and contributors
 # For license information, please see license.txt
 
+from collections.abc import Mapping
+from typing import Any
+
 import frappe
 from frappe import _
 
@@ -16,14 +19,15 @@ class SalesWithholdingTaxEntry(WithholdingTaxEntry):
 	party_type = "Customer"
 	party_field = "customer"
 	address_field = "customer_address"
+	payment_type = "Receive"
 
-	def validate(self):
+	def validate(self) -> None:
 		if self.certificate_number:
 			self.certificate_number = self.certificate_number.strip()
 		self.validate_certificate()
 		super().validate()
 
-	def validate_certificate(self):
+	def validate_certificate(self) -> None:
 		if self.docstatus == 1 and not self.certificate_number:
 			frappe.throw(_("Certificate Number is required before submission."))
 		if self.docstatus == 1 and not self.certificate_attachment:
@@ -50,7 +54,11 @@ class SalesWithholdingTaxEntry(WithholdingTaxEntry):
 
 
 @frappe.whitelist()
-def make_sales_withholding_tax_entry(source_name, target_doc=None, kwargs=None):
+def make_sales_withholding_tax_entry(
+	source_name: str,
+	target_doc: str | SalesWithholdingTaxEntry | None = None,
+	kwargs: Mapping[str, Any] | None = None,
+) -> SalesWithholdingTaxEntry:
 	return make_withholding_tax_entry(
 		source_name=source_name,
 		target_doctype="Sales Withholding Tax Entry",
