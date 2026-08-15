@@ -235,9 +235,11 @@ def make_withholding_tax_entry(
 	address_field: str,
 	target_doc: "str | WithholdingTaxEntry | None" = None,
 ) -> "WithholdingTaxEntry":
+	# Load the source Payment Entry and verify that the user can access it.
 	source = frappe.get_doc("Payment Entry", source_name)
 	source.check_permission("read")
 
+	# Validate that the Payment Entry can create the requested withholding tax entry.
 	if source.docstatus != 1:
 		frappe.throw(_("Payment Entry {0} must be submitted.").format(frappe.bold(source_name)))
 	if source.payment_type != payment_type or source.party_type != party_type:
@@ -253,7 +255,10 @@ def make_withholding_tax_entry(
 			_("You do not have permission to create a {0}.").format(_(target_doctype)), frappe.PermissionError
 		)
 
+	# Track whether values should be preserved while appending to an existing target.
 	has_existing_target = bool(target_doc)
+
+	# Resolve the party's primary or first linked address and check access to it.
 	party_doc = frappe.get_doc(party_type, source.party)
 	party_doc.check_permission("read")
 	party_reference_field = frappe.scrub(party_type)
@@ -272,11 +277,14 @@ def make_withholding_tax_entry(
 	if party_address:
 		frappe.get_doc("Address", party_address).check_permission("read")
 
+	# Load the company currency used to calculate the target entry totals.
 	company_doc = frappe.get_doc("Company", source.company)
 	company_doc.check_permission("read")
 	company_currency = company_doc.default_currency
 
+	# Populate and validate values that are not handled by the document mapper.
 	def set_target_values(source_doc: "PaymentEntry", target: "WithholdingTaxEntry") -> None:
+		# Ensure an existing target belongs to the same company and party.
 		if has_existing_target:
 			if target.company and target.company != source_doc.company:
 				frappe.throw(
@@ -291,6 +299,7 @@ def make_withholding_tax_entry(
 					)
 				)
 
+		# Set mapped header values without overwriting values already on an existing target.
 		values = {
 			"company": source_doc.company,
 			"company_currency": company_currency,
@@ -302,9 +311,11 @@ def make_withholding_tax_entry(
 			if not has_existing_target or not target.get(fieldname):
 				target.set(fieldname, value)
 
+		# Add eligible deductions and refresh the withholding tax totals.
 		map_payment_entry_deductions(source_doc, target)
 		target.calculate_totals()
 
+	# Map the Payment Entry and apply the target-specific post-processing above.
 	return get_mapped_doc(
 		"Payment Entry",
 		source_name,
