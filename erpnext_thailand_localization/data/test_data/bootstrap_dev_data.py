@@ -147,23 +147,10 @@ class BootStrapDevData(BootStrapTestMasterData):
 		payment_entry: "PaymentEntry",
 	) -> list["SalesWithholdingTaxEntry"]:
 		certificate_number = "DUNMORE-WHT-0001"
-		delivery_item = next(item for item in invoice.items if item.item_code == "DELIVERY-SERVICE")
 		doc = make_sales_withholding_tax_entry(payment_entry.name)
 		doc.naming_series = "SWHT-.YYYY.-.#####"
 		doc.certificate_number = certificate_number
 		doc.customer_address = doc.customer_address or invoice.customer_address
-		doc.append(
-			"items",
-			{
-				"income_type": "8 อื่นๆ",
-				"base_amount": 12000,
-				"tax_rate": 3,
-				"reference_doc_doctype": invoice.doctype,
-				"reference_doc": invoice.name,
-				"reference_doc_item_doctype": delivery_item.doctype,
-				"reference_doc_item": delivery_item.name,
-			},
-		)
 		doc.insert()
 
 		certificate_content = (

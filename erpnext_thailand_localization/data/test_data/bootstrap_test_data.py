@@ -134,23 +134,10 @@ class BaseTestRecord:
 		payment_entry: "PaymentEntry",
 		certificate_number: str,
 	) -> "Json[SalesWithholdingTaxEntry]":
-		delivery_item = next(item for item in invoice.items if item.item_code == "DELIVERY-SERVICE")
 		entry = make_sales_withholding_tax_entry(payment_entry.name)
 		entry.naming_series = "SWHT-.YYYY.-.#####"
 		entry.certificate_number = certificate_number
 		entry.customer_address = entry.customer_address or invoice.customer_address
-		entry.append(
-			"items",
-			{
-				"income_type": "8 อื่นๆ",
-				"base_amount": 12000,
-				"tax_rate": 3,
-				"reference_doc_doctype": invoice.doctype,
-				"reference_doc": invoice.name,
-				"reference_doc_item_doctype": delivery_item.doctype,
-				"reference_doc_item": delivery_item.name,
-			},
-		)
 		return entry.as_dict()
 
 
