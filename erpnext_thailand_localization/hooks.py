@@ -23,6 +23,9 @@ after_install = "erpnext_thailand_localization.install.after_install"
 override_whitelisted_methods = {
 	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "erpnext_thailand_localization.thai_withholding_tax.override_whitelist_method.get_payment_entry.get_payment_entry"
 }
+override_doctype_dashboards = {
+	"Payment Entry": "erpnext_thailand_localization.thai_withholding_tax.payment_entry_dashboard.get_dashboard_data"
+}
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -190,13 +193,6 @@ override_whitelisted_methods = {
 # Specify custom mixins to extend the standard doctype controller.
 # extend_doctype_class = {
 # 	"Task": "erpnext_thailand_localization.custom.task.CustomTaskMixin"
-# }
-
-# each overriding function accepts a `data` argument;
-# generated from the base implementation of the doctype dashboard,
-# along with any modifications made in other Frappe apps
-# override_doctype_dashboards = {
-# 	"Task": "erpnext_thailand_localization.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled

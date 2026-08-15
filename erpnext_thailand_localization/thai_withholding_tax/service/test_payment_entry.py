@@ -24,6 +24,7 @@ from erpnext_thailand_localization.thai_withholding_tax.override_whitelist_metho
 from erpnext_thailand_localization.thai_withholding_tax.service.payment_entry import (
 	get_payment_entries_with_pending_withholding_tax,
 	get_withholding_tax_from_references,
+	has_existing_withholding_tax_entry,
 )
 
 if TYPE_CHECKING:
@@ -445,10 +446,12 @@ class TestSalesPaymentEntryDeductionMapping(PaymentEntryDeductionMappingTestCase
 
 		with self.subTest("returns a Payment Entry with an unclaimed deduction"):
 			self.assertIn(payment_entry.name, get_pending_payment_entries())
+			self.assertFalse(has_existing_withholding_tax_entry(payment_entry.name))
 
 		entry.insert()
 		with self.subTest("hides a Payment Entry claimed by an active entry"):
 			self.assertNotIn(payment_entry.name, get_pending_payment_entries())
+			self.assertTrue(has_existing_withholding_tax_entry(payment_entry.name))
 
 		with self.subTest("does not map a deduction claimed by another active entry"):
 			duplicate = make_sales_withholding_tax_entry(payment_entry.name)
@@ -459,6 +462,7 @@ class TestSalesPaymentEntryDeductionMapping(PaymentEntryDeductionMappingTestCase
 			item.db_set("docstatus", 2)
 		with self.subTest("returns a Payment Entry after its entry is cancelled"):
 			self.assertIn(payment_entry.name, get_pending_payment_entries())
+			self.assertFalse(has_existing_withholding_tax_entry(payment_entry.name))
 
 	def test_rejects_mismatched_target_party_and_company(self) -> None:
 		payment_entry, entry = self.make_payment_and_entry()

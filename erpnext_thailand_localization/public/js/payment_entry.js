@@ -1,5 +1,56 @@
 frappe.ui.form.on("Payment Entry", {
-	refresh(frm) {
+	async refresh(frm) {
+		await frm.trigger("toggle_withholding_tax_entry_buttons");
+	},
+
+	dashboard_update(frm) {
+		frm.trigger("toggle_withholding_tax_dashboard_buttons");
+	},
+
+	toggle_withholding_tax_dashboard_buttons(frm) {
+		const linked_doctypes = (frm.dashboard_data?.count?.external_links_found || [])
+			.filter((link) => link.count > 0)
+			.map((link) => link.doctype);
+		const allowed_doctype =
+			frm.doc.payment_type === "Receive"
+				? "Sales Withholding Tax Entry"
+				: frm.doc.payment_type === "Pay"
+				? "Purchase Withholding Tax Entry"
+				: null;
+
+		for (const doctype of ["Sales Withholding Tax Entry", "Purchase Withholding Tax Entry"]) {
+			if (doctype !== allowed_doctype || linked_doctypes.includes(doctype)) {
+				frm.dashboard.transactions_area
+					.find(`.btn-new[data-doctype="${doctype}"]`)
+					.addClass("hidden");
+			}
+		}
+	},
+
+	async toggle_withholding_tax_entry_buttons(frm) {
+		const can_create_purchase_entry =
+			frm.doc.docstatus === 1 &&
+			frm.doc.payment_type === "Pay" &&
+			frm.doc.party_type === "Supplier" &&
+			frappe.model.can_create("Purchase Withholding Tax Entry");
+		const can_create_sales_entry =
+			frm.doc.docstatus === 1 &&
+			frm.doc.payment_type === "Receive" &&
+			frm.doc.party_type === "Customer" &&
+			frappe.model.can_create("Sales Withholding Tax Entry");
+
+		if (!can_create_purchase_entry && !can_create_sales_entry) {
+			return;
+		}
+
+		const { message: has_existing_entry } = await frappe.call({
+			method: "erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.has_existing_withholding_tax_entry",
+			args: { payment_entry: frm.doc.name },
+		});
+		if (has_existing_entry) {
+			return;
+		}
+
 		frm.trigger("add_purchase_withholding_tax_entry_button");
 		frm.trigger("add_sales_withholding_tax_entry_button");
 	},
