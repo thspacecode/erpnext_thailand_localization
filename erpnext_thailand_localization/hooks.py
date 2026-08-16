@@ -153,13 +153,9 @@ override_doctype_dashboards = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Address": {"validate": "erpnext_thailand_localization.thai_withholding_tax.address.validate_address"}
+}
 
 # Scheduled Tasks
 # ---------------
