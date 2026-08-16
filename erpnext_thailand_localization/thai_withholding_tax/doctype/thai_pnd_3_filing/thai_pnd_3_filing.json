@@ -12,17 +12,17 @@
   "filing_section",
   "company",
   "company_address",
-  "company_currency",
   "period_column",
-  "tax_period",
+  "company_tax_id",
+  "company_branch_code",
+  "filing_details_section",
   "filing_type",
   "additional_filing_no",
   "legal_basis",
-  "attachment_format",
+  "filing_details_column",
+  "tax_period",
   "company_snapshot_section",
   "company_name",
-  "company_tax_id",
-  "company_branch_code",
   "company_identity_column",
   "company_address_line1",
   "company_address_line2",
@@ -30,7 +30,6 @@
   "company_district",
   "company_province",
   "company_postal_code",
-  "company_country",
   "items_section",
   "items",
   "summary_section",
@@ -41,13 +40,6 @@
   "total_tax_amount",
   "surcharge_amount",
   "grand_total",
-  "declaration_section",
-  "authorized_signatory",
-  "signatory_name",
-  "declaration_column",
-  "signatory_position",
-  "declaration_date",
-  "signature_image",
   "filing_tracking_section",
   "filing_status",
   "filed_date",
@@ -55,7 +47,9 @@
   "filing_tracking_column",
   "filing_receipt",
   "filing_notes",
-  "amended_from"
+  "amended_from",
+  "currency_section",
+  "currency"
  ],
  "fields": [
   {
@@ -70,7 +64,7 @@
   {
    "fieldname": "filing_section",
    "fieldtype": "Section Break",
-   "label": "Filing Details"
+   "label": "Company Details"
   },
   {
    "fieldname": "company",
@@ -85,16 +79,6 @@
    "fieldtype": "Link",
    "label": "Company Address",
    "options": "Address",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "company.default_currency",
-   "fetch_if_empty": 1,
-   "fieldname": "company_currency",
-   "fieldtype": "Link",
-   "label": "Company Currency",
-   "options": "Currency",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -136,14 +120,6 @@
    "reqd": 1
   },
   {
-   "default": "Paper",
-   "fieldname": "attachment_format",
-   "fieldtype": "Select",
-   "label": "Attachment Format",
-   "options": "Paper\nComputer Media",
-   "reqd": 1
-  },
-  {
    "collapsible": 1,
    "fieldname": "company_snapshot_section",
    "fieldtype": "Section Break",
@@ -157,16 +133,19 @@
    "reqd": 1
   },
   {
+   "fetch_from": "company.tax_id",
    "fieldname": "company_tax_id",
    "fieldtype": "Data",
    "label": "Company Tax ID",
+   "read_only": 1,
    "reqd": 1
   },
   {
-   "default": "00000",
+   "fetch_from": "company_address.branch_code",
    "fieldname": "company_branch_code",
    "fieldtype": "Data",
    "label": "Company Branch Code",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -210,13 +189,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "company_country",
-   "fieldtype": "Link",
-   "label": "Country",
-   "options": "Country",
-   "read_only": 1
-  },
-  {
    "fieldname": "items_section",
    "fieldtype": "Section Break",
    "label": "Withholding Tax Items"
@@ -254,7 +226,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Base Amount",
-   "options": "company_currency",
+   "options": "currency",
    "read_only": 1,
    "reqd": 1
   },
@@ -263,7 +235,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Tax Amount",
-   "options": "company_currency",
+   "options": "currency",
    "read_only": 1,
    "reqd": 1
   },
@@ -273,51 +245,15 @@
    "fieldtype": "Currency",
    "label": "Surcharge Amount",
    "non_negative": 1,
-   "options": "company_currency"
+   "options": "currency"
   },
   {
    "fieldname": "grand_total",
    "fieldtype": "Currency",
    "label": "Grand Total",
-   "options": "company_currency",
+   "options": "currency",
    "read_only": 1,
    "reqd": 1
-  },
-  {
-   "fieldname": "declaration_section",
-   "fieldtype": "Section Break",
-   "label": "Declaration"
-  },
-  {
-   "fieldname": "authorized_signatory",
-   "fieldtype": "Link",
-   "label": "Authorized Signatory",
-   "options": "User"
-  },
-  {
-   "fieldname": "signatory_name",
-   "fieldtype": "Data",
-   "label": "Signatory Name"
-  },
-  {
-   "fieldname": "declaration_column",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "signatory_position",
-   "fieldtype": "Data",
-   "label": "Position"
-  },
-  {
-   "fieldname": "declaration_date",
-   "fieldtype": "Date",
-   "label": "Declaration Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "signature_image",
-   "fieldtype": "Attach Image",
-   "label": "Signature Image"
   },
   {
    "collapsible": 1,
@@ -371,13 +307,38 @@
    "options": "Thai PND 3 Filing",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "filing_details_section",
+   "fieldtype": "Section Break",
+   "label": "Filing Details"
+  },
+  {
+   "fieldname": "filing_details_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "currency_section",
+   "fieldtype": "Section Break",
+   "label": "Currency"
+  },
+  {
+   "fetch_from": "company.default_currency",
+   "fetch_if_empty": 1,
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1,
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-08-16 14:36:32.987149",
+ "modified": "2026-08-16 16:19:34.366156",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
  "name": "Thai PND 3 Filing",

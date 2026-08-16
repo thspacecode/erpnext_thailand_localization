@@ -427,8 +427,6 @@ class BootStrapDevData(BootStrapTestMasterData):
 				"tax_period": tax_period,
 				"filing_type": "Normal",
 				"legal_basis": "Section 3 Tredecim",
-				"attachment_format": "Paper",
-				"declaration_date": add_days(add_months(tax_period, 1), 6),
 				"filing_status": "Filed",
 				"filed_date": add_days(add_months(tax_period, 1), 6),
 				"filing_reference": f"MOCK-{doctype}-{tax_period:%Y-%m}",

@@ -75,7 +75,7 @@ class PNDFiling(Document):
 
 		company = frappe.get_cached_doc("Company", self.company)
 		self.company_name = company.company_name
-		self.company_currency = company.default_currency
+		self.currency = company.default_currency
 		self.company_tax_id = normalize_digits(company.tax_id)
 		if not self.company_address:
 			self.company_address = get_default_address("Company", self.company)
@@ -84,16 +84,13 @@ class PNDFiling(Document):
 
 		self.validate_linked_address("Company", self.company, self.company_address)
 		address = frappe.get_cached_doc("Address", self.company_address)
-		self.company_branch_code = normalize_branch_code(
-			self.company_branch_code or address.get("branch_code")
-		)
+		self.company_branch_code = normalize_branch_code(address.get("branch_code"))
 		self.company_address_line1 = address.address_line1
 		self.company_address_line2 = address.address_line2
 		self.company_subdistrict = address.city
 		self.company_district = address.county
 		self.company_province = address.state
 		self.company_postal_code = address.pincode
-		self.company_country = address.country
 
 	def set_item_snapshots(self) -> None:
 		for item in self.items:

@@ -19,23 +19,19 @@ class ThaiPND53Filing(PNDFiling):
 
 		additional_filing_no: DF.Int
 		amended_from: DF.Link | None
-		attachment_format: DF.Literal["Paper", "Computer Media"]
 		attachment_page_count: DF.Int
-		authorized_signatory: DF.Link | None
 		company: DF.Link
 		company_address: DF.Link
 		company_address_line1: DF.Data | None
 		company_address_line2: DF.Data | None
 		company_branch_code: DF.Data
-		company_country: DF.Link | None
-		company_currency: DF.Link
 		company_district: DF.Data | None
 		company_name: DF.Data
 		company_postal_code: DF.Data | None
 		company_province: DF.Data | None
 		company_subdistrict: DF.Data | None
 		company_tax_id: DF.Data
-		declaration_date: DF.Date
+		currency: DF.Link
 		filed_date: DF.Date | None
 		filing_notes: DF.SmallText | None
 		filing_receipt: DF.Attach | None
@@ -47,9 +43,6 @@ class ThaiPND53Filing(PNDFiling):
 		legal_basis: DF.Literal["Section 3 Tredecim", "Section 65 Quater", "Section 69 Bis"]
 		naming_series: DF.Literal["PND53-.YYYY.-.#####"]
 		recipient_count: DF.Int
-		signatory_name: DF.Data | None
-		signatory_position: DF.Data | None
-		signature_image: DF.AttachImage | None
 		surcharge_amount: DF.Currency
 		tax_period: DF.Date
 		total_base_amount: DF.Currency

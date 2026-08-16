@@ -168,11 +168,13 @@ class PNDFilingTest:
 			doc = self.get_base_doc()
 			doc.company = "Dunder Mifflin"
 			doc.company_address = self.create_company_address().name
+			doc.company_tax_id = "1234567890123"
+			doc.company_branch_code = "99999"
 
 			doc.set_company_snapshot()
 
 			self.assertEqual(doc.company_name, "Dunder Mifflin")
-			self.assertEqual(doc.company_currency, "THB")
+			self.assertEqual(doc.currency, "THB")
 			self.assertEqual(doc.company_tax_id, "0105555000001")
 			self.assertEqual(doc.company_branch_code, "00000")
 			self.assertEqual(doc.company_address_line1, "1725 Slough Avenue")
