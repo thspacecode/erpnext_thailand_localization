@@ -120,10 +120,24 @@ def get_rate_by_category(
 	return None
 
 
+def is_withholding_tax_enabled(
+	company: str,
+	withholding_tax_type: Literal["Sales", "Purchase"],
+) -> bool:
+	fieldname = f"enable_{frappe.scrub(withholding_tax_type)}_withholding_tax"
+	return bool(frappe.get_cached_value("Company", company, fieldname))
+
+
 def get_reference_withholding_tax_deductions(
 	payment_entry: "PaymentEntry",
 	reference_document: "ReferenceDocument",
 ) -> list[Json["PaymentEntryDeduction"]]:
+	withholding_tax_type = (
+		"Sales" if reference_document.doctype in ("Sales Invoice", "Sales Order") else "Purchase"
+	)
+	if not is_withholding_tax_enabled(payment_entry.company, withholding_tax_type):
+		return []
+
 	payment_ratio = get_payment_ratio(payment_entry, reference_document)
 	if not payment_ratio:
 		return []

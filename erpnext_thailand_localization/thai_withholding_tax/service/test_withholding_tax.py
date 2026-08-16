@@ -210,6 +210,40 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 					standard_payment_entry.paid_amount - abs(expected_amount),
 				)
 
+	def test_payment_entry_override_respects_company_withholding_tax_settings(self) -> None:
+		for order, setting_field in (
+			(
+				SalesOrderFactory.create(
+					customer="Vance Refrigeration",
+					items=[{"item_code": "WAREHOUSE-RENT", "qty": 1, "rate": 12000}],
+					submit=True,
+				),
+				"enable_sales_withholding_tax",
+			),
+			(
+				PurchaseOrderFactory.create(
+					supplier="Aaron Grandy",
+					items=[{"item_code": "LEGAL-CONSULTING-SERVICE", "qty": 1, "rate": 5000}],
+					submit=True,
+				),
+				"enable_purchase_withholding_tax",
+			),
+		):
+			with self.subTest(f"does not apply disabled withholding tax to {order.doctype}"):
+				company = order.company
+				original_value = frappe.db.get_value("Company", company, setting_field)
+				frappe.db.set_value("Company", company, setting_field, 0)
+				frappe.clear_document_cache("Company", company)
+				try:
+					bank_account = frappe.get_cached_value("Company", company, "default_cash_account")
+					payment_entry = get_payment_entry(order.doctype, order.name, bank_account=bank_account)
+				finally:
+					frappe.db.set_value("Company", company, setting_field, original_value)
+					frappe.clear_document_cache("Company", company)
+
+				self.assertFalse(payment_entry.deductions)
+				self.assertEqual(payment_entry.paid_amount, order.grand_total)
+
 	def test_applies_withholding_tax_in_proportion_to_payment(self) -> None:
 		invoice = self.make_reference_document(
 			"Sales Invoice",

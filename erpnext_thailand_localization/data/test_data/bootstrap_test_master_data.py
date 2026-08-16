@@ -99,7 +99,9 @@ class BootStrapTestMasterData(BaseImporter):
 			{
 				"tax_id": "0105555000001",
 				"custom_thai_withholding_tax_category": "Juristic Person - Domestic",
+				"enable_sales_withholding_tax": 1,
 				"sales_withholding_tax_account": (f"Sales Withholding Tax Receivable - {self.company_abbr}"),
+				"enable_purchase_withholding_tax": 1,
 				"purchase_withholding_tax_pnd3_account": (
 					f"Purchase Withholding Tax PND 3 Payable - {self.company_abbr}"
 				),
