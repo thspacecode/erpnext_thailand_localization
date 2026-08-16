@@ -102,7 +102,8 @@
    "fieldtype": "Column Break"
   },
   {
-   "description": "Any date in the filing month; saved as the first day of that month.",
+   "default": "Today",
+   "description": "Filing month; defaults to the first day of the current month.",
    "fieldname": "tax_period",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -376,7 +377,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-08-13 13:28:38.626782",
+ "modified": "2026-08-16 14:36:32.987149",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
  "name": "Thai PND 3 Filing",
