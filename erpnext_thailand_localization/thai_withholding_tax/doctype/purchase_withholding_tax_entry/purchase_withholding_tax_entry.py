@@ -16,6 +16,31 @@ from erpnext_thailand_localization.thai_withholding_tax.service.payment_entry im
 
 
 class PurchaseWithholdingTaxEntry(WithholdingTaxEntry):
+	# begin: auto-generated types
+	# This code is auto-generated. Do not modify anything in this block.
+
+	from typing import TYPE_CHECKING
+
+	if TYPE_CHECKING:
+		from frappe.types import DF
+
+		from erpnext_thailand_localization.thai_withholding_tax.doctype.withholding_tax_entry_item.withholding_tax_entry_item import (
+			WithholdingTaxEntryItem,
+		)
+
+		amended_from: DF.Link | None
+		company: DF.Link
+		company_currency: DF.Link
+		items: DF.Table[WithholdingTaxEntryItem]
+		naming_series: DF.Literal["PWHT-.YYYY.-.#####"]
+		payment_date: DF.Date
+		pnd: DF.Literal["PND 3", "PND 53"]
+		supplier: DF.Link
+		supplier_address: DF.Link
+		total_base_amount: DF.Currency
+		total_tax_amount: DF.Currency
+	# end: auto-generated types
+
 	party_type = "Supplier"
 	party_field = "supplier"
 	address_field = "supplier_address"

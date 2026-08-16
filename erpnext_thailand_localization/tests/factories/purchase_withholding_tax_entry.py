@@ -19,6 +19,7 @@ class PurchaseWithholdingTaxEntryFactory(DocTypeFactory["PurchaseWithholdingTaxE
 			"company": "Dunder Mifflin",
 			"company_currency": "THB",
 			"payment_date": "2026-08-15",
+			"pnd": "PND 3",
 			"supplier": "Aaron Grandy",
 			"supplier_address": "Aaron Grandy-Billing",
 			"items": [

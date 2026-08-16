@@ -5,6 +5,9 @@ from frappe import _
 from frappe.model.mapper import get_mapped_doc
 from frappe.utils import flt
 
+from erpnext_thailand_localization.thai_withholding_tax.service.pnd_filing import (
+	get_income_type_pnd,
+)
 from erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax import (
 	get_reference_withholding_tax_deductions,
 )
@@ -313,6 +316,14 @@ def make_withholding_tax_entry(
 
 		# Add eligible deductions and refresh the withholding tax totals.
 		map_payment_entry_deductions(source_doc, target)
+		if target_doctype == "Purchase Withholding Tax Entry":
+			category = frappe.get_cached_value(
+				party_type, source_doc.party, "custom_thai_withholding_tax_category"
+			)
+			pnd_types = {
+				pnd for item in target.items if (pnd := get_income_type_pnd(item.income_type, category))
+			}
+			target.pnd = pnd_types.pop() if len(pnd_types) == 1 else None
 		target.calculate_totals()
 
 	# Map the Payment Entry and apply the target-specific post-processing above.

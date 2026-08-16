@@ -12,6 +12,7 @@
   "company_currency",
   "company_column",
   "payment_date",
+  "pnd",
   "party_section",
   "supplier",
   "party_column",
@@ -141,13 +142,20 @@
   {
    "fieldname": "party_column",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pnd",
+   "fieldtype": "Select",
+   "label": "PND",
+   "options": "PND 3\nPND 53",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-08-06 17:03:06.126132",
+ "modified": "2026-08-16 15:30:19.571868",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
  "name": "Purchase Withholding Tax Entry",

@@ -334,7 +334,12 @@ class BootStrapDevData(BootStrapTestMasterData):
 		)
 		if existing_name:
 			doc = frappe.get_doc("Purchase Withholding Tax Entry", existing_name)
-			self.record_change("skipped", doc.doctype, doc.name)
+			if not doc.pnd:
+				doc = make_purchase_withholding_tax_entry(payment_entry.name, target_doc=doc)
+				doc.db_set("pnd", doc.pnd)
+				self.record_change("updated", doc.doctype, doc.name)
+			else:
+				self.record_change("skipped", doc.doctype, doc.name)
 			return doc
 
 		doc = make_purchase_withholding_tax_entry(payment_entry.name)

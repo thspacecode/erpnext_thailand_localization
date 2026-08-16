@@ -246,6 +246,20 @@ class TestBuyingPaymentEntry(PaymentEntryTest.TestCase):
 			base_amount=5000,
 			tax_rate=3,
 		)
+		self.assertEqual(entry.pnd, "PND 3")
+
+	def test_make_purchase_withholding_tax_entry_sets_pnd_53(self) -> None:
+		invoice = self.make_invoice(
+			"Hammermill Paper Company",
+			"TEST-PURCHASE-WHT-PND-53",
+			"DELIVERY-SERVICE",
+			5000,
+		)
+		payment_entry = self.make_payment_entry(invoice)
+
+		entry = make_purchase_withholding_tax_entry(payment_entry.name)
+
+		self.assertEqual(entry.pnd, "PND 53")
 
 	def test_make_purchase_withholding_tax_entry_from_purchase_order(self) -> None:
 		order = PurchaseOrderFactory.create(
