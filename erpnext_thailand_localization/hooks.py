@@ -27,6 +27,9 @@ override_doctype_dashboards = {
 	"Payment Entry": "erpnext_thailand_localization.thai_withholding_tax.payment_entry_dashboard.get_dashboard_data"
 }
 
+# Includes in <head>
+app_include_js = "/assets/erpnext_thailand_localization/js/pnd_filing.js"
+
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
@@ -43,7 +46,6 @@ override_doctype_dashboards = {
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/erpnext_thailand_localization/css/erpnext_thailand_localization.css"
-# app_include_js = "/assets/erpnext_thailand_localization/js/erpnext_thailand_localization.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/erpnext_thailand_localization/css/erpnext_thailand_localization.css"
