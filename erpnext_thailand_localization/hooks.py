@@ -14,7 +14,10 @@ required_apps = ["erpnext"]
 export_python_type_annotations = True
 
 # Include js in doctype views
-doctype_js = {"Payment Entry": "public/js/payment_entry.js"}
+doctype_js = {
+	"Journal Entry": "public/js/journal_entry.js",
+	"Payment Entry": "public/js/payment_entry.js",
+}
 
 # Installation
 after_install = "erpnext_thailand_localization.install.after_install"

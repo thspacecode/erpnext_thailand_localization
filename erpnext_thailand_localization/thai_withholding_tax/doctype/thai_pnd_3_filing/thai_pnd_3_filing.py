@@ -1,7 +1,17 @@
 # Copyright (c) 2026, SpaceCode Co., Ltd. and contributors
 # For license information, please see license.txt
 
+from typing import TYPE_CHECKING
+
+import frappe
+
 from erpnext_thailand_localization.thai_withholding_tax.model.pnd_filing import PNDFiling
+from erpnext_thailand_localization.thai_withholding_tax.service.journal_entry import (
+	add_pnd_filing_to_journal_entry,
+)
+
+if TYPE_CHECKING:
+	from erpnext.accounts.doctype.journal_entry.journal_entry import JournalEntry
 
 
 class ThaiPND3Filing(PNDFiling):
@@ -52,3 +62,8 @@ class ThaiPND3Filing(PNDFiling):
 	pnd_type = "PND 3"
 	item_doctype = "Thai PND 3 Filing Item"
 	legal_bases = ("Section 3 Tredecim", "Section 48 Bis", "Section 50 (3), (4), (5)")
+
+
+@frappe.whitelist()
+def make_journal_entry(source_name: str, target_doc: "str | JournalEntry | None" = None) -> "JournalEntry":
+	return add_pnd_filing_to_journal_entry("Thai PND 3 Filing", source_name, target_doc)

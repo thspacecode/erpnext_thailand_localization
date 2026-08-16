@@ -34,6 +34,7 @@ class BootStrapTestMasterData(BaseImporter):
 
 		self.make_customer()
 		self.make_supplier()
+		self.set_thai_localization_settings()
 		self.make_item()
 		self.make_party_addresses()
 
@@ -117,6 +118,11 @@ class BootStrapTestMasterData(BaseImporter):
 
 	def make_supplier(self) -> None:
 		self.csv_loader("Supplier")
+
+	def set_thai_localization_settings(self) -> None:
+		settings = frappe.get_doc("Thai Localization Settings")
+		settings.revenue_department = "Revenue Department"
+		settings.save()
 
 	def make_item(self) -> None:
 		self.csv_loader("Item")
