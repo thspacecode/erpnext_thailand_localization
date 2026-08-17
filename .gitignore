@@ -36,6 +36,13 @@ venv.bak/
 node_modules/
 jspm_packages/
 
+# Playwright UI tests
+/tests/ui/test-results/
+/tests/ui/playwright-report/
+/tests/ui/playwright/.cache/
+/tests/ui/playwright/.auth/
+/tests/ui/blob-report/
+
 # IDEs and editors
 .vscode/
 .vs/
