@@ -1,0 +1,11 @@
+name,address_title,address_type,address_line1,address_line2,city,county,state,pincode,country,is_primary_address,is_shipping_address,[links]link_doctype,[links]link_name
+Lackawanna County-Billing,Lackawanna County,Billing,123 Paper Street,,Bangkok,,,,Thailand,1,1,Customer,Lackawanna County
+Mr. Deckert-Billing,Mr. Deckert,Billing,123 Paper Street,,Bangkok,,,,Thailand,1,1,Customer,Mr. Deckert
+Dunmore High School-Billing,Dunmore High School,Billing,123 Paper Street,,Bangkok,,,,Thailand,1,1,Customer,Dunmore High School
+Phil Maguire-Billing,Phil Maguire,Billing,123 Paper Street,,Bangkok,,,,Thailand,1,1,Customer,Phil Maguire
+Vance Refrigeration-Billing,Vance Refrigeration,Billing,123 Paper Street,,Bangkok,,,,Thailand,1,1,Customer,Vance Refrigeration
+Hammermill Paper Company-Billing,Hammermill Paper Company,Billing,123 Paper Street,,Bangkok,,,,Thailand,1,0,Supplier,Hammermill Paper Company
+Serenity by Jan-Billing,Serenity by Jan,Billing,123 Paper Street,,Bangkok,,,,Thailand,1,0,Supplier,Serenity by Jan
+Athlead-Billing,Athlead,Billing,123 Paper Street,,Bangkok,,,,Thailand,1,0,Supplier,Athlead
+Aaron Grandy-Billing,Aaron Grandy,Billing,123 Paper Street,,Bangkok,,,,Thailand,1,0,Supplier,Aaron Grandy
+Revenue Department-Billing,Revenue Department,Billing,90 Soi Phaholyothin 7,Phaholyothin Road,Phayathai,,Bangkok,10400,Thailand,1,0,Supplier,Revenue Department

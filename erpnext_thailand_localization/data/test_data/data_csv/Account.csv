@@ -1,0 +1,6 @@
+name,account_name,company,parent_account,is_group,account_type
+Thai Withholding Tax Receivable - {{ company_abbr }},Thai Withholding Tax Receivable,{{ company }},{{ asset_root }},1,
+Sales Withholding Tax Receivable - {{ company_abbr }},Sales Withholding Tax Receivable,{{ company }},Thai Withholding Tax Receivable - {{ company_abbr }},0,Tax
+Thai Withholding Tax Payable - {{ company_abbr }},Thai Withholding Tax Payable,{{ company }},{{ liability_root }},1,
+Purchase Withholding Tax PND 3 Payable - {{ company_abbr }},Purchase Withholding Tax PND 3 Payable,{{ company }},Thai Withholding Tax Payable - {{ company_abbr }},0,Tax
+Purchase Withholding Tax PND 53 Payable - {{ company_abbr }},Purchase Withholding Tax PND 53 Payable,{{ company }},Thai Withholding Tax Payable - {{ company_abbr }},0,Tax

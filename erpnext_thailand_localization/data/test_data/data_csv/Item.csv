@@ -1,0 +1,7 @@
+item_code,item_name,description,item_group,stock_uom,is_stock_item,is_sales_item,is_purchase_item,include_item_in_manufacturing,custom_thai_withholding_tax_income_type
+DM-PREMIUM-COPY-PAPER,Dunder Mifflin Premium Copy Paper,Premium white copy paper sold by the box,Products,Box,1,1,1,0,
+DELIVERY-SERVICE,Delivery Service,Delivery service for Dunder Mifflin paper orders,Services,Nos,0,1,1,0,8 อื่นๆ
+INSTALLATION-SERVICE,Installation Service,Installation and setup service,Services,Nos,0,1,1,0,7 การรับเหมาที่ผู้รับเหมาต้องลงทุนด้วยการจัดหาสัมภาระ
+AUDIT-FEE,Audit Fee,Professional audit service,Services,Nos,0,1,1,0,6 เงินได้จากวิชาชีพอิสระ
+WAREHOUSE-RENT,Warehouse Rent,Warehouse rental service,Services,Nos,0,1,1,0,5 ค่าเช่า
+LEGAL-CONSULTING-SERVICE,Legal Consulting Service,Professional legal consulting service,Services,Nos,0,1,1,0,6 เงินได้จากวิชาชีพอิสระ

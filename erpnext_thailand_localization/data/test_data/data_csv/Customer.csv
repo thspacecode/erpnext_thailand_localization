@@ -1,0 +1,6 @@
+name,customer_name,customer_type,customer_group,territory,tax_id,custom_thai_withholding_tax_category
+Lackawanna County,Lackawanna County,Company,Commercial,Thailand,0105555000002,Juristic Person - Domestic
+Mr. Deckert,Mr. Deckert,Individual,Individual,Thailand,1101700000001,Individual - Domestic
+Dunmore High School,Dunmore High School,Company,Commercial,Thailand,0105555000004,Government or Tax-Exempt Entity
+Phil Maguire,Phil Maguire,Individual,Individual,Thailand,1101700000002,Individual - Domestic
+Vance Refrigeration,Vance Refrigeration,Company,Commercial,Thailand,0105555000005,Juristic Person - Domestic

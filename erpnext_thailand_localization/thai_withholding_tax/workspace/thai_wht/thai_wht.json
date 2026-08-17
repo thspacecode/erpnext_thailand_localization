@@ -1,0 +1,111 @@
+{
+ "app": "erpnext_thailand_localization",
+ "charts": [],
+ "content": "[{\"id\":\"WHTEntry01\",\"type\":\"card\",\"data\":{\"card_name\":\"Entry\",\"col\":6}},{\"id\":\"WHTSetup01\",\"type\":\"card\",\"data\":{\"card_name\":\"Setup\",\"col\":6}}]",
+ "creation": "2026-08-07 09:18:54.058549",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "receipt-text",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Thai WHT",
+ "link_type": "DocType",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Entry",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales WHT Entry",
+   "link_count": 0,
+   "link_to": "Sales Withholding Tax Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Purchase WHT Entry",
+   "link_count": 0,
+   "link_to": "Purchase Withholding Tax Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PND 3 Return",
+   "link_count": 0,
+   "link_to": "Thai PND 3 Filing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PND 53 Return",
+   "link_count": 0,
+   "link_to": "Thai PND 53 Filing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Setup",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "WHT Income Type",
+   "link_count": 0,
+   "link_to": "Thai Withholding Tax Income Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "WHT Category",
+   "link_count": 0,
+   "link_to": "Thai Withholding Tax Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-08-07 09:01:00.454910",
+ "modified_by": "Administrator",
+ "module": "Thai Withholding Tax",
+ "name": "Thai WHT",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [],
+ "title": "Thai WHT",
+ "type": "Workspace"
+}

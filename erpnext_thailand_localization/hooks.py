@@ -8,7 +8,30 @@ app_license = "mit"
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
+
+# Automatically update python controller files with type annotations for this app.
+export_python_type_annotations = True
+
+# Include js in doctype views
+doctype_js = {
+	"Journal Entry": "public/js/journal_entry.js",
+	"Payment Entry": "public/js/payment_entry.js",
+}
+
+# Installation
+after_install = "erpnext_thailand_localization.install.after_install"
+
+# Overriding Methods
+override_whitelisted_methods = {
+	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "erpnext_thailand_localization.thai_withholding_tax.override_whitelist_method.get_payment_entry.get_payment_entry"
+}
+override_doctype_dashboards = {
+	"Payment Entry": "erpnext_thailand_localization.thai_withholding_tax.payment_entry_dashboard.get_dashboard_data"
+}
+
+# Includes in <head>
+app_include_js = "/assets/erpnext_thailand_localization/js/pnd_filing.js"
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -26,7 +49,6 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/erpnext_thailand_localization/css/erpnext_thailand_localization.css"
-# app_include_js = "/assets/erpnext_thailand_localization/js/erpnext_thailand_localization.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/erpnext_thailand_localization/css/erpnext_thailand_localization.css"
@@ -43,7 +65,6 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -86,7 +107,6 @@ app_license = "mit"
 # ------------
 
 # before_install = "erpnext_thailand_localization.install.before_install"
-# after_install = "erpnext_thailand_localization.install.after_install"
 
 # Uninstallation
 # ------------
@@ -138,13 +158,9 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Address": {"validate": "erpnext_thailand_localization.thai_withholding_tax.address.validate_address"}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -178,20 +194,6 @@ app_license = "mit"
 # Specify custom mixins to extend the standard doctype controller.
 # extend_doctype_class = {
 # 	"Task": "erpnext_thailand_localization.custom.task.CustomTaskMixin"
-# }
-
-# Overriding Methods
-# ------------------------------
-#
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "erpnext_thailand_localization.event.get_events"
-# }
-#
-# each overriding function accepts a `data` argument;
-# generated from the base implementation of the doctype dashboard,
-# along with any modifications made in other Frappe apps
-# override_doctype_dashboards = {
-# 	"Task": "erpnext_thailand_localization.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
@@ -244,9 +246,6 @@ app_license = "mit"
 # 	"erpnext_thailand_localization.auth.validate"
 # ]
 
-# Automatically update python controller files with type annotations for this app.
-# export_python_type_annotations = True
-
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
@@ -255,4 +254,3 @@ app_license = "mit"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-

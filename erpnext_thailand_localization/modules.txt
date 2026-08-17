@@ -1,1 +1,3 @@
 ERPNext Thailand Localization
+Thai Withholding Tax
+Thai Value Added Tax
