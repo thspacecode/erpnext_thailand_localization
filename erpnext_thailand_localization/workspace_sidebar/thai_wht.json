@@ -93,6 +93,18 @@
    "icon": "",
    "indent": 0,
    "keep_closed": 0,
+   "label": "Thai Localization Settings",
+   "link_to": "Thai Localization Settings",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "",
+   "indent": 0,
+   "keep_closed": 0,
    "label": "WHT Income Type",
    "link_to": "Thai Withholding Tax Income Type",
    "link_type": "DocType",
@@ -112,7 +124,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-08-07 08:39:17.669409",
+ "modified": "2026-08-17 11:16:00.984059",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
  "name": "Thai WHT",
