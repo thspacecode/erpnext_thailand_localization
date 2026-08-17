@@ -1,0 +1,20 @@
+{
+	"name": "erpnext_thailand_localization",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Playwright UI testing harness for ERPNext Thailand Localization",
+	"scripts": {
+		"test:ui": "playwright test",
+		"test:ui:headed": "playwright test --headed",
+		"test:ui:ui": "playwright test --ui",
+		"test:ui:debug": "PWDEBUG=1 playwright test",
+		"test:ui:report": "playwright show-report",
+		"test:ui:codegen": "playwright codegen ${PLAYWRIGHT_BASE_URL:-http://localhost:8000}",
+		"playwright:install": "playwright install --with-deps"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.61.0",
+		"@types/node": "^22.0.0",
+		"dotenv": "^16.4.5"
+	}
+}

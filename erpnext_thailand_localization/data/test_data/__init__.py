@@ -1,6 +1,12 @@
+from erpnext_thailand_localization.data.abc import Report
+
 from .bootstrap_dev_data import BootStrapDevData
 from .bootstrap_test_master_data import BootStrapTestMasterData
 from .types import BootstrapAllDataResult, BootstrapDevDataResult
+
+
+def bootstrap_test_master_data() -> Report:
+	return BootStrapTestMasterData().make()
 
 
 def bootstrap_all_data() -> BootstrapAllDataResult:

@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"types": ["node", "@playwright/test"],
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"noEmit": true,
+		"baseUrl": ".",
+		"paths": {
+			"@ui/*": ["./*"]
+		}
+	},
+	"include": ["playwright.config.ts", "**/*.ts"],
+	"exclude": ["node_modules"]
+}
