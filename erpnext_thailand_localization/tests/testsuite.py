@@ -98,26 +98,29 @@ def change_settings(
 	doctype: str,
 	settings_dict: MutableMapping[str, Any] | None = None,
 	/,
+	*,
+	docname: str | None = None,
 	**settings: Any,
 ) -> Iterator[None]:
-	"""Temporarily: change settings in a settings doctype."""
+	"""Temporarily change fields on a single or named document."""
 	import copy
 
 	if settings_dict is None:
 		settings_dict = settings
 
-	settings = frappe.get_doc(doctype)
+	document = frappe.get_doc(doctype, docname) if docname else frappe.get_doc(doctype)
 	previous_settings = copy.deepcopy(settings_dict)
 	for key in previous_settings:
-		previous_settings[key] = getattr(settings, key)
+		previous_settings[key] = getattr(document, key)
 
 	for key, value in settings_dict.items():
-		setattr(settings, key, value)
-	settings.save(ignore_permissions=True)
+		setattr(document, key, value)
+	document.save(ignore_permissions=True)
 
-	yield
-
-	settings = frappe.get_doc(doctype)
-	for key, value in previous_settings.items():
-		setattr(settings, key, value)
-	settings.save(ignore_permissions=True)
+	try:
+		yield
+	finally:
+		document = frappe.get_doc(doctype, docname) if docname else frappe.get_doc(doctype)
+		for key, value in previous_settings.items():
+			setattr(document, key, value)
+		document.save(ignore_permissions=True)

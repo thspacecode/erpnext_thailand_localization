@@ -93,8 +93,9 @@ def get_wht_rate(
 	if category_rate is not None:
 		return category_rate
 
-	if configured_rate is not None and str(configured_rate).strip():
-		return flt(configured_rate)
+	default_rate = parse_rate(configured_rate)
+	if default_rate is not None:
+		return default_rate
 
 	income_type_doc = frappe.get_cached_doc("Thai Withholding Tax Income Type", income_type)
 	category_rate = get_rate_by_category(
@@ -103,7 +104,15 @@ def get_wht_rate(
 	if category_rate is not None:
 		return category_rate
 
-	return flt(income_type_doc.default_thai_withholding_tax_rate)
+	default_rate = parse_rate(income_type_doc.default_thai_withholding_tax_rate)
+	return default_rate if default_rate is not None else 0
+
+
+def parse_rate(rate: str | float | None) -> float | None:
+	if rate is None or not str(rate).strip():
+		return None
+
+	return flt(rate)
 
 
 def get_rate_by_category(
@@ -115,7 +124,7 @@ def get_rate_by_category(
 
 	for row in rates_by_category or []:
 		if row.thai_withholding_tax_category == category:
-			return flt(row.rate)
+			return parse_rate(row.rate)
 
 	return None
 
@@ -170,7 +179,7 @@ def get_reference_withholding_tax_deductions(
 			flt(item.base_net_amount) * payment_ratio,
 			payment_entry.precision("amount", "deductions"),
 		)
-		if not income_type or not rate or not base_amount:
+		if not income_type or rate <= 0 or not base_amount:
 			continue
 
 		tax_amount = flt(

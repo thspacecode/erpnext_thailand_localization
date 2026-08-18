@@ -19,6 +19,7 @@ from erpnext_thailand_localization.thai_withholding_tax.service.withholding_tax 
 	apply_thai_withholding_tax,
 	fetch_wht_detail,
 	get_thai_withholding_tax_category,
+	get_wht_rate,
 )
 
 if TYPE_CHECKING:
@@ -94,6 +95,47 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 			),
 			{"income_type": "5 ค่าเช่า", "tax_rate": 5.0, "source": "Item"},
 		)
+
+	def test_zero_rate_is_resolved_without_falling_back(self) -> None:
+		for source, income_type, configured_rate, category_rates, category in (
+			(
+				"category rate",
+				"5 ค่าเช่า",
+				"5",
+				[
+					frappe._dict(
+						thai_withholding_tax_category="Individual - Domestic",
+						rate="0",
+					)
+				],
+				"Individual - Domestic",
+			),
+			("configured default rate", "5 ค่าเช่า", "0", None, None),
+			("income type default rate", "1 เงินเดือนค่าจ้าง เบี้ยเลี้ยง", None, None, None),
+		):
+			with self.subTest(source):
+				self.assertEqual(
+					get_wht_rate(income_type, configured_rate, category_rates, category),
+					0,
+				)
+
+	def test_zero_rate_does_not_create_deduction(self) -> None:
+		item_code = "WAREHOUSE-RENT"
+		invoice = self.make_reference_document(
+			"Sales Invoice", "Customer", "Vance Refrigeration", item_code, 12000
+		)
+		payment_entry = self.make_reference_payment_entry(invoice)
+
+		with self.change_settings(
+			"Item",
+			{"custom_thai_withholding_tax_rate": "0"},
+			docname=item_code,
+		):
+			apply_thai_withholding_tax(payment_entry, invoice)
+
+		self.assertFalse(payment_entry.deductions)
+		self.assertEqual(payment_entry.paid_amount, invoice.grand_total)
+		self.assertEqual(payment_entry.received_amount, invoice.grand_total)
 
 	def test_applies_thai_withholding_tax_to_invoice_and_order_payment_entries(
 		self,
