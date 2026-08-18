@@ -15,8 +15,8 @@ importers:
         specifier: 7.15.1
         version: 7.15.1(react-router@7.15.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3)
       '@the-docs/preset-default':
-        specifier: ^0.0.1-alpha.6
-        version: 0.0.1-alpha.6(@react-router/serve@7.15.1(react-router@7.15.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(@types/node@24.13.3)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(react-dom@19.2.8(react@19.2.8))(rollup@4.62.4)(typescript@6.0.3)
+        specifier: ^0.0.1-alpha.7
+        version: 0.0.1-alpha.7(@react-router/serve@7.15.1(react-router@7.15.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(@types/node@24.13.3)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(react-dom@19.2.8(react@19.2.8))(rollup@4.62.4)(typescript@6.0.3)
       isbot:
         specifier: ^5
         version: 5.2.1
@@ -1976,34 +1976,34 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
-  '@the-docs/core@0.0.1-alpha.6':
-    resolution: {integrity: sha512-Q9zwJnYrpGZecwoQ2CP7xhlvGEtBjlgOv0C4MZvct92LfZWiIByHoK53oWpV6CzbI/NAesYEeCIyDhQawXNhMg==}
+  '@the-docs/core@0.0.1-alpha.7':
+    resolution: {integrity: sha512-8XoRaV8Uq+dkDG7io1X3vFB7r21egVXse6wov2jEIJONKOWy/mQbr7Oi9x1afJSVC0UG+z68U8PDqIvW5eRmHg==}
 
-  '@the-docs/plugin-bpmn@0.0.1-alpha.6':
-    resolution: {integrity: sha512-Di53cTUb6KQ1Oh53DcbpLGWwcJ2rQFVETQ5P9v9gl5AGSO9mmhiM0Ef/KULEokAJIpt3ppLcWaRq1SdsAkO0Qg==}
+  '@the-docs/plugin-bpmn@0.0.1-alpha.7':
+    resolution: {integrity: sha512-ITyIMLc36WIy0BjD8JWEO/k+R9+l+QBznU6nanS8V4iwYCllHcWTXCpp6vqA2jiTX7qHv3xD0DDaFw947hDtoA==}
 
-  '@the-docs/plugin-contract@0.0.1-alpha.6':
-    resolution: {integrity: sha512-IOKBDwqbuHthZ57vFnlnTTx7ZyXUwToOe+UcSqL0a3mWFl4U2fvDK7WBvJ9xR3JQ1psXpOa4jrI55pd9yZCddw==}
+  '@the-docs/plugin-contract@0.0.1-alpha.7':
+    resolution: {integrity: sha512-kD6B0W2/asWVfGfdTo84AMjg6pUG0nGYD82ANc5PHJa7Esr1TSycwK/5PZGgXdf8+mk3YMHs5KjQ1vK05otROQ==}
     peerDependencies:
       react: ^19.2.6
 
-  '@the-docs/plugin-data-table@0.0.1-alpha.6':
-    resolution: {integrity: sha512-2GMsnG5lxbFh4U2buP8Bu5DMHt8LU6NilSKkrasy2uV4DOLv24X0dngnutOqilAg++wqGIHXbdOnQPfm63J3Ow==}
+  '@the-docs/plugin-data-table@0.0.1-alpha.7':
+    resolution: {integrity: sha512-nNs0Ng6U6tvHQWhCMRn4IT/XbsvItBvWEFz0e07fVN5xdjluUQNtrar4Mrv72e+RkY/WIBdCojmvQBIJrbbaig==}
 
-  '@the-docs/plugin-excalidraw@0.0.1-alpha.6':
-    resolution: {integrity: sha512-LwFnMnepzoZviZniJoidnesvtzy8uuI1JjxBRFBnt23CIZ8Jl7lf035tBJ2bB+Vb6QrEFgtisQ8CV3qtwcTGnw==}
+  '@the-docs/plugin-excalidraw@0.0.1-alpha.7':
+    resolution: {integrity: sha512-TJTmVvBA4mLpsH2apnGXXRPZl3CIKlP+e0wqhkdbbAZfLfLPEtSfKAEBoEyPmhxjx+mMzMpp5u74BWztriTdlg==}
 
-  '@the-docs/plugin-mermaid@0.0.1-alpha.6':
-    resolution: {integrity: sha512-cg22A7Wf7Mzl4RmoUWOGpi6CLLZaQAG5bjeq7gze2nfn4SNNBgABWkKPZCdT13VCm6hnQKH4tA5isaFpGlNC2w==}
+  '@the-docs/plugin-mermaid@0.0.1-alpha.7':
+    resolution: {integrity: sha512-02McX+QRFbQIwi6FFYl1DQ5oxM7Pj5LnSkObSeqMxUFNfdh4p0oP3q3Kfc+8IwyrkRsNZT8FLAN9jdGXggtUEg==}
 
-  '@the-docs/plugin-syntax-highlighter@0.0.1-alpha.6':
-    resolution: {integrity: sha512-V12kTTkI2qUNeES9dKHfAmlxg9vAnCJVnytGVoj9ofGQMkImJ86MTh+4ILsVWZaRwHw9KVCxo8lT9EURB+2XQQ==}
+  '@the-docs/plugin-syntax-highlighter@0.0.1-alpha.7':
+    resolution: {integrity: sha512-yQ/NusnjxgMrBwOAYM7ePZN+ERBgvLZl4p6gTUir/+duNLRToTs4B9nExjoYt6bllcvVht41UKVjO1ldij52Kw==}
 
-  '@the-docs/preset-default@0.0.1-alpha.6':
-    resolution: {integrity: sha512-UuLu3jx5Rv42c6E/AG+MaH/XMymUh5r4fCmfXIk/ItxvCgcxyCjbW3gUM5HTOhx7xHaqtXz39BXtHprFLZoCaQ==}
+  '@the-docs/preset-default@0.0.1-alpha.7':
+    resolution: {integrity: sha512-tUKeG6HVqlYkptDSuF5gZ1kOPvulpEdaeqUTCmJjpmTNdlT5uOGJvLlvWO94Ub+VWzeG8ViPNo/Zobauf1yrXQ==}
 
-  '@the-docs/ui@0.0.1-alpha.6':
-    resolution: {integrity: sha512-4SPDWryt7cKuB3WRd1KbXeyHpe1+Z7Fh9JvDswFXEriXA7mShik7N3oYBkgumvyZQ+z1bDE6jSNzXrxgYd/BNQ==}
+  '@the-docs/ui@0.0.1-alpha.7':
+    resolution: {integrity: sha512-e1g6rl5K2ql1rm7nwTrmMO8GgktS6+ZrA2demwAnSKBcroGvdxHL5fLVT9/mNu3IiRV2yYiTMRWRCclLY8yY6Q==}
 
   '@ts-morph/common@0.27.0':
     resolution: {integrity: sha512-Wf29UqxWDpc+i61k3oIOzcUfQt79PIT9y/MWfAGlrkjg6lBC1hwDECLXPVJAhWjiGbfBCxZd65F/LIZF3+jeJQ==}
@@ -6938,11 +6938,11 @@ snapshots:
       tailwindcss: 4.3.3
       vite: 8.0.16(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)
 
-  '@the-docs/core@0.0.1-alpha.6(@types/node@24.13.3)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.2)(jiti@2.7.0)(react-dom@19.2.8(react@19.2.8))(rollup@4.62.4)(typescript@6.0.3)':
+  '@the-docs/core@0.0.1-alpha.7(@types/node@24.13.3)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.2)(jiti@2.7.0)(react-dom@19.2.8(react@19.2.8))(rollup@4.62.4)(typescript@6.0.3)':
     dependencies:
       '@base-ui/react': 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@mdx-js/rollup': 3.1.1(rollup@4.62.4)
-      '@the-docs/ui': 0.0.1-alpha.6(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(typescript@6.0.3)
+      '@the-docs/ui': 0.0.1-alpha.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(typescript@6.0.3)
       fuse.js: 7.5.0
       gray-matter: 4.0.3
       lucide-react: 1.31.0(react@19.2.8)
@@ -6975,9 +6975,9 @@ snapshots:
       - typescript
       - yaml
 
-  '@the-docs/plugin-bpmn@0.0.1-alpha.6':
+  '@the-docs/plugin-bpmn@0.0.1-alpha.7':
     dependencies:
-      '@the-docs/plugin-contract': 0.0.1-alpha.6(react@19.2.8)
+      '@the-docs/plugin-contract': 0.0.1-alpha.7(react@19.2.8)
       bpmn-js: 18.24.0
       jsdom: 24.1.3
       react: 19.2.8
@@ -6988,20 +6988,20 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@the-docs/plugin-contract@0.0.1-alpha.6(react@19.2.8)':
+  '@the-docs/plugin-contract@0.0.1-alpha.7(react@19.2.8)':
     dependencies:
       react: 19.2.8
 
-  '@the-docs/plugin-data-table@0.0.1-alpha.6':
+  '@the-docs/plugin-data-table@0.0.1-alpha.7':
     dependencies:
-      '@the-docs/plugin-contract': 0.0.1-alpha.6(react@19.2.8)
+      '@the-docs/plugin-contract': 0.0.1-alpha.7(react@19.2.8)
       react: 19.2.8
 
-  '@the-docs/plugin-excalidraw@0.0.1-alpha.6(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)':
+  '@the-docs/plugin-excalidraw@0.0.1-alpha.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)':
     dependencies:
       '@excalidraw/excalidraw': 0.18.1(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@excalidraw/utils': 0.1.2
-      '@the-docs/plugin-contract': 0.0.1-alpha.6(react@19.2.8)
+      '@the-docs/plugin-contract': 0.0.1-alpha.7(react@19.2.8)
       canvas-5-polyfill: 0.1.5
       jsdom: 24.1.3
       react: 19.2.8
@@ -7015,9 +7015,9 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@the-docs/plugin-mermaid@0.0.1-alpha.6':
+  '@the-docs/plugin-mermaid@0.0.1-alpha.7':
     dependencies:
-      '@the-docs/plugin-contract': 0.0.1-alpha.6(react@19.2.8)
+      '@the-docs/plugin-contract': 0.0.1-alpha.7(react@19.2.8)
       jsdom: 24.1.3
       mermaid: 11.16.1
       react: 19.2.8
@@ -7027,24 +7027,24 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@the-docs/plugin-syntax-highlighter@0.0.1-alpha.6':
+  '@the-docs/plugin-syntax-highlighter@0.0.1-alpha.7':
     dependencies:
       '@shikijs/rehype': 3.23.0
-      '@the-docs/plugin-contract': 0.0.1-alpha.6(react@19.2.8)
+      '@the-docs/plugin-contract': 0.0.1-alpha.7(react@19.2.8)
       react: 19.2.8
       shiki: 3.23.0
 
-  '@the-docs/preset-default@0.0.1-alpha.6(@react-router/serve@7.15.1(react-router@7.15.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(@types/node@24.13.3)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(react-dom@19.2.8(react@19.2.8))(rollup@4.62.4)(typescript@6.0.3)':
+  '@the-docs/preset-default@0.0.1-alpha.7(@react-router/serve@7.15.1(react-router@7.15.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(@types/node@24.13.3)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(react-dom@19.2.8(react@19.2.8))(rollup@4.62.4)(typescript@6.0.3)':
     dependencies:
       '@react-router/dev': 7.15.1(@react-router/serve@7.15.1(react-router@7.15.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.33.0)(react-router@7.15.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3)(vite@8.0.16(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0))
       '@tailwindcss/vite': 4.3.3(vite@8.0.16(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0))
-      '@the-docs/core': 0.0.1-alpha.6(@types/node@24.13.3)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.2)(jiti@2.7.0)(react-dom@19.2.8(react@19.2.8))(rollup@4.62.4)(typescript@6.0.3)
-      '@the-docs/plugin-bpmn': 0.0.1-alpha.6
-      '@the-docs/plugin-data-table': 0.0.1-alpha.6
-      '@the-docs/plugin-excalidraw': 0.0.1-alpha.6(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)
-      '@the-docs/plugin-mermaid': 0.0.1-alpha.6
-      '@the-docs/plugin-syntax-highlighter': 0.0.1-alpha.6
-      '@the-docs/ui': 0.0.1-alpha.6(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(typescript@6.0.3)
+      '@the-docs/core': 0.0.1-alpha.7(@types/node@24.13.3)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.2)(jiti@2.7.0)(react-dom@19.2.8(react@19.2.8))(rollup@4.62.4)(typescript@6.0.3)
+      '@the-docs/plugin-bpmn': 0.0.1-alpha.7
+      '@the-docs/plugin-data-table': 0.0.1-alpha.7
+      '@the-docs/plugin-excalidraw': 0.0.1-alpha.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)
+      '@the-docs/plugin-mermaid': 0.0.1-alpha.7
+      '@the-docs/plugin-syntax-highlighter': 0.0.1-alpha.7
+      '@the-docs/ui': 0.0.1-alpha.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(typescript@6.0.3)
       react: 19.2.8
       react-router: 7.15.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       vite: 8.0.16(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)
@@ -7082,7 +7082,7 @@ snapshots:
       - wrangler
       - yaml
 
-  '@the-docs/ui@0.0.1-alpha.6(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(typescript@6.0.3)':
+  '@the-docs/ui@0.0.1-alpha.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(typescript@6.0.3)':
     dependencies:
       '@base-ui/react': 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fontsource-variable/noto-sans': 5.3.0
