@@ -45,7 +45,8 @@
    "fieldname": "default_thai_withholding_tax_rate",
    "fieldtype": "Select",
    "label": "Default Thai Withholding Tax Rate (%)",
-   "options": "\n0\n0.5\n0.75\n1\n2\n3\n5\n10\n15"
+   "options": "\n0\n0.5\n0.75\n1\n2\n3\n5\n10\n15",
+   "reqd": 1
   },
   {
    "fieldname": "thai_withholding_tax_category_pnd",
@@ -63,7 +64,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-07 08:08:20.829422",
+ "modified": "2026-08-18 10:19:13.209995",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
  "name": "Thai Withholding Tax Income Type",
