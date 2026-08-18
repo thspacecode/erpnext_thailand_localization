@@ -1,17 +1,42 @@
-import { test as base } from "@playwright/test";
+import {
+	expect,
+	test as base,
+	type PageAssertionsToHaveScreenshotOptions,
+} from "@playwright/test";
+import path from "node:path";
 import { BasePage } from "../pages/base.page";
 import { DeskPage } from "../pages/desk.page";
 import { FormPage } from "../pages/form.page";
+import { FrappeApi } from "./frappe-api";
 
 type Fixtures = {
+	api: FrappeApi;
 	desk: DeskPage;
+	expectScreenshot: (
+		name: string,
+		options?: PageAssertionsToHaveScreenshotOptions,
+	) => Promise<void>;
 	form: FormPage;
 	fonts: void;
 };
 
 export const test = base.extend<Fixtures>({
+	api: async ({ page, request }, use) => {
+		await use(new FrappeApi(request, page));
+	},
 	desk: async ({ page }, use) => {
 		await use(new DeskPage(page));
+	},
+	expectScreenshot: async ({ page }, use) => {
+		await use(async (name, options = {}) => {
+			await expect(page).toHaveScreenshot(name, {
+				animations: "disabled",
+				maskColor: "#ffffff",
+				maxDiffPixelRatio: 0.005,
+				stylePath: path.resolve(__dirname, "../styles/screenshot.css"),
+				...options,
+			});
+		});
 	},
 	form: async ({ page }, use) => {
 		await use(new FormPage(page));
@@ -25,4 +50,4 @@ export const test = base.extend<Fixtures>({
 	],
 });
 
-export { expect } from "@playwright/test";
+export { expect };

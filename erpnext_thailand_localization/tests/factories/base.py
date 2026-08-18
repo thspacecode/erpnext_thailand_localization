@@ -2,6 +2,7 @@ from typing import Any, ClassVar
 
 import frappe
 from frappe.model.document import Document
+from frappe.tests.utils import whitelist_for_tests
 
 from erpnext_thailand_localization.types import Json
 
@@ -29,6 +30,7 @@ class DocTypeFactory[T: Document]:
 		)
 
 	@classmethod
+	@whitelist_for_tests()
 	def create(
 		cls,
 		*,

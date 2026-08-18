@@ -47,6 +47,39 @@ export class DeskPage extends BasePage {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		return this.page.evaluate(() => (window as any).frappe.router.current_route as string[]);
 	}
+
+	async normalizeDocumentNames(
+		replacements: Array<[actual: string, display: string]>,
+	): Promise<void> {
+		await this.page.evaluate((documentNames) => {
+			const root = document.querySelector(".page-container") || document.body;
+			const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+			let node = walker.nextNode();
+			while (node) {
+				for (const [actual, display] of documentNames) {
+					if (node.textContent?.includes(actual)) {
+						node.textContent = node.textContent.replaceAll(actual, display);
+					}
+				}
+				node = walker.nextNode();
+			}
+
+			for (const element of root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+				"input, textarea",
+			)) {
+				for (const [actual, display] of documentNames) {
+					if (element.value.includes(actual)) {
+						element.value = element.value.replaceAll(actual, display);
+					}
+				}
+			}
+		}, replacements);
+	}
+}
+
+export function formatDeskDate(isoDate: string): string {
+	const [year, month, day] = isoDate.split("-");
+	return `${day}-${month}-${year}`;
 }
 
 export function slug(doctype: string): string {
