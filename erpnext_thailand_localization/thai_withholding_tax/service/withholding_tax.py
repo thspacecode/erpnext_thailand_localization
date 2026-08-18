@@ -74,8 +74,10 @@ def get_thai_withholding_tax_category(
 	party: str | None,
 	company: str | None,
 ) -> str | None:
-	if party_type in ("Customer", "Supplier") and party:
-		return frappe.get_cached_value(party_type, party, "custom_thai_withholding_tax_category")
+	if party_type == "Supplier":
+		if party:
+			return frappe.get_cached_value("Supplier", party, "custom_thai_withholding_tax_category")
+		return None
 
 	if company:
 		return frappe.get_cached_value("Company", company, "custom_thai_withholding_tax_category")
@@ -174,6 +176,17 @@ def get_reference_withholding_tax_deductions(
 			)
 		detail = item_details[item.item_code]
 		income_type = detail.get("income_type")
+		if income_type and not category:
+			if withholding_tax_type == "Sales":
+				frappe.throw(
+					_("Please set Thai Withholding Tax Category for Company {0}.").format(
+						frappe.bold(payment_entry.company)
+					)
+				)
+			frappe.throw(
+				_("Please set Thai Withholding Tax Category for Supplier {0}.").format(frappe.bold(party))
+			)
+
 		rate = flt(detail.get("tax_rate"))
 		base_amount = flt(
 			flt(item.base_net_amount) * payment_ratio,

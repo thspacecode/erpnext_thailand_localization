@@ -76,13 +76,22 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 			},
 		)
 
-	def test_party_withholding_tax_category_takes_precedence_over_company(self) -> None:
-		with patch.object(frappe, "get_cached_value", return_value="Party Category") as get_cached_value:
+	def test_sales_withholding_tax_uses_company_category(self) -> None:
+		with patch.object(frappe, "get_cached_value", return_value="Company Category") as get_cached_value:
 			category = get_thai_withholding_tax_category("Customer", "Vance Refrigeration", "Dunder Mifflin")
 
-		self.assertEqual(category, "Party Category")
+		self.assertEqual(category, "Company Category")
 		get_cached_value.assert_called_once_with(
-			"Customer", "Vance Refrigeration", "custom_thai_withholding_tax_category"
+			"Company", "Dunder Mifflin", "custom_thai_withholding_tax_category"
+		)
+
+	def test_purchase_withholding_tax_uses_supplier_category(self) -> None:
+		with patch.object(frappe, "get_cached_value", return_value="Supplier Category") as get_cached_value:
+			category = get_thai_withholding_tax_category("Supplier", "Aaron Grandy", "Dunder Mifflin")
+
+		self.assertEqual(category, "Supplier Category")
+		get_cached_value.assert_called_once_with(
+			"Supplier", "Aaron Grandy", "custom_thai_withholding_tax_category"
 		)
 
 	def test_fetch_wht_detail(self) -> None:
@@ -95,6 +104,42 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 			),
 			{"income_type": "5 ค่าเช่า", "tax_rate": 5.0, "source": "Item"},
 		)
+
+	def test_requires_category_for_reference_items_with_income_type(self) -> None:
+		for reference_document, category_doctype, category_docname in (
+			(
+				self.make_reference_document(
+					"Sales Invoice", "Customer", "Vance Refrigeration", "WAREHOUSE-RENT", 12000
+				),
+				"Company",
+				"Dunder Mifflin",
+			),
+			(
+				self.make_reference_document(
+					"Purchase Invoice",
+					"Supplier",
+					"Aaron Grandy",
+					"LEGAL-CONSULTING-SERVICE",
+					5000,
+				),
+				"Supplier",
+				"Aaron Grandy",
+			),
+		):
+			with (
+				self.subTest(reference_document.doctype),
+				self.change_settings(
+					category_doctype,
+					{"custom_thai_withholding_tax_category": None},
+					docname=category_docname,
+				),
+			):
+				payment_entry = self.make_reference_payment_entry(reference_document)
+				with self.assertRaisesRegex(
+					frappe.ValidationError,
+					f"Please set Thai Withholding Tax Category for {category_doctype}",
+				):
+					apply_thai_withholding_tax(payment_entry, reference_document)
 
 	def test_zero_rate_is_resolved_without_falling_back(self) -> None:
 		for source, income_type, configured_rate, category_rates, category in (
