@@ -1,0 +1,17 @@
+---
+title: "Why Standard ERPNext WHT Is Insufficient for Thailand"
+importance: Medium
+description: Understand why ERPNext's standard withholding tax functionality does not fully meet Thai tax requirements.
+---
+
+Standard ERPNext withholding works mainly in two situations:
+
+1. Withholding is recognized on the Purchase Invoice.
+2. Withholding is applied to an advance or unallocated Payment Entry.
+
+Thai withholding tax is generally recognized **when payment is made**, including payments allocated to existing Purchase Invoices.
+
+It also lacks key Thai compliance features:
+
+* PND3 and PND53 classification
+* Thai income-type and party-specific rates

@@ -1,0 +1,34 @@
+---
+title: "How the Withholding Tax Rate Is Resolved"
+description: "Learn how withholding tax rates are resolved based on item, item group, income type, and category rates."
+importance: Medium
+---
+
+## Resolution Priority
+
+**If the item has an Income Type:**
+
+1. Item — Category Rate
+2. Item — Default Rate
+3. Item's Income Type — Category Rate
+4. Item's Income Type — Default Rate
+
+**Otherwise, if the Item Group has an Income Type:**
+
+1. Item Group — Category Rate
+2. Item Group — Default Rate
+3. Item Group's Income Type — Category Rate
+4. Item Group's Income Type — Default Rate
+
+**Otherwise:**
+
+- No withholding tax is applied.
+
+## Notes
+
+- A configured rate of `0%` is valid and prevents further fallback.
+- A blank rate causes the resolver to continue to the next level.
+- If an Income Type exists but all applicable rates are blank, the resolver returns `0%`, so no deduction is created.
+- If the item has an Income Type, the Item Group is not checked.
+- Only the item's direct Item Group is checked; parent Item Groups are not traversed.
+- Resolved rates of `0%` or less are not recorded as deduction rows.

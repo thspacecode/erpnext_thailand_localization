@@ -1,0 +1,64 @@
+---
+title: "Thai Withholding Tax Setup Guide"
+description: "Configure accounts, tax categories, income types, and withholding tax rates for Thai withholding tax."
+importance: Medium
+---
+
+## Preparation
+
+### Create the Required Accounts
+
+* Sales WHT Receivable - Assets / Tax
+* Purchase WHT PND 3 - Liability / Tax
+* Purchase WHT PND 53 - Liability / Tax
+
+### Create the Revenue Department Supplier
+
+* Revenue Department - Supplier
+
+## Configuration
+
+### Configure the Main Settings
+
+* Open the `Thai Localization Settings` DocType.
+* Set the Revenue Department field.
+
+![Thai Localization Settings with the Revenue Department configured](./assets/thai-localization-settings.png)
+
+### Configure the Company's Tax Accounts
+
+* Open the `Company` DocType and go to the `Thai Tax` tab.
+* Enable Sales WHT and Purchase WHT.
+* Select the appropriate WHT accounts.
+
+![Company Thai Tax tab with sales and purchase withholding tax accounts configured](./assets/company-thai-tax.png)
+
+## Additional Configuration
+
+### Set the Item Income Type and Rate
+
+* Open an `Item` or `Item Group` and go to the Thai Withholding Tax section.
+* Set the Thai Withholding Tax Income Type field.
+* To override the default rates, set the Thai Withholding Tax Rate (%) or Thai Withholding Tax Rate By Category field.
+
+![Item Thai Withholding Tax section with the income type and rate fields](./assets/item-thai-withholding-tax.png)
+
+Related feature:
+
+* How the Withholding Tax Rate Is Resolved
+
+### Set the Supplier's Tax Category
+
+* Open a `Supplier` and go to the `Tax` tab.
+* Set the Thai Withholding Tax Category field.
+* Set the Tax ID field.
+
+![Supplier Tax tab with the Thai Withholding Tax Category and Tax ID configured](./assets/supplier-tax.png)
+
+### Set the Company's Tax Category
+
+* Open a `Company` and go to the `Details` tab.
+* Set the Thai Withholding Tax Category field.
+* Set the Tax ID field.
+
+![Company Details tab with the Thai Withholding Tax Category and Tax ID configured](./assets/company-details-tax-category.png)
