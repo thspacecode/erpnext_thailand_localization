@@ -2,6 +2,8 @@ name: UI Tests
 
 on:
   pull_request:
+    paths-ignore:
+      - 'docs/**'
     types:
       - opened
       - synchronize
