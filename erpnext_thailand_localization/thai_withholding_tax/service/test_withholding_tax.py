@@ -76,13 +76,22 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 			},
 		)
 
-	def test_party_withholding_tax_category_takes_precedence_over_company(self) -> None:
-		with patch.object(frappe, "get_cached_value", return_value="Party Category") as get_cached_value:
+	def test_sales_withholding_tax_uses_company_category(self) -> None:
+		with patch.object(frappe, "get_cached_value", return_value="Company Category") as get_cached_value:
 			category = get_thai_withholding_tax_category("Customer", "Vance Refrigeration", "Dunder Mifflin")
 
-		self.assertEqual(category, "Party Category")
+		self.assertEqual(category, "Company Category")
 		get_cached_value.assert_called_once_with(
-			"Customer", "Vance Refrigeration", "custom_thai_withholding_tax_category"
+			"Company", "Dunder Mifflin", "custom_thai_withholding_tax_category"
+		)
+
+	def test_purchase_withholding_tax_uses_supplier_category(self) -> None:
+		with patch.object(frappe, "get_cached_value", return_value="Supplier Category") as get_cached_value:
+			category = get_thai_withholding_tax_category("Supplier", "Aaron Grandy", "Dunder Mifflin")
+
+		self.assertEqual(category, "Supplier Category")
+		get_cached_value.assert_called_once_with(
+			"Supplier", "Aaron Grandy", "custom_thai_withholding_tax_category"
 		)
 
 	def test_fetch_wht_detail(self) -> None:
