@@ -15,6 +15,7 @@ apps/erpnext_thailand_localization/tests/ui/
 ├── auth.setup.ts
 ├── fixtures/
 │   ├── credentials.ts
+│   ├── frappe-api.ts
 │   └── test.ts
 ├── fonts/
 │   ├── Sarabun-OFL.txt
@@ -28,6 +29,8 @@ apps/erpnext_thailand_localization/tests/ui/
 │   └── thai-wht-setup.ts
 └── specs/
     ├── guides/
+    │   ├── purchase-wht-process.spec.ts
+    │   ├── sales-wht-process.spec.ts
     │   └── thai-wht-setup.spec.ts
     ├── desk-navigation.spec.ts
     └── login.spec.ts
@@ -37,13 +40,19 @@ The `setup` project signs in through Frappe's login API and writes the browser
 state to `playwright/.auth/user.json`. The Chromium project depends on setup and
 reuses that state. Tests that cover the login page explicitly start logged out.
 The extended fixture injects the bundled Sarabun font into every page so Thai
-text renders consistently in local and CI screenshots.
+text renders consistently in local and CI screenshots. Guide specs commit their
+visual snapshots beside each spec so the same images can be used as documentation
+sources. The sales and purchase WHT process specs create transaction data through
+the Python test factories and remove it afterward, while relying on the bootstrapped
+master data.
 
 ## Run locally
 
-From `apps/erpnext_thailand_localization/tests/ui`:
+Enable Frappe's test-only API endpoints on the local test site, then run from
+`apps/erpnext_thailand_localization/tests/ui`:
 
 ```bash
+bench --site <site> set-config allow_tests true
 yarn install
 yarn playwright install --with-deps chromium
 yarn test:ui
@@ -60,6 +69,13 @@ yarn test:ui:ui
 yarn test:ui:debug
 yarn test:ui:report
 yarn test:ui:codegen
+```
+
+Regenerate a guide's documentation snapshots after an intentional UI change:
+
+```bash
+yarn playwright test specs/guides/purchase-wht-process.spec.ts \
+  --project=chromium --update-snapshots=all
 ```
 
 Copy `.env.example` to `.env` to override the site URL or credentials.
