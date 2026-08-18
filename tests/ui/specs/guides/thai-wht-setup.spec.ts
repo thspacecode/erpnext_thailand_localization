@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import { THAI_WHT_SETUP } from "../../test-data/thai-wht-setup";
 import { expect, test } from "../../fixtures/test";
 
@@ -16,6 +18,7 @@ test.describe("Set up Thai withholding tax", () => {
 			mask: [page.locator(".frappe-timestamp")],
 			maskColor: "#ffffff",
 			maxDiffPixels: 100,
+			stylePath: path.resolve(__dirname, "../../styles/screenshot.css"),
 		};
 
 		await test.step("Configure the main settings", async () => {

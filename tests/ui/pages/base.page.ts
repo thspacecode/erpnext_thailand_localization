@@ -10,7 +10,7 @@ const sarabunFont = fs.readFileSync(
 export class BasePage {
 	constructor(readonly page: Page) {}
 
-	async installFonts() {
+	async installFonts(): Promise<void> {
 		await this.page.addInitScript((fontData) => {
 			const style = document.createElement("style");
 			style.textContent = `
@@ -21,7 +21,7 @@ export class BasePage {
 					font-weight: 400;
 				}
 				:root {
-					--font-stack: InterVariable, "Sarabun", sans-serif;
+					--font-stack: "Sarabun", sans-serif;
 				}
 			`;
 			document.addEventListener(
