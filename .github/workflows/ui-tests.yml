@@ -1,9 +1,6 @@
 name: UI Tests
 
 on:
-  push:
-    branches:
-      - version-16
   pull_request:
     types:
       - opened
