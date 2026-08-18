@@ -105,6 +105,42 @@ class TestWithholdingTax(ERPNextThaiTestSuite):
 			{"income_type": "5 ค่าเช่า", "tax_rate": 5.0, "source": "Item"},
 		)
 
+	def test_requires_category_for_reference_items_with_income_type(self) -> None:
+		for reference_document, category_doctype, category_docname in (
+			(
+				self.make_reference_document(
+					"Sales Invoice", "Customer", "Vance Refrigeration", "WAREHOUSE-RENT", 12000
+				),
+				"Company",
+				"Dunder Mifflin",
+			),
+			(
+				self.make_reference_document(
+					"Purchase Invoice",
+					"Supplier",
+					"Aaron Grandy",
+					"LEGAL-CONSULTING-SERVICE",
+					5000,
+				),
+				"Supplier",
+				"Aaron Grandy",
+			),
+		):
+			with (
+				self.subTest(reference_document.doctype),
+				self.change_settings(
+					category_doctype,
+					{"custom_thai_withholding_tax_category": None},
+					docname=category_docname,
+				),
+			):
+				payment_entry = self.make_reference_payment_entry(reference_document)
+				with self.assertRaisesRegex(
+					frappe.ValidationError,
+					f"Please set Thai Withholding Tax Category for {category_doctype}",
+				):
+					apply_thai_withholding_tax(payment_entry, reference_document)
+
 	def test_zero_rate_is_resolved_without_falling_back(self) -> None:
 		for source, income_type, configured_rate, category_rates, category in (
 			(

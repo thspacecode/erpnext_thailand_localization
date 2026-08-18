@@ -176,6 +176,17 @@ def get_reference_withholding_tax_deductions(
 			)
 		detail = item_details[item.item_code]
 		income_type = detail.get("income_type")
+		if income_type and not category:
+			if withholding_tax_type == "Sales":
+				frappe.throw(
+					_("Please set Thai Withholding Tax Category for Company {0}.").format(
+						frappe.bold(payment_entry.company)
+					)
+				)
+			frappe.throw(
+				_("Please set Thai Withholding Tax Category for Supplier {0}.").format(frappe.bold(party))
+			)
+
 		rate = flt(detail.get("tax_rate"))
 		base_amount = flt(
 			flt(item.base_net_amount) * payment_ratio,
