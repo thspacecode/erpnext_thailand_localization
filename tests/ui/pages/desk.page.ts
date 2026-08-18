@@ -1,10 +1,9 @@
-import { expect, type Page } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { BasePage } from "./base.page";
 
 export const DESK_ROOT = "/desk";
 
-export class DeskPage {
-	constructor(readonly page: Page) {}
-
+export class DeskPage extends BasePage {
 	async awaitReady() {
 		await this.page.waitForFunction(
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,11 +25,22 @@ export class DeskPage {
 	async goToNew(doctype: string) {
 		await this.page.goto(`${DESK_ROOT}/${slug(doctype)}/new`);
 		await this.awaitReady();
+		await expect.poll(async () => (await this.currentRoute()).slice(0, 2)).toEqual([
+			"Form",
+			doctype,
+		]);
 	}
 
 	async goToDoc(doctype: string, name: string) {
 		await this.page.goto(`${DESK_ROOT}/${slug(doctype)}/${encodeURIComponent(name)}`);
 		await this.awaitReady();
+		await expect.poll(() => this.currentRoute()).toEqual(["Form", doctype, name]);
+	}
+
+	async goToSingle(doctype: string) {
+		await this.page.goto(`${DESK_ROOT}/${slug(doctype)}`);
+		await this.awaitReady();
+		await expect.poll(() => this.currentRoute()).toEqual(["Form", doctype, doctype]);
 	}
 
 	async currentRoute(): Promise<string[]> {

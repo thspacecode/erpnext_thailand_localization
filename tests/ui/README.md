@@ -16,10 +16,19 @@ apps/erpnext_thailand_localization/tests/ui/
 ├── fixtures/
 │   ├── credentials.ts
 │   └── test.ts
+├── fonts/
+│   ├── Sarabun-OFL.txt
+│   └── Sarabun-Regular.ttf
 ├── pages/
+│   ├── base.page.ts
 │   ├── desk.page.ts
+│   ├── form.page.ts
 │   └── login.page.ts
+├── test-data/
+│   └── thai-wht-setup.ts
 └── specs/
+    ├── guides/
+    │   └── thai-wht-setup.spec.ts
     ├── desk-navigation.spec.ts
     └── login.spec.ts
 ```
@@ -27,6 +36,8 @@ apps/erpnext_thailand_localization/tests/ui/
 The `setup` project signs in through Frappe's login API and writes the browser
 state to `playwright/.auth/user.json`. The Chromium project depends on setup and
 reuses that state. Tests that cover the login page explicitly start logged out.
+The extended fixture injects the bundled Sarabun font into every page so Thai
+text renders consistently in local and CI screenshots.
 
 ## Run locally
 
@@ -55,7 +66,7 @@ Copy `.env.example` to `.env` to override the site URL or credentials.
 
 ## Write a test
 
-Import the extended fixture when a test needs Desk helpers:
+Import the extended fixture when a test needs Desk or form helpers:
 
 ```ts
 import { expect, test } from "../fixtures/test";
