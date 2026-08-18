@@ -1,11 +1,13 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { BasePage } from "./base.page";
 
-export class LoginPage {
+export class LoginPage extends BasePage {
 	readonly email: Locator;
 	readonly password: Locator;
 	readonly submit: Locator;
 
-	constructor(readonly page: Page) {
+	constructor(page: Page) {
+		super(page);
 		this.email = page.locator("#login_email");
 		this.password = page.locator("#login_password");
 		this.submit = page.locator(".btn-login:not(.btn-login-with-email-link)");
