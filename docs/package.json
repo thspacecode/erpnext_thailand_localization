@@ -12,7 +12,7 @@
   "dependencies": {
     "@react-router/node": "7.15.1",
     "@react-router/serve": "7.15.1",
-    "@the-docs/preset-default": "^0.0.1-alpha.6",
+    "@the-docs/preset-default": "^0.0.1-alpha.7",
     "isbot": "^5",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
