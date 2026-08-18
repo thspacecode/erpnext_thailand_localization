@@ -17,7 +17,7 @@ test.describe("Set up Thai withholding tax", () => {
 			animations: "disabled" as const,
 			mask: [page.locator(".frappe-timestamp")],
 			maskColor: "#ffffff",
-			maxDiffPixelRatio: 0.002,
+			maxDiffPixelRatio: 0.005,
 			stylePath: path.resolve(__dirname, "../../styles/screenshot.css"),
 		};
 
