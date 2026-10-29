@@ -105,7 +105,7 @@ def add_pnd_filing_to_journal_entry(
 
 	journal_entry.custom_remark = 1
 	filing_remark = _("Revenue Department payable for {0} filing {1}").format(_(filing.pnd_type), filing.name)
-	journal_entry.remark = "\n".join(remark for remark in (journal_entry.remark, filing_remark) if remark)
+	journal_entry.remark = "\n".join(filter(None, (journal_entry.remark, filing_remark)))
 	journal_entry.set_amounts_in_company_currency()
 	journal_entry.set_total_debit_credit()
 	return journal_entry
