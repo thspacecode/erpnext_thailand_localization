@@ -108,7 +108,7 @@ jobs:
 
       - name: Bootstrap test master data
         working-directory: /home/runner/frappe-bench
-        run: bench --site test_site execute erpnext_thailand_localization.data.test_data.bootstrap_test_master_data
+        run: bench --site test_site execute erpnext_thailand_localization.data.bootstrap.dev.bootstrap.execute
         env:
           CI: 'Yes'
 

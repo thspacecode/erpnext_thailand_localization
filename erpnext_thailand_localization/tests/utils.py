@@ -5,13 +5,8 @@ import frappe
 from frappe.handler import is_valid_http_method
 from frappe.tests.utils import whitelist_for_tests
 
-from erpnext_thailand_localization.data.test_data.bootstrap_test_master_data import BootStrapTestMasterData
 from erpnext_thailand_localization.tests.factories.base import DocTypeFactory
 from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
-
-# Importing test utilities bootstraps the shared records, following erpnext.tests.utils.
-boot_strap_test_master_data = BootStrapTestMasterData()
-boot_strap_test_master_data.make()
 
 
 @lru_cache

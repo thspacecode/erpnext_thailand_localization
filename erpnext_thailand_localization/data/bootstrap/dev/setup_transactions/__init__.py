@@ -1,13 +1,11 @@
 from typing import TYPE_CHECKING, TypedDict
 
 import frappe
-from frappe import _
-from frappe.contacts.doctype.address.address import get_default_address
 from frappe.utils import add_days, add_months, flt, get_first_day, getdate
 from frappe.utils.file_manager import save_file
 
 from erpnext_thailand_localization.data.abc import Report
-from erpnext_thailand_localization.data.test_data.bootstrap_test_master_data import BootStrapTestMasterData
+from erpnext_thailand_localization.data.bootstrap.abc.setup_transactions import SetupTransactions
 from erpnext_thailand_localization.tests.factories import (
 	CompanyAddressFactory,
 	PurchaseInvoiceFactory,
@@ -51,11 +49,10 @@ class InvoiceItem(TypedDict):
 	price_list_rate: float
 
 
-class BootStrapDevData(BootStrapTestMasterData):
+class SetupTransactionsDev(SetupTransactions):
 	"""Set up transactions for development. Avoid using these transactions in test cases."""
 
 	def make(self) -> Report:
-		self.define_share_val()
 		self.company_address = self.make_company_address()
 
 		sales_invoices = self.make_sales_invoice()
@@ -91,10 +88,6 @@ class BootStrapDevData(BootStrapTestMasterData):
 		return self.report
 
 	def make_company_address(self) -> str:
-		if company_address := get_default_address("Company", self.company):
-			self.record_change("skipped", "Address", company_address)
-			return company_address
-
 		address: "Address" = CompanyAddressFactory.create(
 			address_title=self.company,
 			branch_code="00000",
@@ -198,24 +191,6 @@ class BootStrapDevData(BootStrapTestMasterData):
 		posting_date: "DateTimeLikeObject",
 		items: list[InvoiceItem],
 	) -> "SalesInvoice":
-		existing_names = frappe.get_all(
-			"Sales Invoice",
-			filters={"company": self.company, "po_no": po_no},
-			pluck="name",
-		)
-		if len(existing_names) > 1:
-			frappe.throw(_("Multiple Sales Invoices use development PO No. {0}.").format(frappe.bold(po_no)))
-		if existing_names:
-			invoice = frappe.get_doc("Sales Invoice", existing_names[0])
-			if invoice.docstatus != 1 or invoice.customer != customer:
-				frappe.throw(
-					_("Development Sales Invoice {0} does not match the expected submitted record.").format(
-						frappe.bold(invoice.name)
-					)
-				)
-			self.record_change("skipped", invoice.doctype, invoice.name)
-			return invoice
-
 		invoice = SalesInvoiceFactory.create(
 			customer=customer,
 			po_no=po_no,
@@ -236,28 +211,6 @@ class BootStrapDevData(BootStrapTestMasterData):
 		posting_date: "DateTimeLikeObject",
 		items: list[InvoiceItem],
 	) -> "PurchaseInvoice":
-		existing_names = frappe.get_all(
-			"Purchase Invoice",
-			filters={"company": self.company, "supplier": supplier, "bill_no": bill_no},
-			pluck="name",
-		)
-		if len(existing_names) > 1:
-			frappe.throw(
-				_("Multiple Purchase Invoices use development Supplier Invoice No. {0}.").format(
-					frappe.bold(bill_no)
-				)
-			)
-		if existing_names:
-			invoice = frappe.get_doc("Purchase Invoice", existing_names[0])
-			if invoice.docstatus != 1 or invoice.supplier != supplier:
-				frappe.throw(
-					_(
-						"Development Purchase Invoice {0} does not match the expected submitted record."
-					).format(frappe.bold(invoice.name))
-				)
-			self.record_change("skipped", invoice.doctype, invoice.name)
-			return invoice
-
 		invoice = PurchaseInvoiceFactory.create(
 			supplier=supplier,
 			bill_no=bill_no,
@@ -277,40 +230,6 @@ class BootStrapDevData(BootStrapTestMasterData):
 		invoice: "Invoice",
 		posting_date: "DateTimeLikeObject",
 	) -> "PaymentEntry":
-		reference_names = frappe.get_all(
-			"Payment Entry Reference",
-			filters={
-				"reference_doctype": invoice.doctype,
-				"reference_name": invoice.name,
-			},
-			pluck="parent",
-		)
-		active_names = (
-			frappe.get_all(
-				"Payment Entry",
-				filters={"name": ["in", list(set(reference_names))], "docstatus": ["<", 2]},
-				pluck="name",
-			)
-			if reference_names
-			else []
-		)
-		if len(active_names) > 1:
-			frappe.throw(
-				_("Multiple active Payment Entries reference {0} {1}.").format(
-					_(invoice.doctype), frappe.bold(invoice.name)
-				)
-			)
-		if active_names:
-			payment_entry = frappe.get_doc("Payment Entry", active_names[0])
-			if payment_entry.docstatus != 1:
-				frappe.throw(
-					_("Development Payment Entry {0} must be submitted.").format(
-						frappe.bold(payment_entry.name)
-					)
-				)
-			self.record_change("skipped", payment_entry.doctype, payment_entry.name)
-			return payment_entry
-
 		payment_entry = get_payment_entry(
 			invoice.doctype,
 			invoice.name,
@@ -329,19 +248,6 @@ class BootStrapDevData(BootStrapTestMasterData):
 	def make_purchase_withholding_tax_entry(
 		self, payment_entry: "PaymentEntry"
 	) -> "PurchaseWithholdingTaxEntry":
-		existing_name = self.get_existing_withholding_tax_entry(
-			payment_entry, "Purchase Withholding Tax Entry"
-		)
-		if existing_name:
-			doc = frappe.get_doc("Purchase Withholding Tax Entry", existing_name)
-			if not doc.pnd:
-				doc = make_purchase_withholding_tax_entry(payment_entry.name, target_doc=doc)
-				doc.db_set("pnd", doc.pnd)
-				self.record_change("updated", doc.doctype, doc.name)
-			else:
-				self.record_change("skipped", doc.doctype, doc.name)
-			return doc
-
 		doc = make_purchase_withholding_tax_entry(payment_entry.name)
 		doc.naming_series = "PWHT-.YYYY.-.#####"
 		doc.insert()
@@ -354,12 +260,6 @@ class BootStrapDevData(BootStrapTestMasterData):
 		invoice: "SalesInvoice",
 		payment_entry: "PaymentEntry",
 	) -> "SalesWithholdingTaxEntry":
-		existing_name = self.get_existing_withholding_tax_entry(payment_entry, "Sales Withholding Tax Entry")
-		if existing_name:
-			doc = frappe.get_doc("Sales Withholding Tax Entry", existing_name)
-			self.record_change("skipped", doc.doctype, doc.name)
-			return doc
-
 		certificate_number = f"SWHT-{invoice.po_no}"
 		doc = make_sales_withholding_tax_entry(payment_entry.name)
 		doc.naming_series = "SWHT-.YYYY.-.#####"
@@ -395,30 +295,6 @@ class BootStrapDevData(BootStrapTestMasterData):
 		sources: list["PurchaseWithholdingTaxEntry"],
 	) -> "PNDFiling":
 		tax_period = get_first_day(getdate(tax_period))
-		existing_names = frappe.get_all(
-			doctype,
-			filters={
-				"company": self.company,
-				"tax_period": tax_period,
-				"filing_type": "Normal",
-				"additional_filing_no": 0,
-				"docstatus": ["<", 2],
-			},
-			pluck="name",
-		)
-		if len(existing_names) > 1:
-			frappe.throw(
-				_("Multiple normal {0} records exist for tax period {1}.").format(
-					_(doctype), frappe.bold(tax_period)
-				)
-			)
-		if existing_names:
-			filing = frappe.get_doc(doctype, existing_names[0])
-			if filing.docstatus != 1:
-				frappe.throw(_("Development filing {0} must be submitted.").format(frappe.bold(filing.name)))
-			self.record_change("skipped", filing.doctype, filing.name)
-			return filing
-
 		filing = frappe.new_doc(doctype)
 		filing.update(
 			{
@@ -439,41 +315,6 @@ class BootStrapDevData(BootStrapTestMasterData):
 		filing.submit()
 		self.record_change("created", filing.doctype, filing.name)
 		return filing
-
-	def get_existing_withholding_tax_entry(
-		self,
-		payment_entry: "PaymentEntry",
-		doctype: str,
-	) -> str | None:
-		parent_names = list(
-			set(
-				frappe.get_all(
-					"Withholding Tax Entry Item",
-					filters={
-						"reference_doc_doctype": "Payment Entry",
-						"reference_doc": payment_entry.name,
-						"parenttype": doctype,
-						"docstatus": ["<", 2],
-					},
-					pluck="parent",
-				)
-			)
-		)
-		if len(parent_names) > 1:
-			frappe.throw(
-				_("Multiple {0} records reference Payment Entry {1}.").format(
-					_(doctype), frappe.bold(payment_entry.name)
-				)
-			)
-		if not parent_names:
-			return None
-
-		docstatus = frappe.db.get_value(doctype, parent_names[0], "docstatus")
-		if docstatus != 1:
-			frappe.throw(
-				_("Development {0} {1} must be submitted.").format(_(doctype), frappe.bold(parent_names[0]))
-			)
-		return parent_names[0]
 
 	def get_month_date(self, month_offset: int) -> "DateTimeLikeObject":
 		return add_days(get_first_day(add_months(self.now, month_offset)), 14)
