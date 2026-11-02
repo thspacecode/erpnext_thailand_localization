@@ -186,7 +186,7 @@ doc_events = {
 # Testing
 # -------
 
-# before_tests = "erpnext_thailand_localization.install.before_tests"
+before_tests = "erpnext_thailand_localization.migrate.before_tests"
 
 # Extend DocType Class
 # ------------------------------

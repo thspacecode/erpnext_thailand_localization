@@ -37,8 +37,12 @@ class BaseImporter(ABC):
 				self.report[change_type].setdefault(doctype, []).extend(names)
 		return self.report
 
-	def csv_loader(self, filename: str, csv_replacements: Mapping[str, str] | None = None) -> Report:
+	def csv_loader(
+		self, filename: str, csv_replacements: Mapping[str, str] | None = None, *, insert_only: bool = False
+	) -> Report:
 		"""Create or update DocType records from a CSV file.
+
+		Bootstrap steps use insert_only=True and fail on duplicate records.
 
 		File naming convention:
 		- Name the file exactly after the parent DocType, including spaces and capitalization.
@@ -181,7 +185,7 @@ class BaseImporter(ABC):
 
 		for expected_values in records:
 			name = get_record_name(expected_values)
-			if not frappe.db.exists(doctype, name):
+			if insert_only or not frappe.db.exists(doctype, name):
 				doc = frappe.get_doc({"doctype": doctype, **expected_values})
 				if expected_values.get("name"):
 					doc.flags.name_set = True
