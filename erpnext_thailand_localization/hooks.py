@@ -159,7 +159,7 @@ app_include_js = "/assets/erpnext_thailand_localization/js/pnd_filing.js"
 # Hook on document methods and events
 
 doc_events = {
-	"Address": {"validate": "erpnext_thailand_localization.thai_withholding_tax.address.validate_address"}
+	"Address": {"validate": "erpnext_thailand_localization.thai_withholding_tax.address.validate_address"},
 }
 
 # Scheduled Tasks

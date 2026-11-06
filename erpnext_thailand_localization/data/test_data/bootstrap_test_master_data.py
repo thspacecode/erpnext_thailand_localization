@@ -125,7 +125,15 @@ class BootStrapTestMasterData(BaseImporter):
 		settings.save()
 
 	def make_item(self) -> None:
+		self.set_service_undue_vat()
 		self.csv_loader("Item")
+
+	def set_service_undue_vat(self) -> None:
+		"""Allow service Items to inherit undue VAT in both directions."""
+		group = frappe.get_doc("Item Group", "Services")
+		group.custom_allow_undue_sales_value_added_tax = "Allow"
+		group.custom_allow_undue_purchase_value_added_tax = "Allow"
+		group.save()
 
 	def make_party_addresses(self) -> None:
 		self.csv_loader("Address")
