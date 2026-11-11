@@ -1,0 +1,147 @@
+{% set certificate = sales_withholding_certificate(doc) %}
+{% macro field(x, y, width, value, align='left', size=10) -%}
+{% set text_size = [size, width / ([value | string | length, 1] | max) / 0.6] | min %}
+<div class="swht-value" style="left: {{ x / 595 * 100 }}%; top: {{ y / 842 * 100 }}%; width: {{ width / 595 * 100 }}%; text-align: {{ align }}; font-size: {{ text_size }}pt;">{{ value | e }}</div>
+{%- endmacro %}
+{% macro tax_id(value, y, offset=0) -%}
+{% if value | length == 13 %}
+{% set centers = [380.5, 398.54, 410.55, 422.55, 434.56, 453.14, 465.23, 477.33, 489.42, 501.51, 519.21, 531.44, 550.55] %}
+{% for digit in value %}
+<div class="swht-tax-digit" style="left: {{ (centers[loop.index0] + offset - 5) / 595 * 100 }}%; top: {{ y / 842 * 100 }}%;">{{ digit | e }}</div>
+{% endfor %}
+{% endif %}
+{%- endmacro %}
+<style>
+@font-face {
+    font-family: 'Sarabun';
+    src: url('/assets/erpnext_thailand_localization/fonts/Sarabun-Regular.ttf') format('truetype');
+}
+.swht-certificate-reference,
+.swht-party-details {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 9px;
+}
+.swht-table-values {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 8px;
+    font-variant-numeric: tabular-nums;
+}
+.swht-tax-digit {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: {{ 10 / 595 * 100 }}%;
+    height: {{ 14 / 842 * 100 }}%;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 10pt;
+    line-height: 1;
+}
+.swht-value {
+    position: absolute;
+    font-family: 'Sarabun', sans-serif;
+    line-height: 1.25;
+    white-space: nowrap;
+}
+
+@page { size: A4 portrait; margin: 0; }
+html, body {
+    height: auto !important;
+}
+body:has(.swht-certificate) {
+    padding: 0 !important;
+}
+.print-format {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 0 !important;
+    margin: 0 auto;
+    box-shadow: none;
+}
+.swht-certificate {
+    position: relative;
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+    background: white;
+    break-inside: avoid;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+}
+.swht-certificate-background {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+}
+@media print {
+    html, body, .print-format-gutter { margin: 0 !important; padding: 0 !important; }
+}
+</style>
+<div class="swht-certificate">
+    <img class="swht-certificate-background"
+         src="/assets/erpnext_thailand_localization/print_formats/withholding_tax_certificate.svg?v=909e802bae37"
+         alt="หนังสือรับรองการหักภาษี ณ ที่จ่าย ตามมาตรา 50 ทวิ">
+    <svg class="swht-certificate-reference" viewBox="0 0 595 842" xmlns="http://www.w3.org/2000/svg">
+        <rect x="440" y="45" width="125" height="34" fill="white"/>
+        <text x="445" y="58.6">เล่มที่</text>
+        <text x="445" y="73">เลขที่</text>
+        <path d="M 470 61.6 H 558 M 470 76 H 558" fill="none" stroke="black" stroke-width="0.6" stroke-dasharray="0.6 1.2"/>
+        <text class="swht-reference-number" x="472" y="73" font-size="8">{{ doc.certificate_number | default('', true) | e }}</text>
+    </svg>
+    <svg class="swht-party-details" viewBox="0 0 595 842" xmlns="http://www.w3.org/2000/svg">
+        <text x="61" y="110.2">{{ certificate.payer | e }}</text>
+        <text x="61" y="133.6">{{ certificate.payer_address | e }}</text>
+        <text x="61" y="183.04">{{ certificate.recipient | e }}</text>
+        <text x="61" y="209.08">{{ certificate.recipient_address | e }}</text>
+    </svg>
+    {{ tax_id(certificate.payer_tax_id, 83.5) }}
+    {{ tax_id(certificate.recipient_tax_id, 152.2, 0.55) }}
+    <svg class="swht-table-values" viewBox="0 0 595 842" xmlns="http://www.w3.org/2000/svg">
+        {% set lines = {'1': 308.56, '2': 323.08, '3': 337.6, 'interest': 352, 'services': 627.52, 'other': 642.04} %}
+        {% for key, row in certificate.rows.items() %}
+        {% set line = lines[key] %}
+        {% set base = ('%.2f' | format(row.base)).split('.') %}
+        {% set tax = ('%.2f' | format(row.tax)).split('.') %}
+        <g class="swht-income-row" data-line="{{ line }}">
+            <text x="366.08" y="{{ line - 3 }}" text-anchor="middle">{{ certificate.date | e }}</text>
+            <text x="471.98" y="{{ line - 3 }}" text-anchor="end">{{ '{:,}'.format(base[0] | int) }}</text>
+            <text x="482.42" y="{{ line - 3 }}" text-anchor="middle">{{ base[1] }}</text>
+            <text x="543.38" y="{{ line - 3 }}" text-anchor="end">{{ '{:,}'.format(tax[0] | int) }}</text>
+            <text x="553.16" y="{{ line - 3 }}" text-anchor="middle">{{ tax[1] }}</text>
+        </g>
+        {% if key == 'other' %}
+        <text x="100" y="641.04">{{ row.descriptions | join(', ') | e }}</text>
+        {% endif %}
+        {% endfor %}
+        {% set base_total = ('%.2f' | format(doc.total_base_amount or 0)).split('.') %}
+        {% set tax_total = ('%.2f' | format(doc.total_tax_amount or 0)).split('.') %}
+        <g class="swht-totals">
+            <text x="471.98" y="658" text-anchor="end">{{ '{:,}'.format(base_total[0] | int) }}</text>
+            <text x="482.42" y="658" text-anchor="middle">{{ base_total[1] }}</text>
+            <text x="543.38" y="658" text-anchor="end">{{ '{:,}'.format(tax_total[0] | int) }}</text>
+            <text x="553.16" y="658" text-anchor="middle">{{ tax_total[1] }}</text>
+        </g>
+        <text class="swht-tax-words" x="554" y="679" text-anchor="end" font-size="9">{{ certificate.tax_words | e }}</text>
+        <g class="swht-pnd-checks" fill="none" stroke="black" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+            {% set boxes = {'PND 2': (395.24, 228.44), 'PND 3': (472.34, 228.44), 'PND 53': (395.24, 246.89)} %}
+            {% for pnd in certificate.pnd_types %}
+            {% if pnd in boxes %}
+            {% set x, y = boxes[pnd] %}
+            <path transform="translate({{ x }} {{ y }})" d="M 2.2 5.8 L 4.5 8.2 L 9.2 3.2"/>
+            {% endif %}
+            {% endfor %}
+        </g>
+    </svg>
+</div>
