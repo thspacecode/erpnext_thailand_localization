@@ -41,7 +41,7 @@ def certificate_address(address_name):
 
 
 def purchase_withholding_certificate(doc):
-	"""Read payer and recipient data for a purchase withholding certificate."""
+	"""Adapt purchase data to the shared certificate template context."""
 	company = frappe.get_doc("Company", doc.company)
 	supplier = frappe.get_doc("Supplier", doc.supplier)
 	addresses = frappe.get_all(
@@ -62,6 +62,9 @@ def purchase_withholding_certificate(doc):
 	)
 	date = getdate(doc.payment_date) if doc.payment_date else None
 	return frappe._dict(
+		number=doc.name,
+		total_base_amount=doc.total_base_amount or 0,
+		total_tax_amount=doc.total_tax_amount or 0,
 		pnd_types={doc.pnd} if doc.pnd else set(),
 		payer=company.company_name or company.name,
 		payer_tax_id="".join(c for c in (company.tax_id or "") if c.isdigit()),

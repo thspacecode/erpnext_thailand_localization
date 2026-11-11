@@ -1,4 +1,3 @@
-{% set certificate = purchase_withholding_certificate(doc) %}
 {% macro field(x, y, width, value, align='left', size=10) -%}
 {% set text_size = [size, width / ([value | string | length, 1] | max) / 0.6] | min %}
 <div class="pwht-value" style="left: {{ x / 595 * 100 }}%; top: {{ y / 842 * 100 }}%; width: {{ width / 595 * 100 }}%; text-align: {{ align }}; font-size: {{ text_size }}pt;">{{ value | e }}</div>
@@ -91,14 +90,14 @@ body:has(.pwht-certificate) {
 </style>
 <div class="pwht-certificate">
     <img class="pwht-certificate-background"
-         src="/assets/erpnext_thailand_localization/print_formats/withholding_tax_certificate.svg?v=clean-date-line-2"
+         src="/assets/erpnext_thailand_localization/print_formats/withholding_tax_certificate.svg"
          alt="หนังสือรับรองการหักภาษี ณ ที่จ่าย ตามมาตรา 50 ทวิ">
     <svg class="pwht-certificate-reference" viewBox="0 0 595 842" xmlns="http://www.w3.org/2000/svg">
         <rect x="440" y="45" width="125" height="34" fill="white"/>
         <text x="445" y="58.6">เล่มที่</text>
         <text x="445" y="73">เลขที่</text>
         <path d="M 470 61.6 H 558 M 470 76 H 558" fill="none" stroke="black" stroke-width="0.6" stroke-dasharray="0.6 1.2"/>
-        <text class="pwht-reference-number" x="472" y="73" font-size="8">{{ doc.name | e }}</text>
+        <text class="pwht-reference-number" x="472" y="73" font-size="8">{{ certificate.number | e }}</text>
     </svg>
     <svg class="pwht-party-details" viewBox="0 0 595 842" xmlns="http://www.w3.org/2000/svg">
         <text x="61" y="110.2">{{ certificate.payer | e }}</text>
@@ -125,8 +124,8 @@ body:has(.pwht-certificate) {
         <text x="100" y="641.04">{{ row.descriptions | join(', ') | e }}</text>
         {% endif %}
         {% endfor %}
-        {% set base_total = ('%.2f' | format(doc.total_base_amount or 0)).split('.') %}
-        {% set tax_total = ('%.2f' | format(doc.total_tax_amount or 0)).split('.') %}
+        {% set base_total = ('%.2f' | format(certificate.total_base_amount or 0)).split('.') %}
+        {% set tax_total = ('%.2f' | format(certificate.total_tax_amount or 0)).split('.') %}
         <g class="pwht-totals">
             <text x="471.98" y="658" text-anchor="end">{{ '{:,}'.format(base_total[0] | int) }}</text>
             <text x="482.42" y="658" text-anchor="middle">{{ base_total[1] }}</text>

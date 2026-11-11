@@ -48,6 +48,8 @@ class TestPurchaseWithholdingCertificate(unittest.TestCase):
 			("Address", "Supplier Address"): frappe._dict(address_line1="Supplier road", city="Bangkok"),
 		}
 		doc = SimpleNamespace(
+			name="PWHT-2026-00001",
+			total_base_amount=10000,
 			company="Company",
 			supplier="Supplier",
 			supplier_address="Supplier Address",
@@ -64,6 +66,9 @@ class TestPurchaseWithholdingCertificate(unittest.TestCase):
 			certificate = purchase_withholding_certificate(doc)
 
 		# Assert: Purchase parties must not be reversed as on a sales entry.
+		self.assertEqual(certificate.number, "PWHT-2026-00001")
+		self.assertEqual(certificate.total_base_amount, 10000)
+		self.assertEqual(certificate.total_tax_amount, 300)
 		self.assertEqual(certificate.payer, "Payer")
 		self.assertEqual(certificate.payer_tax_id, "0123456789012")
 		self.assertEqual(certificate.payer_address, "Company road Bangkok")
