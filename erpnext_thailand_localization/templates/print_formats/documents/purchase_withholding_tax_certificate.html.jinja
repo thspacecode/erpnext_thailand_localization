@@ -98,7 +98,7 @@ body:has(.pwht-certificate) {
         <text x="445" y="58.6">เล่มที่</text>
         <text x="445" y="73">เลขที่</text>
         <path d="M 470 61.6 H 558 M 470 76 H 558" fill="none" stroke="black" stroke-width="0.6" stroke-dasharray="0.6 1.2"/>
-        <text class="pwht-reference-number" x="472" y="73" font-size="8">{{ doc.certificate_number | default('', true) | e }}</text>
+        <text class="pwht-reference-number" x="472" y="73" font-size="8">{{ doc.name | e }}</text>
     </svg>
     <svg class="pwht-party-details" viewBox="0 0 595 842" xmlns="http://www.w3.org/2000/svg">
         <text x="61" y="110.2">{{ certificate.payer | e }}</text>
@@ -134,6 +134,7 @@ body:has(.pwht-certificate) {
             <text x="553.16" y="658" text-anchor="middle">{{ tax_total[1] }}</text>
         </g>
         <text class="pwht-tax-words" x="554" y="679" text-anchor="end" font-size="9">{{ certificate.tax_words | e }}</text>
+        <text class="pwht-issue-date" x="407" y="766" text-anchor="middle" font-size="9">{{ certificate.date | e }}</text>
         <g class="pwht-pnd-checks" fill="none" stroke="black" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
             {% set boxes = {'PND 2': (395.24, 228.44), 'PND 3': (472.34, 228.44), 'PND 53': (395.24, 246.89)} %}
             {% for pnd in certificate.pnd_types %}
