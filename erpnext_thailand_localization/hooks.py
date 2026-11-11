@@ -254,3 +254,10 @@ doc_events = {
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
+
+
+jinja = {
+	"methods": [
+		"erpnext_thailand_localization.templates.print_formats.withholding_tax_certificate.purchase_withholding_certificate",
+	],
+}
