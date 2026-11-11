@@ -258,6 +258,6 @@ doc_events = {
 
 jinja = {
 	"methods": [
-		"erpnext_thailand_localization.templates.print_formats.withholding_tax_certificate.sales_withholding_certificate",
+		"erpnext_thailand_localization.templates.print_formats.withholding_tax_certificate.purchase_withholding_certificate",
 	],
 }

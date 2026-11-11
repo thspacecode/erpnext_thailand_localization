@@ -5,8 +5,6 @@ import frappe
 from frappe.utils import getdate
 from num2words import num2words
 
-from erpnext_thailand_localization.thai_withholding_tax.service.pnd_filing import get_income_type_pnd
-
 
 def certificate_rows(items):
 	"""Combine entry amounts into the certificate's income rows."""
@@ -42,10 +40,10 @@ def certificate_address(address_name):
 	)
 
 
-def sales_withholding_certificate(doc):
-	"""Read payer and recipient data for a sales withholding certificate."""
+def purchase_withholding_certificate(doc):
+	"""Read payer and recipient data for a purchase withholding certificate."""
 	company = frappe.get_doc("Company", doc.company)
-	customer = frappe.get_doc("Customer", doc.customer)
+	supplier = frappe.get_doc("Supplier", doc.supplier)
 	addresses = frappe.get_all(
 		"Dynamic Link",
 		filters={"parenttype": "Address", "link_doctype": "Company", "link_name": doc.company},
@@ -63,18 +61,14 @@ def sales_withholding_certificate(doc):
 		else []
 	)
 	date = getdate(doc.payment_date) if doc.payment_date else None
-	pnd_types = {
-		get_income_type_pnd(item.income_type, company.get("custom_thai_withholding_tax_category"))
-		for item in doc.items
-	}
 	return frappe._dict(
-		pnd_types=pnd_types - {None},
-		payer=customer.customer_name or customer.name,
-		payer_tax_id="".join(c for c in (customer.tax_id or "") if c.isdigit()),
-		payer_address=certificate_address(doc.customer_address),
-		recipient=company.company_name or company.name,
-		recipient_tax_id="".join(c for c in (company.tax_id or "") if c.isdigit()),
-		recipient_address=certificate_address(company_address[0] if company_address else None),
+		pnd_types={doc.pnd} if doc.pnd else set(),
+		payer=company.company_name or company.name,
+		payer_tax_id="".join(c for c in (company.tax_id or "") if c.isdigit()),
+		payer_address=certificate_address(company_address[0] if company_address else None),
+		recipient=supplier.supplier_name or supplier.name,
+		recipient_tax_id="".join(c for c in (supplier.tax_id or "") if c.isdigit()),
+		recipient_address=certificate_address(doc.supplier_address),
 		date=f"{date.day:02d}/{date.month:02d}/{date.year + 543}" if date else "",
 		rows=certificate_rows(doc.items),
 		tax_words=num2words(Decimal(str(doc.total_tax_amount or 0)), lang="th", to="currency"),
