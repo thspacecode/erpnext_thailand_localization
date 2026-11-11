@@ -91,7 +91,7 @@ body:has(.pwht-certificate) {
 </style>
 <div class="pwht-certificate">
     <img class="pwht-certificate-background"
-         src="/assets/erpnext_thailand_localization/print_formats/withholding_tax_certificate.svg?v=909e802bae37"
+         src="/assets/erpnext_thailand_localization/print_formats/withholding_tax_certificate.svg?v=clean-date-line-2"
          alt="หนังสือรับรองการหักภาษี ณ ที่จ่าย ตามมาตรา 50 ทวิ">
     <svg class="pwht-certificate-reference" viewBox="0 0 595 842" xmlns="http://www.w3.org/2000/svg">
         <rect x="440" y="45" width="125" height="34" fill="white"/>
@@ -135,7 +135,6 @@ body:has(.pwht-certificate) {
         </g>
         <text class="pwht-tax-words" x="554" y="679" text-anchor="end" font-size="9">{{ certificate.tax_words | e }}</text>
         <g class="pwht-issue-date">
-            <rect x="333" y="758" width="146" height="13" fill="white"/>
             <path d="M 333 769 H 479" fill="none" stroke="black" stroke-width="0.6" stroke-dasharray="0.6 1.2"/>
             <text x="406" y="766" text-anchor="middle" font-size="9">{{ certificate.date | e }}</text>
         </g>
