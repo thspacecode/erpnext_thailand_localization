@@ -134,7 +134,11 @@ body:has(.pwht-certificate) {
             <text x="553.16" y="658" text-anchor="middle">{{ tax_total[1] }}</text>
         </g>
         <text class="pwht-tax-words" x="554" y="679" text-anchor="end" font-size="9">{{ certificate.tax_words | e }}</text>
-        <text class="pwht-issue-date" x="407" y="766" text-anchor="middle" font-size="9">{{ certificate.date | e }}</text>
+        <g class="pwht-issue-date">
+            <rect x="333" y="758" width="146" height="13" fill="white"/>
+            <path d="M 333 769 H 479" fill="none" stroke="black" stroke-width="0.6" stroke-dasharray="0.6 1.2"/>
+            <text x="406" y="766" text-anchor="middle" font-size="9">{{ certificate.date | e }}</text>
+        </g>
         <g class="pwht-pnd-checks" fill="none" stroke="black" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
             {% set boxes = {'PND 2': (395.24, 228.44), 'PND 3': (472.34, 228.44), 'PND 53': (395.24, 246.89)} %}
             {% for pnd in certificate.pnd_types %}
