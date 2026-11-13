@@ -1,0 +1,370 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "format:PP30-{YYYY}-{#####}",
+ "creation": "2026-11-13 09:23:02.698162",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "details_tab",
+  "taxpayer_section",
+  "company",
+  "taxpayer_name",
+  "tax_id",
+  "taxpayer_column",
+  "branch_no",
+  "company_tax_address",
+  "period_section",
+  "tax_year",
+  "tax_month",
+  "period_column",
+  "filing_date",
+  "reference_no",
+  "amounts_tab",
+  "amounts_section",
+  "use_branch_totals",
+  "branches",
+  "sales_amount",
+  "zero_rated_sales",
+  "exempt_sales",
+  "taxable_sales",
+  "amounts_column",
+  "output_vat",
+  "purchase_amount",
+  "input_vat",
+  "settlement_section",
+  "vat_payable_before_credit",
+  "excess_vat_before_credit",
+  "carried_forward_credit",
+  "settlement_column",
+  "vat_payable",
+  "excess_vat",
+  "more_info_tab",
+  "notes_section",
+  "remarks",
+  "connections_tab",
+  "entries_tab",
+  "purchase_entries",
+  "sales_entries",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "taxpayer_section",
+   "fieldtype": "Section Break",
+   "label": "Taxpayer"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "company.company_name",
+   "fieldname": "taxpayer_name",
+   "fieldtype": "Data",
+   "label": "Taxpayer Name",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "company.tax_id",
+   "fieldname": "tax_id",
+   "fieldtype": "Data",
+   "label": "Tax ID",
+   "length": 13,
+   "reqd": 1
+  },
+  {
+   "fieldname": "taxpayer_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "00000",
+   "fieldname": "branch_no",
+   "fieldtype": "Data",
+   "label": "Branch Number",
+   "length": 5,
+   "reqd": 1
+  },
+  {
+   "fieldname": "company_tax_address",
+   "fieldtype": "Link",
+   "label": "Company Tax Address",
+   "options": "Address",
+   "reqd": 1
+  },
+  {
+   "fieldname": "period_section",
+   "fieldtype": "Section Break",
+   "label": "Filing Period"
+  },
+  {
+   "fieldname": "tax_year",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Tax Year (Buddhist Era)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tax_month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Tax Month",
+   "options": "\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12",
+   "reqd": 1
+  },
+  {
+   "fieldname": "period_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "filing_date",
+   "fieldtype": "Date",
+   "label": "Filing Date"
+  },
+  {
+   "fieldname": "reference_no",
+   "fieldtype": "Data",
+   "label": "Reference Number"
+  },
+  {
+   "fieldname": "amounts_tab",
+   "fieldtype": "Tab Break",
+   "label": "VAT Amounts"
+  },
+  {
+   "description": "Normal filings from submitted VAT Entries. Amounts are in THB. Additional filings and electronic submission are not supported.",
+   "fieldname": "amounts_section",
+   "fieldtype": "Section Break",
+   "label": "Normal Filing Amounts"
+  },
+  {
+   "default": "0",
+   "fieldname": "use_branch_totals",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Use Branch Totals"
+  },
+  {
+   "depends_on": "eval:doc.use_branch_totals",
+   "fieldname": "branches",
+   "fieldtype": "Table",
+   "hidden": 1,
+   "label": "Branches",
+   "options": "PP30 Branch"
+  },
+  {
+   "fieldname": "sales_amount",
+   "fieldtype": "Currency",
+   "label": "1. Monthly Sales",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "zero_rated_sales",
+   "fieldtype": "Currency",
+   "label": "2. Zero-Rated Sales",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "exempt_sales",
+   "fieldtype": "Currency",
+   "label": "3. Exempt Sales",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "taxable_sales",
+   "fieldtype": "Currency",
+   "label": "4. Taxable Sales",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amounts_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "output_vat",
+   "fieldtype": "Currency",
+   "label": "5. Output VAT",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "purchase_amount",
+   "fieldtype": "Currency",
+   "label": "6. Monthly Purchases",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "input_vat",
+   "fieldtype": "Currency",
+   "label": "7. Input VAT",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "settlement_section",
+   "fieldtype": "Section Break",
+   "label": "VAT Settlement (THB)"
+  },
+  {
+   "fieldname": "vat_payable_before_credit",
+   "fieldtype": "Currency",
+   "label": "8. VAT Payable Before Credit",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "excess_vat_before_credit",
+   "fieldtype": "Currency",
+   "label": "9. Excess VAT Before Credit",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "carried_forward_credit",
+   "fieldtype": "Currency",
+   "label": "10. Credit Carried Forward",
+   "precision": "2"
+  },
+  {
+   "fieldname": "settlement_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "vat_payable",
+   "fieldtype": "Currency",
+   "label": "VAT Payable After Credit",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "excess_vat",
+   "fieldtype": "Currency",
+   "label": "Excess VAT After Credit",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "more_info_tab",
+   "fieldtype": "Tab Break",
+   "label": "More Info"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "connections_tab",
+   "fieldtype": "Tab Break",
+   "label": "Connections",
+   "show_dashboard": 1
+  },
+  {
+   "fieldname": "entries_tab",
+   "fieldtype": "Tab Break",
+   "label": "VAT Entries"
+  },
+  {
+   "fieldname": "purchase_entries",
+   "fieldtype": "Table",
+   "label": "Purchase VAT Entries",
+   "options": "PP30 Purchase Entry"
+  },
+  {
+   "fieldname": "sales_entries",
+   "fieldtype": "Table",
+   "label": "Sales VAT Entries",
+   "options": "PP30 Sales Entry"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "PP30",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-11-13 11:50:51.798616",
+ "modified_by": "Administrator",
+ "module": "Thai Value Added Tax",
+ "name": "PP30",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
