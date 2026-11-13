@@ -17,21 +17,29 @@ class PurchaseVATEntry(VATEntry):
 		amended_from: DF.Link | None
 		branch_code: DF.Data | None
 		company: DF.Link
+		company_address_display: DF.SmallText | None
+		company_branch_code: DF.Data | None
 		company_currency: DF.Link | None
 		company_tax_address: DF.Link | None
+		company_tax_id: DF.Data | None
+		company_taxpayer_name: DF.Data | None
+		generation_key: DF.Data | None
 		gl_entry: DF.Link | None
 		naming_series: DF.Literal["PVAT-.YYYY.-.#####"]
 		party: DF.Link
 		party_name: DF.Data | None
 		remarks: DF.SmallText | None
-		report_date: DF.Date
+		report_date: DF.Date | None
+		source_identity: DF.Data | None
 		tax_amount: DF.Currency
 		tax_base: DF.Currency
 		tax_id: DF.Data | None
 		tax_invoice_attachment: DF.Attach | None
-		tax_invoice_date: DF.Date
-		tax_invoice_number: DF.Data
+		tax_invoice_book: DF.Data | None
+		tax_invoice_date: DF.Date | None
+		tax_invoice_number: DF.Data | None
 		tax_rate: DF.Percent
+		vat_category: DF.Literal["Taxable", "Zero Rated", "Exempt"]
 		voucher_no: DF.DynamicLink
 		voucher_type: DF.Link
 	# end: auto-generated types

@@ -3,7 +3,7 @@
  "allow_bulk_edit": 1,
  "allow_rename": 1,
  "autoname": "naming_series:",
- "creation": "2026-11-11 16:37:48.331142",
+ "creation": "2026-11-13 14:17:45.456339",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -42,7 +42,15 @@
   "amended_from",
   "remarks_section",
   "remarks",
-  "connections_tab"
+  "connections_tab",
+  "tax_invoice_book",
+  "vat_category",
+  "company_taxpayer_name",
+  "company_tax_id",
+  "company_branch_code",
+  "company_address_display",
+  "generation_key",
+  "source_identity"
  ],
  "fields": [
   {
@@ -86,23 +94,20 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Tax Invoice Number",
-   "reqd": 1
+   "label": "Tax Invoice Number"
   },
   {
    "fieldname": "tax_invoice_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Tax Invoice Date",
-   "reqd": 1
+   "label": "Tax Invoice Date"
   },
   {
    "description": "Date used to select the VAT reporting period. This does not validate statutory claim deadlines.",
    "fieldname": "report_date",
    "fieldtype": "Date",
    "in_standard_filter": 1,
-   "label": "Report Date",
-   "reqd": 1
+   "label": "Report Date"
   },
   {
    "fieldname": "tax_invoice_attachment",
@@ -265,13 +270,65 @@
    "fieldtype": "Tab Break",
    "label": "Connections",
    "show_dashboard": 1
+  },
+  {
+   "fieldname": "tax_invoice_book",
+   "fieldtype": "Data",
+   "label": "Tax Invoice Book"
+  },
+  {
+   "default": "Taxable",
+   "fieldname": "vat_category",
+   "fieldtype": "Select",
+   "label": "VAT Category",
+   "options": "Taxable\nZero Rated\nExempt",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company_taxpayer_name",
+   "fieldtype": "Data",
+   "label": "Company Taxpayer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_tax_id",
+   "fieldtype": "Data",
+   "label": "Company Tax ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_branch_code",
+   "fieldtype": "Data",
+   "label": "Company Branch Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_address_display",
+   "fieldtype": "Small Text",
+   "label": "Company Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "generation_key",
+   "fieldtype": "Data",
+   "label": "Generation Key",
+   "no_copy": 1,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "source_identity",
+   "fieldtype": "Data",
+   "label": "Source Identity",
+   "no_copy": 1,
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-11 16:48:03.881465",
+ "modified": "2026-11-13 14:17:45.563797",
  "modified_by": "Administrator",
  "module": "Thai Value Added Tax",
  "name": "Purchase VAT Entry",

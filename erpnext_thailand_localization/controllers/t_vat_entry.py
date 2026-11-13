@@ -116,3 +116,69 @@ class VATEntryTest:
 					party.tax_id = "CHANGED"
 					entry.set_party_details()
 					self.assertEqual(entry.tax_id, "INVOICE-TAX-ID")
+
+		def test_validate_report_details(self):
+			"""Validate invoice identifiers and zero-VAT classifications before submission."""
+			entry = self.make_entry()
+			entry.update(
+				dict(
+					party_name="Invoice Name",
+					tax_invoice_number="TAX-1",
+					tax_invoice_date="2026-11-01",
+					report_date="2026-11-01",
+					tax_id="0105551234567",
+					branch_code="00000",
+					company_tax_id="0105557654321",
+					company_branch_code="00001",
+					vat_category="Taxable",
+				)
+			)
+			# Act and assert: Preserve a valid taxable entry, then reject one changed value.
+			entry.validate_report_details()
+			entry.tax_id = "123"
+			with self.assertRaisesRegex(frappe.ValidationError, "exactly 13 digits"):
+				entry.validate_report_details()
+			entry.tax_id = "0105551234567"
+			entry.vat_category = "Zero Rated"
+			with self.assertRaisesRegex(frappe.ValidationError, "must have zero VAT"):
+				entry.validate_report_details()
+
+		def test_set_company_details(self):
+			"""Copy establishment details and reject an address linked to another Company."""
+			entry = self.make_entry()
+			entry.company_tax_address = "Office"
+			company = frappe.get_doc(
+				doctype="Company", company_name="Company Name", tax_id="0105551234567", default_currency="THB"
+			)
+			address = frappe.get_doc(
+				doctype="Address",
+				branch_code="00001",
+				address_line1="1 Main Road",
+				city="Bangkok",
+				links=[dict(link_doctype="Company", link_name="Example")],
+			)
+			# Arrange: Mock only linked master reads and permissions, not the copy logic.
+			with (
+				patch("frappe.get_doc", side_effect=[company, address, company, address]),
+				patch.object(type(company), "check_permission"),
+				patch.object(type(address), "check_permission"),
+			):
+				entry.set_company_details()
+				self.assertEqual(entry.company_taxpayer_name, "Company Name")
+				self.assertEqual(entry.company_branch_code, "00001")
+				self.assertIn("1 Main Road", entry.company_address_display)
+				address.links[0].link_name = "Other"
+				with self.assertRaisesRegex(frappe.ValidationError, "must belong to the selected Company"):
+					entry.set_company_details()
+
+		def test_before_cancel(self):
+			"""Require cancellation of a submitted return before its source VAT Entry."""
+			entry = self.make_entry()
+			# Arrange: Simulate a submitted PP30 reference; this does not test database locking.
+			with (
+				patch("frappe.get_doc"),
+				patch("frappe.get_all", return_value=["PP30-1"]),
+				patch("frappe.db.exists", return_value="PP30-1"),
+			):
+				with self.assertRaisesRegex(frappe.ValidationError, "Cancel the submitted PP30"):
+					entry.before_cancel()

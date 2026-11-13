@@ -1,3 +1,4 @@
+from math import isfinite
 from typing import ClassVar, Literal
 
 import frappe
@@ -11,10 +12,17 @@ class VATEntry(Document):
 	direction: ClassVar[Literal["sales", "purchase"]]
 
 	def validate(self):
+		previous = self.get_doc_before_save()
+		if previous and any(
+			self.get(field) != previous.get(field) for field in ("generation_key", "source_identity")
+		):
+			frappe.throw(_("Generated VAT source identity cannot be changed."))
 		self.validate_account()
 		self.validate_source()
 		self.validate_amounts()
 		self.set_party_details()
+		if self.company_tax_address:
+			self.set_company_details()
 
 	def validate_account(self):
 		company = frappe.get_cached_doc("Company", self.company)
@@ -55,6 +63,8 @@ class VATEntry(Document):
 				)
 
 	def validate_amounts(self):
+		if not all(isfinite(flt(self.get(field))) for field in ("tax_base", "tax_amount")):
+			frappe.throw(_("VAT amounts must be finite numbers."))
 		if not flt(self.tax_base):
 			frappe.throw(_("Tax base must not be zero."))
 		if flt(self.tax_base) * flt(self.tax_amount) < 0:
@@ -66,6 +76,56 @@ class VATEntry(Document):
 		party.check_permission("read")
 		previous = self.get_doc_before_save()
 		if not previous or previous.party != self.party:
-			self.party_name = party.get(f"{self.party_type.lower()}_name")
+			self.party_name = self.party_name or party.get(f"{self.party_type.lower()}_name")
 			self.tax_id = self.tax_id or party.get("tax_id")
 			self.branch_code = self.branch_code or party.get("branch_code")
+
+	def before_submit(self):
+		self.set_party_details()
+		self.set_company_details()
+		self.validate_report_details()
+
+	def before_cancel(self):
+		frappe.get_doc(self.doctype, self.name, for_update=True)
+		child = "PP30 Purchase Entry" if self.direction == "purchase" else "PP30 Sales Entry"
+		rows = frappe.get_all(child, filters={"vat_entry": self.name, "parenttype": "PP30"}, pluck="parent")
+		if rows and frappe.db.exists("PP30", {"name": ["in", rows], "docstatus": 1}):
+			frappe.throw(_("Cancel the submitted PP30 before cancelling this VAT Entry."))
+
+	def set_company_details(self):
+		company = frappe.get_doc("Company", self.company)
+		company.check_permission("read")
+		if company.default_currency != "THB":
+			frappe.throw(_("VAT reporting requires Company currency THB."))
+		if not self.company_tax_address:
+			frappe.throw(_("Select a Company Tax Address before submitting."))
+		address = frappe.get_doc("Address", self.company_tax_address)
+		address.check_permission("read")
+		if not any(row.link_doctype == "Company" and row.link_name == self.company for row in address.links):
+			frappe.throw(_("Company Tax Address must belong to the selected Company."))
+		self.company_taxpayer_name = company.company_name
+		self.company_tax_id = company.tax_id
+		self.company_branch_code = address.get("branch_code")
+		self.company_address_display = ", ".join(
+			str(address.get(field))
+			for field in ("address_line1", "address_line2", "city", "state", "pincode", "country")
+			if address.get(field)
+		)
+
+	def validate_report_details(self):
+		for field in ("tax_invoice_number", "tax_invoice_date", "report_date"):
+			if not self.get(field):
+				frappe.throw(_("Tax invoice number, date and report date are required before submission."))
+		for label, value in ((_("Tax ID"), self.tax_id), (_("Company Tax ID"), self.company_tax_id)):
+			if not value or not value.isascii() or not value.isdigit() or len(value) != 13:
+				frappe.throw(_("{0} must contain exactly 13 digits.").format(label))
+		for label, value in (
+			(_("Branch Code"), self.branch_code),
+			(_("Company Branch Code"), self.company_branch_code),
+		):
+			if not value or not value.isascii() or not value.isdigit() or len(value) > 5:
+				frappe.throw(_("{0} must contain 1 to 5 digits.").format(label))
+		if not self.party_name:
+			frappe.throw(_("Party Name is required for VAT reporting."))
+		if self.vat_category != "Taxable" and flt(self.tax_amount):
+			frappe.throw(_("Zero-rated and exempt entries must have zero VAT."))
