@@ -16,6 +16,30 @@ erpnext_thailand_localization.thai_withholding_tax.pnd_filing = {
 
 	refresh(frm) {
 		frm.trigger("add_get_withholding_tax_entries_button");
+		if (frm.doc.docstatus === 1 && frm.perm.some((permission) => permission.read)) {
+			frm.add_custom_button(__("Export for RDPrep"), () => {
+				if (frm.is_dirty()) {
+					frappe.msgprint(__("Save your changes before exporting."));
+					return;
+				}
+				frappe.confirm(
+					__(
+						"Use pipe-delimited input with a header in RDPrep. Select Gregorian YYYY-MM-DD dates. Map columns by header name. Leave addressLine1Reference and addressLine2Reference unmapped. Review the street address in RDPrep before filing. Continue?"
+					),
+					() => {
+						const params = new URLSearchParams({
+							doctype: frm.doc.doctype,
+							name: frm.doc.name,
+						});
+						window.open(
+							`/api/method/erpnext_thailand_localization.thai_withholding_tax.service.rdprep_export.download_rdprep?${params}`,
+							"_blank",
+							"noopener"
+						);
+					}
+				);
+			});
+		}
 	},
 
 	company(frm) {
