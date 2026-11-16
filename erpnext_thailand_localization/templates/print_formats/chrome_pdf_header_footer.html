@@ -1,0 +1,12 @@
+{% if frappe.form_dict.get("format") in ["PP30 Summary", "PP30 Purchase VAT Report", "PP30 Sales VAT Report"] %}
+<!DOCTYPE html>
+<html lang="{{ lang | e }}" dir="{{ layout_direction | e }}">
+<head><meta charset="utf-8">
+{% for tag in head %}{{ tag | string }}{% endfor %}
+{% for tag in styles %}{{ tag | string }}{% endfor %}
+<style>body { margin: 0; padding: 0; } .wrapper { break-inside: avoid; } .wrapper + .wrapper { break-before: page; }</style>
+</head><body><div class="wrapper">{% for tag in content %}{{ tag | string }}{% endfor %}</div></body>
+</html>
+{% else %}
+{% include "frappe/templates/print_formats/chrome_pdf_header_footer.html" %}
+{% endif %}

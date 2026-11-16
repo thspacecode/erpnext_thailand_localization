@@ -1,0 +1,12 @@
+<style>
+@font-face { font-family: "Noto Sans Thai"; src: url("{{ frappe.utils.get_url('/assets/erpnext_thailand_localization/fonts/noto-sans-thai/noto-sans-thai-thai-400-normal.woff2') }}") format("woff2"); font-weight: 400; font-style: normal; }
+@page { size: A4; margin: 12mm; }
+.vat-print { font-family: "Noto Sans Thai", Tahoma, sans-serif; font-size: 11px; color: #111; }
+.vat-print h2, .vat-print .vat-center { text-align: center; }
+.vat-print table { width: 100%; border-collapse: collapse; margin-top: 6mm; }
+.vat-print th, .vat-print td { border: 1px solid #333; padding: 2mm; overflow-wrap: anywhere; }
+.vat-print thead { display: table-header-group; }
+.vat-print tr { break-inside: avoid; page-break-inside: avoid; }
+.vat-print .vat-money { text-align: right; white-space: nowrap; }
+.vat-print .vat-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm; margin-top: 4mm; }
+</style>

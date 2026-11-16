@@ -1,0 +1,9 @@
+{% if pp30_print %}
+<!DOCTYPE html>
+<html lang="{{ lang | e }}" dir="{{ layout_direction | e }}">
+<head><meta charset="utf-8"><title>{{ title | e }}</title></head>
+<body><main>{{ body }}</main></body>
+</html>
+{% else %}
+{% include "frappe/www/printview.html" %}
+{% endif %}

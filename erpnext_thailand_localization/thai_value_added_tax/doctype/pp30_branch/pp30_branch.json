@@ -1,0 +1,103 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-11-13 09:23:02.268170",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "branch_no",
+  "address_number",
+  "postal_code",
+  "sales_amount",
+  "zero_rated_sales",
+  "exempt_sales",
+  "taxable_sales",
+  "output_vat",
+  "purchase_amount",
+  "input_vat"
+ ],
+ "fields": [
+  {
+   "fieldname": "branch_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch Number",
+   "length": 5,
+   "reqd": 1
+  },
+  {
+   "fieldname": "address_number",
+   "fieldtype": "Data",
+   "label": "Address Number",
+   "length": 20
+  },
+  {
+   "fieldname": "postal_code",
+   "fieldtype": "Data",
+   "label": "Postal Code",
+   "length": 5
+  },
+  {
+   "fieldname": "sales_amount",
+   "fieldtype": "Currency",
+   "label": "1. Monthly Sales",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "zero_rated_sales",
+   "fieldtype": "Currency",
+   "label": "2. Zero-Rated Sales",
+   "precision": "2"
+  },
+  {
+   "fieldname": "exempt_sales",
+   "fieldtype": "Currency",
+   "label": "3. Exempt Sales",
+   "precision": "2"
+  },
+  {
+   "fieldname": "taxable_sales",
+   "fieldtype": "Currency",
+   "label": "4. Taxable Sales",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "output_vat",
+   "fieldtype": "Currency",
+   "label": "5. Output VAT",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purchase_amount",
+   "fieldtype": "Currency",
+   "label": "6. Monthly Purchases",
+   "precision": "2"
+  },
+  {
+   "fieldname": "input_vat",
+   "fieldtype": "Currency",
+   "label": "7. Input VAT",
+   "precision": "2"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-11-13 09:23:02.268170",
+ "modified_by": "Administrator",
+ "module": "Thai Value Added Tax",
+ "name": "PP30 Branch",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

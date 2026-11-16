@@ -1,0 +1,22 @@
+{% include "erpnext_thailand_localization/templates/print_formats/components/vat_style.html.jinja" %}
+{% set entries = doc.get_report_entries(entry_table) %}
+{% set first = entries[0] if entries else none %}
+<div class="vat-print">
+<h2>{{ "รายงานภาษีซื้อ" if entry_table == "purchase_entries" else "รายงานภาษีขาย" }}</h2>
+<p class="vat-center">เดือนภาษี {{ doc.tax_month | e }} ปี {{ doc.tax_year | e }}</p>
+<div class="vat-meta">
+<div>ชื่อผู้ประกอบการ {{ (first.company_taxpayer_name if first else doc.taxpayer_name) | e }}</div>
+<div>เลขประจำตัวผู้เสียภาษีอากร {{ (first.company_tax_id if first else doc.tax_id) | e }}</div>
+<div>สถานประกอบการ {{ (first.company_address_display if first else "") | e }}</div>
+<div>{{ "สำนักงานใหญ่" if doc.branch_no | int == 0 else "สาขาที่ " ~ doc.branch_no }}</div>
+</div>
+<p>{{ doc.name | e }} — {{ "Draft" if doc.docstatus == 0 else "Submitted" if doc.docstatus == 1 else "Cancelled" }}</p>
+<table>
+<thead><tr><th>ลำดับที่</th><th>วัน เดือน ปี</th><th>เลขที่ / เล่มที่</th><th>{{ "ชื่อผู้ขายสินค้า / ผู้ให้บริการ" if entry_table == "purchase_entries" else "ชื่อผู้ซื้อสินค้า / ผู้รับบริการ" }}</th><th>เลขประจำตัวผู้เสียภาษีอากร</th><th>สถานประกอบการ</th><th>มูลค่าสินค้าหรือบริการ</th><th>จำนวนเงินภาษีมูลค่าเพิ่ม</th></tr></thead>
+<tbody>
+{% for entry in entries %}
+<tr><td>{{ loop.index }}</td><td>{{ frappe.utils.formatdate(entry.tax_invoice_date, "dd/MM/yyyy") }}</td><td>{{ entry.tax_invoice_number | e }}{% if entry.tax_invoice_book %} / {{ entry.tax_invoice_book | e }}{% endif %}</td><td>{{ entry.party_name | e }}</td><td>{{ entry.tax_id | e }}</td><td>{{ "สำนักงานใหญ่" if entry.branch_code | int == 0 else entry.branch_code | e }}</td><td class="vat-money">{{ frappe.format(entry.tax_base, {"fieldtype": "Currency", "precision": 2}) }}</td><td class="vat-money">{{ frappe.format(entry.tax_amount, {"fieldtype": "Currency", "precision": 2}) }}</td></tr>
+{% endfor %}
+<tr><td colspan="6">รวม</td><td class="vat-money">{{ frappe.format(entries | sum(attribute="tax_base"), {"fieldtype": "Currency", "precision": 2}) }}</td><td class="vat-money">{{ frappe.format(entries | sum(attribute="tax_amount"), {"fieldtype": "Currency", "precision": 2}) }}</td></tr>
+</tbody></table>
+</div>

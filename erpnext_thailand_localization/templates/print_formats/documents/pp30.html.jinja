@@ -1,0 +1,16 @@
+{% include "erpnext_thailand_localization/templates/print_formats/components/vat_style.html.jinja" %}
+<div class="vat-print">
+<h2>ภ.พ.30 — สรุปการเตรียมแบบ</h2>
+<p class="vat-center">{{ _("Preparation summary. Not an official filing receipt.") }}</p>
+<div class="vat-meta">
+<div>{{ doc.taxpayer_name | e }}</div><div>{{ doc.tax_id | e }}</div>
+<div>เดือนภาษี {{ doc.tax_month | e }} ปี {{ doc.tax_year | e }}</div>
+<div>{{ "สำนักงานใหญ่" if doc.branch_no | int == 0 else "สาขาที่ " ~ doc.branch_no }}</div>
+<div>{{ doc.name | e }}</div><div>{{ "Draft" if doc.docstatus == 0 else "Submitted" if doc.docstatus == 1 else "Cancelled" }}</div>
+</div>
+<table><thead><tr><th>{{ _("Description") }}</th><th>THB</th></tr></thead><tbody>
+{% for field in ["sales_amount", "zero_rated_sales", "exempt_sales", "taxable_sales", "output_vat", "purchase_amount", "input_vat", "vat_payable_before_credit", "excess_vat_before_credit", "carried_forward_credit", "vat_payable", "excess_vat"] %}
+<tr><td>{{ _(doc.meta.get_label(field)) }}</td><td class="vat-money">{{ doc.get_formatted(field) }}</td></tr>
+{% endfor %}
+</tbody></table>
+</div>
