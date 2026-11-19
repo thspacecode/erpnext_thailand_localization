@@ -54,6 +54,8 @@ def group_rows(rows):
 				"report_date",
 				"vat_category",
 				"rate",
+				"undue_vat_account",
+				"conversion_cost_center",
 			)
 		)
 		if key not in groups:
@@ -111,6 +113,9 @@ def create_entries(source, rows):
 			"tax_amount",
 		):
 			entry.set(field, row.get(field))
+		if doctype == "Purchase VAT Entry":
+			entry.undue_vat_account = row.get("undue_vat_account")
+			entry.conversion_cost_center = row.get("conversion_cost_center")
 		entry.update(
 			dict(
 				company=source.company,

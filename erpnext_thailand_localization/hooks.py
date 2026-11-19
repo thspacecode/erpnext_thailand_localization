@@ -159,16 +159,6 @@ app_include_js = "/assets/erpnext_thailand_localization/js/pnd_filing.js"
 # Hook on document methods and events
 
 doc_events = {
-	"Purchase Invoice": {
-		"before_validate": "erpnext_thailand_localization.doc_events.purchase_invoice.validate_conversion_link",
-		"before_update_after_submit": "erpnext_thailand_localization.doc_events.purchase_invoice.validate_conversion_link",
-		"on_submit": "erpnext_thailand_localization.doc_events.purchase_invoice.convert_purchase_vat",
-		"on_update_after_submit": "erpnext_thailand_localization.doc_events.purchase_invoice.convert_purchase_vat",
-		"before_cancel": "erpnext_thailand_localization.doc_events.purchase_invoice.cancel_purchase_vat",
-	},
-	"Journal Entry": {
-		"before_cancel": "erpnext_thailand_localization.doc_events.purchase_invoice.validate_conversion_cancellation",
-	},
 	"Address": {"validate": "erpnext_thailand_localization.thai_withholding_tax.address.validate_address"},
 }
 
