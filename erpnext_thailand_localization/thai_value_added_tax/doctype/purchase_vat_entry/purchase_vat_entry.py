@@ -69,19 +69,21 @@ class PurchaseVATEntry(VATEntry):
 		if (
 			previous
 			and previous.undue_vat_account
-			and any(
-				self.get(field) != previous.get(field)
-				for field in (
-					"undue_vat_account",
-					"account",
-					"conversion_cost_center",
-					"tax_base",
-					"tax_amount",
-					"voucher_type",
-					"voucher_no",
-					"party",
-					"tax_invoice_number",
-					"tax_invoice_date",
+			and (
+				getdate(self.tax_invoice_date) != getdate(previous.tax_invoice_date)
+				or any(
+					self.get(field) != previous.get(field)
+					for field in (
+						"undue_vat_account",
+						"account",
+						"conversion_cost_center",
+						"tax_base",
+						"tax_amount",
+						"voucher_type",
+						"voucher_no",
+						"party",
+						"tax_invoice_number",
+					)
 				)
 			)
 		):
