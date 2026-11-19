@@ -65,6 +65,8 @@ class TestVatConversion(TestCase):
 						"erpnext_thailand_localization.thai_value_added_tax.service.vat_conversion.validate_undue_vat_items"
 					) as validate,
 					patch.object(frappe, "get_doc") as get_doc,
+					# Keep rounding settings outside the mocked document lookups.
+					patch.object(frappe, "get_system_settings", return_value="Commercial Rounding"),
 				):
 					# Act: Build a plain payload; never create or save a Document.
 					entry = get_undue_vat_conversion_entry(invoice, conversion_ratio=ratio)
