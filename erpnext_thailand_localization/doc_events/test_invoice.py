@@ -13,8 +13,8 @@ def raise_validation_error(message):
 
 class TestInvoiceUndueVat(TestCase):
 	def test_validate_undue_vat_items(self):
-		"""Check both directions, all rows, template detection, and direct-account detection."""
-		for doctype, direction in (("Sales Invoice", "sales"), ("Purchase Invoice", "purchase")):
+		"""Keep sales restrictions on all rows and both detection paths."""
+		for doctype, direction in (("Sales Invoice", "sales"),):
 			with self.subTest(doctype=doctype):
 				# Arrange: Mock Company lookup and eligibility; resolver has separate tests.
 				company = frappe._dict(
@@ -32,8 +32,8 @@ class TestInvoiceUndueVat(TestCase):
 					taxes=[],
 					items=[frappe._dict(idx=1, item_code="SERVICE"), frappe._dict(idx=2, item_code="PAPER")],
 				)
-				allowed = {"allow_sales": True, "allow_purchase": True}
-				disallowed = {"allow_sales": True, "allow_purchase": True, f"allow_{direction}": False}
+				allowed = {"allow_sales": True}
+				disallowed = {"allow_sales": False}
 				with (
 					patch(
 						"erpnext_thailand_localization.doc_events.invoice.frappe.get_cached_doc",
@@ -76,3 +76,12 @@ class TestInvoiceUndueVat(TestCase):
 					doc.items = [frappe._dict(idx=1, item_code=None)]
 					with self.assertRaisesRegex(frappe.ValidationError, "Row 1: Select an Item"):
 						validate_undue_vat_items(doc)
+
+	def test_purchase_has_no_item_restriction(self):
+		"""Purchase undue VAT never reads Item allowances."""
+		# Arrange: A purchase invoice must bypass the sales-only eligibility resolver.
+		doc = frappe._dict(doctype="Purchase Invoice")
+		with patch("erpnext_thailand_localization.doc_events.invoice.fetch_undue_vat_detail") as resolve:
+			# Act and assert: No Item lookup is needed, even for free-text rows.
+			validate_undue_vat_items(doc)
+			resolve.assert_not_called()

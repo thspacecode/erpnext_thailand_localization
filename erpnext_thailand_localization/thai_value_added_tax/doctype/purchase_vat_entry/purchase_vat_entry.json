@@ -50,7 +50,9 @@
   "company_branch_code",
   "company_address_display",
   "generation_key",
-  "source_identity"
+  "source_identity",
+  "undue_vat_account",
+  "conversion_cost_center"
  ],
  "fields": [
   {
@@ -322,13 +324,27 @@
    "label": "Source Identity",
    "no_copy": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "undue_vat_account",
+   "fieldtype": "Link",
+   "label": "Undue VAT Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "conversion_cost_center",
+   "fieldtype": "Link",
+   "label": "Conversion Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-13 14:17:45.563797",
+ "modified": "2026-11-19 15:57:57.571965",
  "modified_by": "Administrator",
  "module": "Thai Value Added Tax",
  "name": "Purchase VAT Entry",

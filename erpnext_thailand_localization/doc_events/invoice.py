@@ -8,8 +8,8 @@ from erpnext_thailand_localization.thai_value_added_tax.service.undue_value_adde
 
 
 def validate_undue_vat_items(doc: Document, method: str | None = None) -> None:
-	"""Require every invoice Item to allow the applicable undue VAT direction."""
-	if doc.doctype not in ("Sales Invoice", "Purchase Invoice"):
+	"""Require sales invoice Items to allow undue sales VAT."""
+	if doc.doctype != "Sales Invoice":
 		return
 
 	direction = "sales" if doc.doctype == "Sales Invoice" else "purchase"
