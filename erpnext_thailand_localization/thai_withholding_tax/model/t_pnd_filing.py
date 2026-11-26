@@ -5,15 +5,15 @@ import frappe
 
 from erpnext_thailand_localization.tests.factories import (
 	CompanyAddressFactory,
-	PurchaseWithholdingTaxEntryFactory,
+	PurchaseWHTEntryFactory,
 )
 from erpnext_thailand_localization.tests.utils import ERPNextThaiTestSuite
 
 if TYPE_CHECKING:
 	from frappe.contacts.doctype.address.address import Address
 
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
-		PurchaseWithholdingTaxEntry,
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_wht_entry.purchase_wht_entry import (
+		PurchaseWHTEntry,
 	)
 	from erpnext_thailand_localization.thai_withholding_tax.model.pnd_filing import PNDFiling
 
@@ -35,17 +35,15 @@ class PNDFilingTest:
 				return "Aaron Grandy", "Aaron Grandy-Billing"
 			return "Hammermill Paper Company", "Hammermill Paper Company-Billing"
 
-		def create_source(
-			self, submit: bool = False, opposite_pnd: bool = False
-		) -> "PurchaseWithholdingTaxEntry":
+		def create_source(self, submit: bool = False, opposite_pnd: bool = False) -> "PurchaseWHTEntry":
 			supplier, supplier_address = self.get_supplier(opposite_pnd=opposite_pnd)
-			return PurchaseWithholdingTaxEntryFactory.create(
+			return PurchaseWHTEntryFactory.create(
 				supplier=supplier,
 				supplier_address=supplier_address,
 				submit=submit,
 			)
 
-		def get_filing_for_source(self, source: "PurchaseWithholdingTaxEntry") -> "PNDFiling":
+		def get_filing_for_source(self, source: "PurchaseWHTEntry") -> "PNDFiling":
 			doc = self.get_base_doc()
 			doc.update(
 				{

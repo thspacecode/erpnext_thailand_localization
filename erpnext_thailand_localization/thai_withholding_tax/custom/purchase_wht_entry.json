@@ -1,7 +1,7 @@
 {
  "custom_fields": [],
  "custom_perms": [],
- "doctype": "Purchase Withholding Tax Entry",
+ "doctype": "Purchase WHT Entry",
  "links": [],
  "property_setters": [
   {
@@ -11,7 +11,7 @@
    "_user_tags": null,
    "creation": "2026-11-11 19:06:34.342176",
    "default_value": null,
-   "doc_type": "Purchase Withholding Tax Entry",
+   "doc_type": "Purchase WHT Entry",
    "docstatus": 0,
    "doctype_or_field": "DocType",
    "field_name": null,
@@ -20,7 +20,7 @@
    "modified": "2026-11-11 19:06:34.342176",
    "modified_by": "Administrator",
    "module": "Thai Withholding Tax",
-   "name": "Purchase Withholding Tax Entry-main-default_print_format",
+   "name": "Purchase WHT Entry-main-default_print_format",
    "owner": "Administrator",
    "property": "default_print_format",
    "property_type": "Data",

@@ -3,7 +3,4 @@
 
 /* global erpnext_thailand_localization */
 
-frappe.ui.form.on(
-	"Thai PND 53 Filing",
-	erpnext_thailand_localization.thai_withholding_tax.pnd_filing
-);
+frappe.ui.form.on("PND53 Filing", erpnext_thailand_localization.thai_withholding_tax.pnd_filing);

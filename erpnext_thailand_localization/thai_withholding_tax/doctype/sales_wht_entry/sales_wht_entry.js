@@ -5,7 +5,7 @@
 
 frappe.provide("erpnext.utils");
 
-frappe.ui.form.on("Purchase Withholding Tax Entry", {
+frappe.ui.form.on("Sales WHT Entry", {
 	setup(frm) {
 		frm.trigger("set_queries");
 	},
@@ -19,15 +19,15 @@ frappe.ui.form.on("Purchase Withholding Tax Entry", {
 	},
 
 	set_queries(frm) {
-		frm.set_query("supplier_address", () => ({
+		frm.set_query("customer_address", () => ({
 			query: "frappe.contacts.doctype.address.address.address_query",
-			filters: { link_doctype: "Supplier", link_name: frm.doc.supplier },
+			filters: { link_doctype: "Customer", link_name: frm.doc.customer },
 		}));
 		frm.set_query("income_type", "items", () => ({ filters: { disabled: 0 } }));
 	},
 
 	add_get_items_from_payment_entry_button(frm) {
-		if (frm.doc.docstatus === 0 && frm.doc.company && frm.doc.supplier) {
+		if (frm.doc.docstatus === 0 && frm.doc.company) {
 			frm.add_custom_button(
 				__("Payment Entry"),
 				() => frm.trigger("get_items_from_payment_entry"),
@@ -38,23 +38,34 @@ frappe.ui.form.on("Purchase Withholding Tax Entry", {
 
 	get_items_from_payment_entry(frm) {
 		erpnext.utils.map_current_doc({
-			method: "erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry.make_purchase_withholding_tax_entry",
+			method: "erpnext_thailand_localization.thai_withholding_tax.doctype.sales_wht_entry.sales_wht_entry.make_sales_withholding_tax_entry",
 			source_doctype: "Payment Entry",
 			target: frm,
 			date_field: "posting_date",
-			setters: {
-				company: frm.doc.company || undefined,
-				party: frm.doc.supplier || undefined,
-			},
-			read_only_setters: ["company", "party"],
+			setters: [
+				{
+					fieldname: "company",
+					fieldtype: "Link",
+					label: __("Company"),
+					options: "Company",
+					default: frm.doc.company,
+					read_only: 1,
+				},
+				{
+					fieldname: "party",
+					fieldtype: "Link",
+					label: __("Customer"),
+					options: "Customer",
+					default: frm.doc.customer || undefined,
+					read_only: Boolean(frm.doc.customer),
+				},
+			],
 			get_query_method:
 				"erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.get_payment_entries_with_pending_withholding_tax",
 			get_query_filters: {
 				docstatus: 1,
-				payment_type: "Pay",
-				party_type: "Supplier",
-				company: frm.doc.company,
-				party: frm.doc.supplier,
+				payment_type: "Receive",
+				party_type: "Customer",
 			},
 		});
 	},

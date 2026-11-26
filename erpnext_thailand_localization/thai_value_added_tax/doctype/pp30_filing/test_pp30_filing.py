@@ -5,12 +5,12 @@ import frappe
 from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
 
 
-class TestPP30(ERPNextThaiTestSuite):
+class TestPP30Filing(ERPNextThaiTestSuite):
 	def test_calculate_amounts(self):
 		"""Calculate normal-filing VAT and apply prior-period credit without a fixed tax rate."""
 		# Arrange: Sales contain 200 zero-rated and 100 exempt; credit is 10.
 		doc = frappe.get_doc(
-			doctype="PP30",
+			doctype="PP30 Filing",
 			sales_amount=1000,
 			zero_rated_sales=200,
 			exempt_sales=100,
@@ -33,7 +33,7 @@ class TestPP30(ERPNextThaiTestSuite):
 		"""Sum branch amounts and reject equivalent branch numbers with different padding."""
 		# Arrange: Two branch rows replace a stale parent sales value.
 		doc = frappe.get_doc(
-			doctype="PP30",
+			doctype="PP30 Filing",
 			use_branch_totals=1,
 			sales_amount=999,
 			branches=[
@@ -66,7 +66,7 @@ class TestPP30(ERPNextThaiTestSuite):
 	def test_invalid_amounts(self):
 		"""Reject negative amounts and sales categories that exceed total sales."""
 		# Arrange: A valid baseline uses entered VAT amounts.
-		doc = frappe.get_doc(doctype="PP30", sales_amount=100, zero_rated_sales=20)
+		doc = frappe.get_doc(doctype="PP30 Filing", sales_amount=100, zero_rated_sales=20)
 		doc.calculate_amounts()
 		# Act and assert: Change one condition at a time.
 		doc.output_vat = -1
@@ -80,7 +80,7 @@ class TestPP30(ERPNextThaiTestSuite):
 	def test_validate_taxpayer(self):
 		"""Require an explicit Buddhist Era year and numeric taxpayer identifiers."""
 		# Arrange: Validate identifiers without creating Company master data.
-		doc = frappe.get_doc(doctype="PP30", tax_id="0105551234567", tax_year=2569, branch_no="00000")
+		doc = frappe.get_doc(doctype="PP30 Filing", tax_id="0105551234567", tax_year=2569, branch_no="00000")
 		doc.validate_taxpayer()
 		# Act and assert: A Gregorian year must not be silently reinterpreted.
 		doc.tax_year = 2026
@@ -92,7 +92,7 @@ class TestPP30(ERPNextThaiTestSuite):
 		from unittest.mock import patch
 
 		doc = frappe.get_doc(
-			doctype="PP30",
+			doctype="PP30 Filing",
 			company="Example",
 			company_tax_address="Office",
 			tax_id="0105551234567",
@@ -155,7 +155,7 @@ class TestPP30(ERPNextThaiTestSuite):
 		"""Ignore the current return when checking submitted allocations."""
 		from unittest.mock import patch
 
-		doc = frappe.get_doc(doctype="PP30", name="PP30-1")
+		doc = frappe.get_doc(doctype="PP30 Filing", name="PP30-1")
 		# Arrange and assert: The current parent alone is not a conflicting return.
 		with patch("frappe.get_all", return_value=["PP30-1"]), patch("frappe.db.exists") as exists:
 			self.assertIsNone(doc.get_other_return("Purchase VAT Entry", "P1"))
@@ -166,7 +166,7 @@ class TestPP30(ERPNextThaiTestSuite):
 		from unittest.mock import patch
 
 		doc = frappe.get_doc(
-			doctype="PP30",
+			doctype="PP30 Filing",
 			company="Example",
 			company_tax_address="Office",
 			tax_year=2569,
@@ -193,7 +193,7 @@ class TestPP30(ERPNextThaiTestSuite):
 		from unittest.mock import patch
 
 		doc = frappe.get_doc(
-			doctype="PP30", name="PP30-PRINT", tax_year=2569, tax_month="01", branch_no="00000"
+			doctype="PP30 Filing", name="PP30-PRINT", tax_year=2569, tax_month="01", branch_no="00000"
 		)
 		entry = frappe._dict(
 			company_taxpayer_name="Company",

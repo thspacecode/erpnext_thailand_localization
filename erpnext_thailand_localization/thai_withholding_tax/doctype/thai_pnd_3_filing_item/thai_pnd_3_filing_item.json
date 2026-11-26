@@ -56,8 +56,8 @@
    "fieldname": "purchase_withholding_tax_entry",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Purchase Withholding Tax Entry",
-   "options": "Purchase Withholding Tax Entry",
+   "label": "Purchase WHT Entry",
+   "options": "Purchase WHT Entry",
    "read_only": 1,
    "reqd": 1
   },

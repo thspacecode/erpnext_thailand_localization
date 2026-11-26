@@ -302,7 +302,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "PP30",
+   "options": "PP30 Filing",
    "read_only": 1
   }
  ],
@@ -313,7 +313,7 @@
  "modified": "2026-11-13 11:50:51.798616",
  "modified_by": "Administrator",
  "module": "Thai Value Added Tax",
- "name": "PP30",
+ "name": "PP30 Filing",
  "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [

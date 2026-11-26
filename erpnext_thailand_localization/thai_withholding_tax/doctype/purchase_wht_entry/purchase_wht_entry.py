@@ -15,7 +15,7 @@ from erpnext_thailand_localization.thai_withholding_tax.service.payment_entry im
 )
 
 
-class PurchaseWithholdingTaxEntry(WithholdingTaxEntry):
+class PurchaseWHTEntry(WithholdingTaxEntry):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -63,12 +63,12 @@ class PurchaseWithholdingTaxEntry(WithholdingTaxEntry):
 @frappe.whitelist()
 def make_purchase_withholding_tax_entry(
 	source_name: str,
-	target_doc: str | PurchaseWithholdingTaxEntry | None = None,
+	target_doc: str | PurchaseWHTEntry | None = None,
 	kwargs: Mapping[str, Any] | None = None,
-) -> PurchaseWithholdingTaxEntry:
+) -> PurchaseWHTEntry:
 	return make_withholding_tax_entry(
 		source_name=source_name,
-		target_doctype="Purchase Withholding Tax Entry",
+		target_doctype="Purchase WHT Entry",
 		payment_type="Pay",
 		party_type="Supplier",
 		party_field="supplier",

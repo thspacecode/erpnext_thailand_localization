@@ -16,8 +16,8 @@ class TestPaymentEntryDashboard(UnitTestCase):
 		self.assertEqual(
 			result.non_standard_fieldnames,
 			{
-				"Sales Withholding Tax Entry": "reference_doc",
-				"Purchase Withholding Tax Entry": "reference_doc",
+				"Sales WHT Entry": "reference_doc",
+				"Purchase WHT Entry": "reference_doc",
 			},
 		)
 		self.assertEqual(
@@ -30,8 +30,8 @@ class TestPaymentEntryDashboard(UnitTestCase):
 				{
 					"label": _("Withholding Tax"),
 					"items": [
-						"Sales Withholding Tax Entry",
-						"Purchase Withholding Tax Entry",
+						"Sales WHT Entry",
+						"Purchase WHT Entry",
 					],
 				}
 			],

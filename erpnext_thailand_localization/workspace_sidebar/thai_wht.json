@@ -24,7 +24,7 @@
    "indent": 0,
    "keep_closed": 0,
    "label": "Sales WHT Entry",
-   "link_to": "Sales Withholding Tax Entry",
+   "link_to": "Sales WHT Entry",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
@@ -36,7 +36,7 @@
    "indent": 0,
    "keep_closed": 0,
    "label": "Purchase WHT Entry",
-   "link_to": "Purchase Withholding Tax Entry",
+   "link_to": "Purchase WHT Entry",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
@@ -59,7 +59,7 @@
    "indent": 0,
    "keep_closed": 0,
    "label": "PND 3 Filing",
-   "link_to": "Thai PND 3 Filing",
+   "link_to": "PND3 Filing",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
@@ -71,7 +71,7 @@
    "indent": 0,
    "keep_closed": 0,
    "label": "PND 53 Filing",
-   "link_to": "Thai PND 53 Filing",
+   "link_to": "PND53 Filing",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"

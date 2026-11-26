@@ -7,21 +7,21 @@ from frappe.utils import add_days, add_months, get_first_day, getdate
 from erpnext_thailand_localization.types import Json
 
 if TYPE_CHECKING:
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.thai_pnd_3_filing.thai_pnd_3_filing import (
-		ThaiPND3Filing,
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.pnd3_filing.pnd3_filing import (
+		PND3Filing,
+	)
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.pnd53_filing.pnd53_filing import (
+		PND53Filing,
 	)
 	from erpnext_thailand_localization.thai_withholding_tax.doctype.thai_pnd_3_filing_item.thai_pnd_3_filing_item import (
 		ThaiPND3FilingItem,
-	)
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.thai_pnd_53_filing.thai_pnd_53_filing import (
-		ThaiPND53Filing,
 	)
 	from erpnext_thailand_localization.thai_withholding_tax.doctype.thai_pnd_53_filing_item.thai_pnd_53_filing_item import (
 		ThaiPND53FilingItem,
 	)
 
 	type EligibleFilingItem = ThaiPND3FilingItem | ThaiPND53FilingItem
-	type Filing = ThaiPND3Filing | ThaiPND53Filing
+	type Filing = PND3Filing | PND53Filing
 
 
 def get_income_type_pnd(income_type: str | None, category: str | None) -> str | None:
@@ -41,8 +41,8 @@ def get_income_type_pnd(income_type: str | None, category: str | None) -> str | 
 
 def get_filing_pnd_type(return_doctype: str) -> str:
 	form_types = {
-		"Thai PND 3 Filing": "PND 3",
-		"Thai PND 53 Filing": "PND 53",
+		"PND3 Filing": "PND 3",
+		"PND53 Filing": "PND 53",
 	}
 	if return_doctype not in form_types:
 		frappe.throw(_("Unsupported PND filing type."))
@@ -71,7 +71,7 @@ def get_eligible_items(
 		source_filters["name"] = ["in", source_names]
 
 	sources = frappe.get_all(
-		"Purchase Withholding Tax Entry",
+		"Purchase WHT Entry",
 		filters=source_filters,
 		pluck="name",
 		order_by="payment_date, name",
@@ -85,7 +85,7 @@ def get_eligible_items(
 
 	result = []
 	for source_name in sources:
-		source = frappe.get_doc("Purchase Withholding Tax Entry", source_name)
+		source = frappe.get_doc("Purchase WHT Entry", source_name)
 		for item in source.items:
 			if item.name in filed_items:
 				continue
@@ -116,8 +116,8 @@ def get_unfiled_purchase_withholding_tax_entries(
 	filters: dict[str, object],
 	as_dict: bool = False,
 ) -> list[object]:
-	if doctype != "Purchase Withholding Tax Entry":
-		frappe.throw(_("Only Purchase Withholding Tax Entry documents are supported."))
+	if doctype != "Purchase WHT Entry":
+		frappe.throw(_("Only Purchase WHT Entry documents are supported."))
 
 	query_filters = dict(filters)
 	return_doctype = str(query_filters.pop("return_doctype", ""))
@@ -133,9 +133,9 @@ def get_unfiled_purchase_withholding_tax_entries(
 		return []
 
 	query_filters["docstatus"] = 1
-	purchase_withholding_tax_entry = frappe.qb.DocType("Purchase Withholding Tax Entry")
+	purchase_withholding_tax_entry = frappe.qb.DocType("Purchase WHT Entry")
 	query = frappe.qb.get_query(
-		"Purchase Withholding Tax Entry",
+		"Purchase WHT Entry",
 		fields=["name", "company", "payment_date", "supplier"],
 		filters=query_filters,
 		ignore_permissions=False,
@@ -168,7 +168,7 @@ def add_purchase_withholding_tax_entry_to_filing(
 	if not target_doc.company or not target_doc.tax_period:
 		frappe.throw(_("Please set Company and Tax Period first."))
 
-	source = frappe.get_doc("Purchase Withholding Tax Entry", source_name)
+	source = frappe.get_doc("Purchase WHT Entry", source_name)
 	source.check_permission("read")
 	eligible_items = get_eligible_items(
 		target_doc.doctype,
@@ -182,7 +182,7 @@ def add_purchase_withholding_tax_entry_to_filing(
 	]
 	if not eligible_items:
 		frappe.throw(
-			_("Purchase Withholding Tax Entry {0} has no unfiled items eligible for this filing.").format(
+			_("Purchase WHT Entry {0} has no unfiled items eligible for this filing.").format(
 				frappe.bold(source_name)
 			)
 		)

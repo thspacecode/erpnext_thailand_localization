@@ -4,21 +4,21 @@
 from typing import TYPE_CHECKING
 
 from erpnext_thailand_localization.tests.factories import (
-	PurchaseWithholdingTaxEntryFactory,
+	PurchaseWHTEntryFactory,
 )
 from erpnext_thailand_localization.thai_withholding_tax.model.t_withholding_tax_entry import (
 	WithholdingTaxEntryTest,
 )
 
 if TYPE_CHECKING:
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
-		PurchaseWithholdingTaxEntry,
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_wht_entry.purchase_wht_entry import (
+		PurchaseWHTEntry,
 	)
 
 
-class IntegrationTestPurchaseWithholdingTaxEntry(WithholdingTaxEntryTest.TestCase):
-	def get_base_doc(self) -> "PurchaseWithholdingTaxEntry":
-		return PurchaseWithholdingTaxEntryFactory.build(
+class IntegrationTestPurchaseWHTEntry(WithholdingTaxEntryTest.TestCase):
+	def get_base_doc(self) -> "PurchaseWHTEntry":
+		return PurchaseWHTEntryFactory.build(
 			supplier="Hammermill Paper Company",
 			supplier_address="Hammermill Paper Company-Billing",
 			items=[

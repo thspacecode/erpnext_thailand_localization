@@ -18,11 +18,11 @@ class TestPNDJournalEntry(ERPNextThaiTestSuite):
 
 	def create_filing(
 		self,
-		doctype: str = "Thai PND 3 Filing",
+		doctype: str = "PND3 Filing",
 		docstatus: int = 1,
 		surcharge_amount: float = 0,
 	) -> "PNDFiling":
-		prefix = "PND3" if doctype == "Thai PND 3 Filing" else "PND53"
+		prefix = "PND3" if doctype == "PND3 Filing" else "PND53"
 		filing = frappe.get_doc(
 			{
 				"doctype": doctype,
@@ -42,11 +42,11 @@ class TestPNDJournalEntry(ERPNextThaiTestSuite):
 	def test_add_pnd_filings_to_journal_entry(self) -> None:
 		for doctype, tax_account in (
 			(
-				"Thai PND 3 Filing",
+				"PND3 Filing",
 				"Purchase Withholding Tax PND 3 Payable - DM",
 			),
 			(
-				"Thai PND 53 Filing",
+				"PND53 Filing",
 				"Purchase Withholding Tax PND 53 Payable - DM",
 			),
 		):
@@ -134,7 +134,7 @@ class TestPNDJournalEntry(ERPNextThaiTestSuite):
 
 	def test_journal_entry_can_reference_only_one_filing(self) -> None:
 		pnd3_filing = self.create_filing()
-		pnd53_filing = self.create_filing("Thai PND 53 Filing")
+		pnd53_filing = self.create_filing("PND53 Filing")
 		journal_entry = add_pnd_filing_to_journal_entry(pnd3_filing.doctype, pnd3_filing.name)
 
 		with self.assertRaisesRegex(frappe.ValidationError, "only one PND Filing"):

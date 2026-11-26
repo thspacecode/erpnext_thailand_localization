@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import frappe
 
-from erpnext_thailand_localization.tests.factories import ThaiPND3FilingFactory, ThaiPND53FilingFactory
+from erpnext_thailand_localization.tests.factories import PND3FilingFactory, PND53FilingFactory
 from erpnext_thailand_localization.tests.testsuite import ERPNextThaiTestSuite
 from erpnext_thailand_localization.thai_withholding_tax.service.rdprep_export import (
 	build_rdprep_text,
@@ -19,7 +19,7 @@ from erpnext_thailand_localization.thai_withholding_tax.service.rdprep_export im
 class TestRDPrepExport(ERPNextThaiTestSuite):
 	def build_filing(self, pnd53=False):
 		"""Build unsaved synthetic snapshots; no linked masters are inserted."""
-		doc = (ThaiPND53FilingFactory if pnd53 else ThaiPND3FilingFactory).build(
+		doc = (PND53FilingFactory if pnd53 else PND3FilingFactory).build(
 			company_tax_id="0105550000015", tax_period="2020-01-01", filing_type="Normal"
 		)
 		doc.docstatus = 1

@@ -72,7 +72,7 @@ erpnext_thailand_localization.thai_withholding_tax.pnd_filing = {
 		}
 
 		frm.add_custom_button(
-			__("Purchase Withholding Tax Entry"),
+			__("Purchase WHT Entry"),
 			() => frm.trigger("get_items"),
 			__("Get Items From")
 		);
@@ -92,7 +92,7 @@ erpnext_thailand_localization.thai_withholding_tax.pnd_filing = {
 
 		erpnext.utils.map_current_doc({
 			method: "erpnext_thailand_localization.thai_withholding_tax.service.pnd_filing.add_purchase_withholding_tax_entry_to_filing",
-			source_doctype: "Purchase Withholding Tax Entry",
+			source_doctype: "Purchase WHT Entry",
 			target: frm,
 			setters: [
 				{

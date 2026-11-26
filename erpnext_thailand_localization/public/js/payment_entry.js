@@ -2,30 +2,27 @@ frappe.ui.form.on("Payment Entry", {
 	setup(frm) {
 		frm.make_methods = {
 			...(frm.make_methods || {}),
-			"Sales Withholding Tax Entry": () => frm.trigger("open_sales_withholding_tax_entry"),
-			"Purchase Withholding Tax Entry": () =>
-				frm.trigger("open_purchase_withholding_tax_entry"),
+			"Sales WHT Entry": () => frm.trigger("open_sales_withholding_tax_entry"),
+			"Purchase WHT Entry": () => frm.trigger("open_purchase_withholding_tax_entry"),
 		};
 		frm.can_make_methods = {
 			...(frm.can_make_methods || {}),
-			"Sales Withholding Tax Entry": () =>
-				frm.events.can_create_withholding_tax_entry(frm, "Sales Withholding Tax Entry") &&
+			"Sales WHT Entry": () =>
+				frm.events.can_create_withholding_tax_entry(frm, "Sales WHT Entry") &&
 				!frm.has_existing_withholding_tax_entry,
-			"Purchase Withholding Tax Entry": () =>
-				frm.events.can_create_withholding_tax_entry(
-					frm,
-					"Purchase Withholding Tax Entry"
-				) && !frm.has_existing_withholding_tax_entry,
+			"Purchase WHT Entry": () =>
+				frm.events.can_create_withholding_tax_entry(frm, "Purchase WHT Entry") &&
+				!frm.has_existing_withholding_tax_entry,
 		};
 	},
 
 	can_create_withholding_tax_entry(frm, doctype) {
 		const requirements = {
-			"Sales Withholding Tax Entry": {
+			"Sales WHT Entry": {
 				payment_type: "Receive",
 				party_type: "Customer",
 			},
-			"Purchase Withholding Tax Entry": {
+			"Purchase WHT Entry": {
 				payment_type: "Pay",
 				party_type: "Supplier",
 			},
@@ -49,11 +46,11 @@ frappe.ui.form.on("Payment Entry", {
 
 		const can_create_purchase_entry = frm.events.can_create_withholding_tax_entry(
 			frm,
-			"Purchase Withholding Tax Entry"
+			"Purchase WHT Entry"
 		);
 		const can_create_sales_entry = frm.events.can_create_withholding_tax_entry(
 			frm,
-			"Sales Withholding Tax Entry"
+			"Sales WHT Entry"
 		);
 
 		if (!can_create_purchase_entry && !can_create_sales_entry) {
@@ -78,20 +75,20 @@ frappe.ui.form.on("Payment Entry", {
 	},
 
 	add_purchase_withholding_tax_entry_button(frm) {
-		if (frm.events.can_create_withholding_tax_entry(frm, "Purchase Withholding Tax Entry")) {
+		if (frm.events.can_create_withholding_tax_entry(frm, "Purchase WHT Entry")) {
 			frm.add_custom_button(
-				__("Purchase Withholding Tax Entry"),
-				() => frm.make_new("Purchase Withholding Tax Entry"),
+				__("Purchase WHT Entry"),
+				() => frm.make_new("Purchase WHT Entry"),
 				__("Create")
 			);
 		}
 	},
 
 	add_sales_withholding_tax_entry_button(frm) {
-		if (frm.events.can_create_withholding_tax_entry(frm, "Sales Withholding Tax Entry")) {
+		if (frm.events.can_create_withholding_tax_entry(frm, "Sales WHT Entry")) {
 			frm.add_custom_button(
-				__("Sales Withholding Tax Entry"),
-				() => frm.make_new("Sales Withholding Tax Entry"),
+				__("Sales WHT Entry"),
+				() => frm.make_new("Sales WHT Entry"),
 				__("Create")
 			);
 		}
@@ -99,14 +96,14 @@ frappe.ui.form.on("Payment Entry", {
 
 	open_purchase_withholding_tax_entry(frm) {
 		return frappe.model.open_mapped_doc({
-			method: "erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry.make_purchase_withholding_tax_entry",
+			method: "erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_wht_entry.purchase_wht_entry.make_purchase_withholding_tax_entry",
 			frm,
 		});
 	},
 
 	open_sales_withholding_tax_entry(frm) {
 		return frappe.model.open_mapped_doc({
-			method: "erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry.make_sales_withholding_tax_entry",
+			method: "erpnext_thailand_localization.thai_withholding_tax.doctype.sales_wht_entry.sales_wht_entry.make_sales_withholding_tax_entry",
 			frm,
 		});
 	},

@@ -15,7 +15,7 @@ from erpnext_thailand_localization.thai_withholding_tax.service.payment_entry im
 )
 
 
-class SalesWithholdingTaxEntry(WithholdingTaxEntry):
+class SalesWHTEntry(WithholdingTaxEntry):
 	party_type = "Customer"
 	party_field = "customer"
 	address_field = "customer_address"
@@ -36,7 +36,7 @@ class SalesWithholdingTaxEntry(WithholdingTaxEntry):
 			return
 
 		duplicate = frappe.db.exists(
-			"Sales Withholding Tax Entry",
+			"Sales WHT Entry",
 			{
 				"company": self.company,
 				"customer": self.customer,
@@ -56,12 +56,12 @@ class SalesWithholdingTaxEntry(WithholdingTaxEntry):
 @frappe.whitelist()
 def make_sales_withholding_tax_entry(
 	source_name: str,
-	target_doc: str | SalesWithholdingTaxEntry | None = None,
+	target_doc: str | SalesWHTEntry | None = None,
 	kwargs: Mapping[str, Any] | None = None,
-) -> SalesWithholdingTaxEntry:
+) -> SalesWHTEntry:
 	return make_withholding_tax_entry(
 		source_name=source_name,
-		target_doctype="Sales Withholding Tax Entry",
+		target_doctype="Sales WHT Entry",
 		payment_type="Receive",
 		party_type="Customer",
 		party_field="customer",

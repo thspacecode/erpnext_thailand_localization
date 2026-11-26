@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 	from erpnext.accounts.doctype.journal_entry.journal_entry import JournalEntry
 
 
-class ThaiPND3Filing(PNDFiling):
+class PND53Filing(PNDFiling):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -23,8 +23,8 @@ class ThaiPND3Filing(PNDFiling):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erpnext_thailand_localization.thai_withholding_tax.doctype.thai_pnd_3_filing_item.thai_pnd_3_filing_item import (
-			ThaiPND3FilingItem,
+		from erpnext_thailand_localization.thai_withholding_tax.doctype.thai_pnd_53_filing_item.thai_pnd_53_filing_item import (
+			ThaiPND53FilingItem,
 		)
 
 		additional_filing_no: DF.Int
@@ -49,9 +49,9 @@ class ThaiPND3Filing(PNDFiling):
 		filing_status: DF.Literal["Prepared", "Filed", "Accepted", "Rejected"]
 		filing_type: DF.Literal["Normal", "Additional"]
 		grand_total: DF.Currency
-		items: DF.Table[ThaiPND3FilingItem]
-		legal_basis: DF.Literal["Section 3 Tredecim", "Section 48 Bis", "Section 50 (3), (4), (5)"]
-		naming_series: DF.Literal["PND3-.YYYY.-.#####"]
+		items: DF.Table[ThaiPND53FilingItem]
+		legal_basis: DF.Literal["Section 3 Tredecim", "Section 65 Quater", "Section 69 Bis"]
+		naming_series: DF.Literal["PND53-.YYYY.-.#####"]
 		recipient_count: DF.Int
 		surcharge_amount: DF.Currency
 		tax_period: DF.Date
@@ -59,11 +59,11 @@ class ThaiPND3Filing(PNDFiling):
 		total_tax_amount: DF.Currency
 	# end: auto-generated types
 
-	pnd_type = "PND 3"
-	item_doctype = "Thai PND 3 Filing Item"
-	legal_bases = ("Section 3 Tredecim", "Section 48 Bis", "Section 50 (3), (4), (5)")
+	pnd_type = "PND 53"
+	item_doctype = "Thai PND 53 Filing Item"
+	legal_bases = ("Section 3 Tredecim", "Section 65 Quater", "Section 69 Bis")
 
 
 @frappe.whitelist()
 def make_journal_entry(source_name: str, target_doc: "str | JournalEntry | None" = None) -> "JournalEntry":
-	return add_pnd_filing_to_journal_entry("Thai PND 3 Filing", source_name, target_doc)
+	return add_pnd_filing_to_journal_entry("PND53 Filing", source_name, target_doc)

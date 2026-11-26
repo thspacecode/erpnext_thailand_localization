@@ -5,16 +5,16 @@ from erpnext_thailand_localization.types import Json
 from .base import DocTypeFactory
 
 if TYPE_CHECKING:
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
-		SalesWithholdingTaxEntry,
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_wht_entry.sales_wht_entry import (
+		SalesWHTEntry,
 	)
 
 
-class SalesWithholdingTaxEntryFactory(DocTypeFactory["SalesWithholdingTaxEntry"]):
-	doctype = "Sales Withholding Tax Entry"
+class SalesWHTEntryFactory(DocTypeFactory["SalesWHTEntry"]):
+	doctype = "Sales WHT Entry"
 
 	@classmethod
-	def defaults(cls) -> "Json[SalesWithholdingTaxEntry]":
+	def defaults(cls) -> "Json[SalesWHTEntry]":
 		return {
 			"company": "Dunder Mifflin",
 			"company_currency": "THB",

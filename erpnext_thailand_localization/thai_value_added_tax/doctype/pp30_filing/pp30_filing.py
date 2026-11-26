@@ -8,7 +8,7 @@ from frappe import _
 from frappe.model.document import Document
 
 
-class PP30(Document):
+class PP30Filing(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -183,11 +183,13 @@ class PP30(Document):
 
 	def get_other_return(self, doctype, name):
 		child = "PP30 Purchase Entry" if doctype == "Purchase VAT Entry" else "PP30 Sales Entry"
-		parents = frappe.get_all(child, filters={"vat_entry": name, "parenttype": "PP30"}, pluck="parent")
+		parents = frappe.get_all(
+			child, filters={"vat_entry": name, "parenttype": "PP30 Filing"}, pluck="parent"
+		)
 		parents = [parent for parent in parents if parent != self.name]
 		if not parents:
 			return None
-		returns = frappe.qb.DocType("PP30")
+		returns = frappe.qb.DocType("PP30 Filing")
 		matches = (
 			frappe.qb.from_(returns)
 			.select(returns.name)

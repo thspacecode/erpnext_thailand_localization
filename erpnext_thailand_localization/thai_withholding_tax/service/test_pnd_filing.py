@@ -4,7 +4,7 @@ import frappe
 from frappe.utils import getdate
 
 from erpnext_thailand_localization.tests.factories import (
-	PurchaseWithholdingTaxEntryFactory,
+	PurchaseWHTEntryFactory,
 )
 from erpnext_thailand_localization.tests.utils import ERPNextThaiTestSuite
 from erpnext_thailand_localization.thai_withholding_tax.service.pnd_filing import (
@@ -15,8 +15,8 @@ from erpnext_thailand_localization.thai_withholding_tax.service.pnd_filing impor
 )
 
 if TYPE_CHECKING:
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
-		PurchaseWithholdingTaxEntry,
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_wht_entry.purchase_wht_entry import (
+		PurchaseWHTEntry,
 	)
 
 
@@ -31,8 +31,8 @@ class TestPNDFiling(ERPNextThaiTestSuite):
 		payment_date: str = "2099-08-15",
 		pnd: str = "PND 3",
 		submit: bool = True,
-	) -> "PurchaseWithholdingTaxEntry":
-		return PurchaseWithholdingTaxEntryFactory.create(
+	) -> "PurchaseWHTEntry":
+		return PurchaseWHTEntryFactory.create(
 			supplier=supplier,
 			supplier_address=supplier_address,
 			payment_date=payment_date,
@@ -60,8 +60,8 @@ class TestPNDFiling(ERPNextThaiTestSuite):
 		self.create_source("Aaron Grandy", "Aaron Grandy-Billing", submit=False)
 
 		for filing_doctype, source in (
-			("Thai PND 3 Filing", pnd3_source),
-			("Thai PND 53 Filing", pnd53_source),
+			("PND3 Filing", pnd3_source),
+			("PND53 Filing", pnd53_source),
 		):
 			with self.subTest(filing_doctype=filing_doctype):
 				self.assertEqual(
@@ -85,7 +85,7 @@ class TestPNDFiling(ERPNextThaiTestSuite):
 			{
 				"doctype": "Thai PND 3 Filing Item",
 				"parent": "TEST-PND-3-FILING",
-				"parenttype": "Thai PND 3 Filing",
+				"parenttype": "PND3 Filing",
 				"parentfield": "items",
 				"docstatus": 1,
 				"purchase_withholding_tax_entry": pnd3_source.name,
@@ -94,20 +94,20 @@ class TestPNDFiling(ERPNextThaiTestSuite):
 		).db_insert()
 
 		with self.subTest("exclude items already included in a submitted filing"):
-			self.assertEqual(get_eligible_items("Thai PND 3 Filing", self.company, "2099-08-01"), [])
+			self.assertEqual(get_eligible_items("PND3 Filing", self.company, "2099-08-01"), [])
 
 	def test_get_unfiled_purchase_withholding_tax_entries(self) -> None:
 		pnd3_source = self.create_source("Aaron Grandy", "Aaron Grandy-Billing")
 		self.create_source("Hammermill Paper Company", "Hammermill Paper Company-Billing", pnd="PND 53")
 
 		results = get_unfiled_purchase_withholding_tax_entries(
-			"Purchase Withholding Tax Entry",
+			"Purchase WHT Entry",
 			"",
 			"name",
 			0,
 			20,
 			{
-				"return_doctype": "Thai PND 3 Filing",
+				"return_doctype": "PND3 Filing",
 				"company": self.company,
 				"tax_period": "2099-08-01",
 				"payment_date": ["2099-08-14", "2099-08-16"],
@@ -122,7 +122,7 @@ class TestPNDFiling(ERPNextThaiTestSuite):
 			{
 				"doctype": "Thai PND 3 Filing Item",
 				"parent": "TEST-PND-3-FILING",
-				"parenttype": "Thai PND 3 Filing",
+				"parenttype": "PND3 Filing",
 				"parentfield": "items",
 				"docstatus": 1,
 				"purchase_withholding_tax_entry": pnd3_source.name,
@@ -133,13 +133,13 @@ class TestPNDFiling(ERPNextThaiTestSuite):
 		with self.subTest("exclude a tax entry after all its eligible items have been filed"):
 			self.assertEqual(
 				get_unfiled_purchase_withholding_tax_entries(
-					"Purchase Withholding Tax Entry",
+					"Purchase WHT Entry",
 					"",
 					"name",
 					0,
 					20,
 					{
-						"return_doctype": "Thai PND 3 Filing",
+						"return_doctype": "PND3 Filing",
 						"company": self.company,
 						"tax_period": "2099-08-01",
 					},
@@ -150,7 +150,7 @@ class TestPNDFiling(ERPNextThaiTestSuite):
 
 	def test_add_purchase_withholding_tax_entry_to_filing(self) -> None:
 		source = self.create_source("Aaron Grandy", "Aaron Grandy-Billing")
-		filing = frappe.new_doc("Thai PND 3 Filing")
+		filing = frappe.new_doc("PND3 Filing")
 		filing.company = self.company
 		filing.tax_period = "2099-08-01"
 
@@ -166,9 +166,9 @@ class TestPNDFiling(ERPNextThaiTestSuite):
 	def test_get_eligible_items_validates_filing_type_and_permission(self) -> None:
 		with self.subTest("unsupported filing type"):
 			with self.assertRaisesRegex(frappe.ValidationError, "Unsupported PND filing type"):
-				get_eligible_items("Purchase Withholding Tax Entry", self.company, "2099-08-01")
+				get_eligible_items("Purchase WHT Entry", self.company, "2099-08-01")
 
 		with self.subTest("create permission is required"):
 			with self.set_create_user():
 				with self.assertRaises(frappe.PermissionError):
-					get_eligible_items("Thai PND 3 Filing", self.company, "2099-08-01")
+					get_eligible_items("PND3 Filing", self.company, "2099-08-01")

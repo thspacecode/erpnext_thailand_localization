@@ -97,7 +97,7 @@ class PNDFiling(Document):
 			if not item.purchase_withholding_tax_entry or not item.withholding_tax_entry_item:
 				continue
 
-			source = frappe.get_doc("Purchase Withholding Tax Entry", item.purchase_withholding_tax_entry)
+			source = frappe.get_doc("Purchase WHT Entry", item.purchase_withholding_tax_entry)
 			source_item = next(
 				(row for row in source.items if row.name == item.withholding_tax_entry_item), None
 			)
@@ -182,9 +182,9 @@ class PNDFiling(Document):
 	def validate_sources(self) -> None:
 		for item in self.items:
 			row_label = _("Row {0}").format(item.idx)
-			source = frappe.get_doc("Purchase Withholding Tax Entry", item.purchase_withholding_tax_entry)
+			source = frappe.get_doc("Purchase WHT Entry", item.purchase_withholding_tax_entry)
 			if source.docstatus != 1:
-				frappe.throw(_("{0}: Purchase Withholding Tax Entry must be submitted.").format(row_label))
+				frappe.throw(_("{0}: Purchase WHT Entry must be submitted.").format(row_label))
 			if source.company != self.company:
 				frappe.throw(_("{0}: Source company does not match the return company.").format(row_label))
 			if get_first_day(getdate(source.payment_date)) != getdate(self.tax_period):

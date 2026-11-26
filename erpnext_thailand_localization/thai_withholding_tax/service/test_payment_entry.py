@@ -12,10 +12,10 @@ from erpnext_thailand_localization.tests.factories import (
 	SalesOrderFactory,
 )
 from erpnext_thailand_localization.tests.utils import ERPNextThaiTestSuite
-from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
+from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_wht_entry.purchase_wht_entry import (
 	make_purchase_withholding_tax_entry,
 )
-from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
+from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_wht_entry.sales_wht_entry import (
 	make_sales_withholding_tax_entry,
 )
 from erpnext_thailand_localization.thai_withholding_tax.override_whitelist_method.get_payment_entry import (
@@ -34,11 +34,11 @@ if TYPE_CHECKING:
 	from erpnext.buying.doctype.purchase_order.purchase_order import PurchaseOrder
 	from erpnext.selling.doctype.sales_order.sales_order import SalesOrder
 
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
-		PurchaseWithholdingTaxEntry,
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_wht_entry.purchase_wht_entry import (
+		PurchaseWHTEntry,
 	)
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
-		SalesWithholdingTaxEntry,
+	from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_wht_entry.sales_wht_entry import (
+		SalesWHTEntry,
 	)
 	from erpnext_thailand_localization.thai_withholding_tax.model.withholding_tax_entry import (
 		WithholdingTaxEntry,
@@ -414,7 +414,7 @@ class PaymentEntryDeductionMappingTestCase(ERPNextThaiTestSuite):
 
 
 class TestSalesPaymentEntryDeductionMapping(PaymentEntryDeductionMappingTestCase):
-	def make_payment_and_entry(self) -> tuple["PaymentEntry", "SalesWithholdingTaxEntry"]:
+	def make_payment_and_entry(self) -> tuple["PaymentEntry", "SalesWHTEntry"]:
 		invoice = SalesInvoiceFactory.create(
 			customer="Vance Refrigeration",
 			po_no="TEST-SALES-WHT-DEDUCTION-MAPPING",
@@ -501,7 +501,7 @@ class TestSalesPaymentEntryDeductionMapping(PaymentEntryDeductionMappingTestCase
 
 
 class TestPurchasePaymentEntryDeductionMapping(PaymentEntryDeductionMappingTestCase):
-	def make_payment_and_entry(self) -> tuple["PaymentEntry", "PurchaseWithholdingTaxEntry"]:
+	def make_payment_and_entry(self) -> tuple["PaymentEntry", "PurchaseWHTEntry"]:
 		invoice = PurchaseInvoiceFactory.create(
 			supplier="Aaron Grandy",
 			bill_no="TEST-PURCHASE-WHT-DEDUCTION-MAPPING",

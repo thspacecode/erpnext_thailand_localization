@@ -3,7 +3,7 @@
  "allow_bulk_edit": 1,
  "allow_rename": 1,
  "autoname": "naming_series:",
- "creation": "2026-08-13 14:43:59.365100",
+ "creation": "2026-08-13 14:43:59.128486",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -53,12 +53,12 @@
  ],
  "fields": [
   {
-   "default": "PND53-.YYYY.-.#####",
+   "default": "PND3-.YYYY.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Naming Series",
-   "options": "PND53-.YYYY.-.#####",
+   "options": "PND3-.YYYY.-.#####",
    "reqd": 1
   },
   {
@@ -116,7 +116,7 @@
    "fieldname": "legal_basis",
    "fieldtype": "Select",
    "label": "Legal Basis",
-   "options": "Section 3 Tredecim\nSection 65 Quater\nSection 69 Bis",
+   "options": "Section 3 Tredecim\nSection 48 Bis\nSection 50 (3), (4), (5)",
    "reqd": 1
   },
   {
@@ -197,7 +197,7 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
-   "options": "Thai PND 53 Filing Item",
+   "options": "Thai PND 3 Filing Item",
    "reqd": 1
   },
   {
@@ -304,7 +304,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Thai PND 53 Filing",
+   "options": "PND3 Filing",
    "print_hide": 1,
    "read_only": 1
   },
@@ -338,10 +338,10 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-08-16 16:19:34.738962",
+ "modified": "2026-08-16 16:19:34.366156",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
- "name": "Thai PND 53 Filing",
+ "name": "PND3 Filing",
  "owner": "Administrator",
  "permissions": [
   {

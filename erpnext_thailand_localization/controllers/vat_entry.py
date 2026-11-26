@@ -88,8 +88,10 @@ class VATEntry(Document):
 	def before_cancel(self):
 		frappe.get_doc(self.doctype, self.name, for_update=True)
 		child = "PP30 Purchase Entry" if self.direction == "purchase" else "PP30 Sales Entry"
-		rows = frappe.get_all(child, filters={"vat_entry": self.name, "parenttype": "PP30"}, pluck="parent")
-		if rows and frappe.db.exists("PP30", {"name": ["in", rows], "docstatus": 1}):
+		rows = frappe.get_all(
+			child, filters={"vat_entry": self.name, "parenttype": "PP30 Filing"}, pluck="parent"
+		)
+		if rows and frappe.db.exists("PP30 Filing", {"name": ["in", rows], "docstatus": 1}):
 			frappe.throw(_("Cancel the submitted PP30 before cancelling this VAT Entry."))
 
 	def set_company_details(self):

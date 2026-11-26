@@ -16,9 +16,9 @@ def add_pnd_filing_to_journal_entry(
 	source_name: str,
 	target_doc: "str | JournalEntry | None" = None,
 ) -> "JournalEntry":
-	if filing_doctype == "Thai PND 3 Filing":
+	if filing_doctype == "PND3 Filing":
 		account_field = "purchase_withholding_tax_pnd3_account"
-	elif filing_doctype == "Thai PND 53 Filing":
+	elif filing_doctype == "PND53 Filing":
 		account_field = "purchase_withholding_tax_pnd53_account"
 	else:
 		frappe.throw(_("Unsupported PND filing type."))

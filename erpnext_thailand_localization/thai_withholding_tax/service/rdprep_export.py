@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 @frappe.whitelist()
 def download_rdprep(doctype: str, name: str) -> None:
 	"""Download stored, submitted snapshots after checking read permission."""
-	if doctype not in ("Thai PND 3 Filing", "Thai PND 53 Filing"):
+	if doctype not in ("PND3 Filing", "PND53 Filing"):
 		frappe.throw(_("Unsupported PND filing type."))
 	doc = frappe.get_doc(doctype, name)
 	doc.check_permission("read")

@@ -106,7 +106,7 @@ class WithholdingTaxEntry(Document):
 				"reference_doc_item": ["in", list(seen_deductions)],
 				"parenttype": [
 					"in",
-					["Sales Withholding Tax Entry", "Purchase Withholding Tax Entry"],
+					["Sales WHT Entry", "Purchase WHT Entry"],
 				],
 				"docstatus": ["<", 2],
 			},

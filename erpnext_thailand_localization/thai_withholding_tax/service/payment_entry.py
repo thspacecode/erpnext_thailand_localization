@@ -93,7 +93,7 @@ def has_existing_withholding_tax_entry(payment_entry: str) -> bool:
 				"reference_doc": payment_entry,
 				"parenttype": [
 					"in",
-					["Sales Withholding Tax Entry", "Purchase Withholding Tax Entry"],
+					["Sales WHT Entry", "Purchase WHT Entry"],
 				],
 				"docstatus": ["<", 2],
 			},
@@ -129,7 +129,7 @@ def get_payment_entries_with_pending_withholding_tax(
 		.select(entry_item.reference_doc_item)
 		.where(
 			(entry_item.reference_doc_item_doctype == "Payment Entry Deduction")
-			& entry_item.parenttype.isin(["Sales Withholding Tax Entry", "Purchase Withholding Tax Entry"])
+			& entry_item.parenttype.isin(["Sales WHT Entry", "Purchase WHT Entry"])
 			& (entry_item.docstatus < 2)
 			& entry_item.reference_doc_item.isnotnull()
 		)
@@ -195,7 +195,7 @@ def map_payment_entry_deductions(
 				"reference_doc_item": ["in", [deduction.name for deduction in eligible_deductions]],
 				"parenttype": [
 					"in",
-					["Sales Withholding Tax Entry", "Purchase Withholding Tax Entry"],
+					["Sales WHT Entry", "Purchase WHT Entry"],
 				],
 				"docstatus": ["<", 2],
 			},
@@ -316,7 +316,7 @@ def make_withholding_tax_entry(
 
 		# Add eligible deductions and refresh the withholding tax totals.
 		map_payment_entry_deductions(source_doc, target)
-		if target_doctype == "Purchase Withholding Tax Entry":
+		if target_doctype == "Purchase WHT Entry":
 			category = frappe.get_cached_value(
 				party_type, source_doc.party, "custom_thai_withholding_tax_category"
 			)

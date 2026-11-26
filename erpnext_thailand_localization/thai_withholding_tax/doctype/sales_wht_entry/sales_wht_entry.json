@@ -1,22 +1,25 @@
 {
  "actions": [],
  "autoname": "naming_series:",
- "creation": "2026-08-06 14:11:13.153567",
+ "creation": "2026-08-06 14:11:13.658985",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "certificate_section",
+  "certificate_number",
+  "certificate_column",
+  "certificate_attachment",
   "company_section",
   "company",
   "company_currency",
   "company_column",
   "payment_date",
-  "pnd",
   "party_section",
-  "supplier",
+  "customer",
   "party_column",
-  "supplier_address",
+  "customer_address",
   "items_section",
   "items",
   "totals_section",
@@ -27,13 +30,27 @@
  ],
  "fields": [
   {
-   "default": "PWHT-.YYYY.-.#####",
+   "default": "SWHT-.YYYY.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Naming Series",
-   "options": "PWHT-.YYYY.-.#####",
+   "options": "SWHT-.YYYY.-.#####",
    "reqd": 1
+  },
+  {
+   "fieldname": "certificate_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Certificate Number",
+   "mandatory_depends_on": "eval:doc.docstatus == 1"
+  },
+  {
+   "fieldname": "certificate_attachment",
+   "fieldtype": "Attach",
+   "label": "Certificate Attachment",
+   "mandatory_depends_on": "eval:doc.docstatus == 1"
   },
   {
    "fieldname": "company",
@@ -63,22 +80,22 @@
   {
    "fieldname": "party_section",
    "fieldtype": "Section Break",
-   "label": "Supplier Details"
+   "label": "Customer Details"
   },
   {
-   "fieldname": "supplier",
+   "fieldname": "customer",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Supplier",
-   "options": "Supplier",
+   "label": "Customer",
+   "options": "Customer",
    "reqd": 1
   },
   {
-   "fetch_from": "supplier.supplier_primary_address",
+   "fetch_from": "customer.customer_primary_address",
    "fetch_if_empty": 1,
-   "fieldname": "supplier_address",
+   "fieldname": "customer_address",
    "fieldtype": "Link",
-   "label": "Supplier Address",
+   "label": "Customer Address",
    "options": "Address",
    "reqd": 1
   },
@@ -126,7 +143,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Purchase Withholding Tax Entry",
+   "options": "Sales WHT Entry",
    "print_hide": 1,
    "read_only": 1
   },
@@ -144,21 +161,23 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "pnd",
-   "fieldtype": "Select",
-   "label": "PND",
-   "options": "PND 3\nPND 53",
-   "reqd": 1
+   "fieldname": "certificate_section",
+   "fieldtype": "Section Break",
+   "label": "Certificate Details"
+  },
+  {
+   "fieldname": "certificate_column",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-08-16 15:30:19.571868",
+ "modified": "2026-08-06 19:11:41.501461",
  "modified_by": "Administrator",
  "module": "Thai Withholding Tax",
- "name": "Purchase Withholding Tax Entry",
+ "name": "Sales WHT Entry",
  "owner": "Administrator",
  "permissions": [
   {
@@ -202,7 +221,7 @@
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "search_fields": "payment_date,supplier,company,total_tax_amount",
+ "search_fields": "certificate_number,payment_date,customer,company,total_tax_amount",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],

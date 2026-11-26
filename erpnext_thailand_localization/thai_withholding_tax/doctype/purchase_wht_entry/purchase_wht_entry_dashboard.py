@@ -10,7 +10,7 @@ def get_data() -> frappe._dict:
 			"transactions": [
 				{
 					"label": _("PND Filing"),
-					"items": ["Thai PND 3 Filing", "Thai PND 53 Filing"],
+					"items": ["PND3 Filing", "PND53 Filing"],
 				}
 			],
 		}
