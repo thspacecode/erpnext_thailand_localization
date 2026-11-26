@@ -21,3 +21,31 @@ income_type_name,disabled,default_thai_withholding_tax_rate,[thai_withholding_ta
 ,,,Juristic Person - Domestic,PND 53
 ,,,Foundation or Association,PND 53
 ,,,Government or Tax-Exempt Entity,PND 53
+2 ค่าจ้างฟรีแลนซ์,1,0,,
+8 ค่าบริการทั่วไป รับเหมาค่าแรง รับจ้างทำของ,0,3,Individual - Domestic,PND 3
+,,,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Government or Tax-Exempt Entity,PND 53
+8 ค่าเบี้ยประกันวินาศภัย,0,1,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Government or Tax-Exempt Entity,PND 53
+8 ค่าโฆษณา,0,2,Individual - Domestic,PND 3
+,,,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Government or Tax-Exempt Entity,PND 53
+8 ขนส่ง,0,1,Individual - Domestic,PND 3
+,,,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Government or Tax-Exempt Entity,PND 53
+8 ค่าจ้างทำของ,0,3,Individual - Domestic,PND 3
+,,,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Government or Tax-Exempt Entity,PND 53
+8 ค่าส่งเสริมการขาย,0,3,Individual - Domestic,PND 3
+,,,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Government or Tax-Exempt Entity,PND 53
+8 รางวัลในการประกวดแข่งขัน ชิงโชค,0,5,Individual - Domestic,PND 3
+,,,Juristic Person - Domestic,PND 53
+,,,Foundation or Association,PND 53
+,,,Government or Tax-Exempt Entity,PND 53

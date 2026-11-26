@@ -37,7 +37,13 @@ class BaseImporter(ABC):
 				self.report[change_type].setdefault(doctype, []).extend(names)
 		return self.report
 
-	def csv_loader(self, filename: str, csv_replacements: Mapping[str, str] | None = None) -> Report:
+	def csv_loader(
+		self,
+		filename: str,
+		csv_replacements: Mapping[str, str] | None = None,
+		*,
+		skip_existing: bool = False,
+	) -> Report:
 		"""Create or update DocType records from a CSV file.
 
 		File naming convention:
@@ -89,6 +95,8 @@ class BaseImporter(ABC):
 		The second CSV row above has empty parent columns, so ``ITEM-002`` is appended
 		to the ``items`` table of ``BUNDLE-001``. ``BUNDLE-002`` starts a new parent
 		record. Keep all columns for one child row on the same CSV row.
+
+		Set ``skip_existing=True`` to preserve user-maintained records.
 
 		The method returns the importer's cumulative created, updated, and skipped
 		report.
@@ -190,6 +198,10 @@ class BaseImporter(ABC):
 						child.flags.name_set = True
 				doc.insert()
 				self.record_change("created", doctype, doc.name)
+				continue
+
+			if skip_existing:
+				self.record_change("skipped", doctype, name)
 				continue
 
 			doc = frappe.get_doc(doctype, name)
