@@ -10,7 +10,7 @@ export class LoginPage extends BasePage {
 		super(page);
 		this.email = page.locator("#login_email");
 		this.password = page.locator("#login_password");
-		this.submit = page.locator(".btn-login:not(.btn-login-with-email-link)");
+		this.submit = page.locator(".form-login").locator('button[type="submit"]');
 	}
 
 	async goto() {

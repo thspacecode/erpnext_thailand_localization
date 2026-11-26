@@ -90,8 +90,7 @@ test.describe("Sales withholding tax process", () => {
 					.getByRole("button", { name: "Create", exact: true });
 				await createButton.click();
 				const paymentMenuItem = page
-					.locator(".page-head .dropdown-menu:visible")
-					.getByText(/^(Payment|Payment Entry)$/, { exact: true });
+					.getByRole("menuitem", { name: /^(Payment|Payment Entry)$/ });
 				await expect(paymentMenuItem).toBeVisible();
 
 				await desk.normalizeDocumentNames([

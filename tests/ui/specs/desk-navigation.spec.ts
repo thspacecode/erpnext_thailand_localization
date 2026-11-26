@@ -5,7 +5,7 @@ test.describe("ERPNext Thailand Localization Desk", () => {
 		await page.goto("/desk");
 		await desk.awaitReady();
 
-		await expect(page.locator("#navbar-search, .navbar")).toBeVisible();
+		await expect(page.getByRole("navigation").getByRole("button", { name: /^Search/ })).toBeVisible();
 	});
 
 	test("opens the Thai Withholding Tax Category list", async ({ desk, page }) => {
