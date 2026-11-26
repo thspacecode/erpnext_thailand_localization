@@ -3,9 +3,9 @@
 
 /* global erpnext, erpnext_thailand_localization */
 
-frappe.provide("erpnext_thailand_localization.thai_withholding_tax");
+frappe.provide("erpnext_thailand_localization.thai_wht");
 
-erpnext_thailand_localization.thai_withholding_tax.pnd_filing = {
+erpnext_thailand_localization.thai_wht.pnd_filing = {
 	setup(frm) {
 		frm.trigger("set_queries");
 	},
@@ -32,7 +32,7 @@ erpnext_thailand_localization.thai_withholding_tax.pnd_filing = {
 							name: frm.doc.name,
 						});
 						window.open(
-							`/api/method/erpnext_thailand_localization.thai_withholding_tax.service.rdprep_export.download_rdprep?${params}`,
+							`/api/method/erpnext_thailand_localization.thai_wht.service.rdprep_export.download_rdprep?${params}`,
 							"_blank",
 							"noopener"
 						);
@@ -72,7 +72,7 @@ erpnext_thailand_localization.thai_withholding_tax.pnd_filing = {
 		}
 
 		frm.add_custom_button(
-			__("Purchase Withholding Tax Entry"),
+			__("Purchase WHT Entry"),
 			() => frm.trigger("get_items"),
 			__("Get Items From")
 		);
@@ -91,8 +91,8 @@ erpnext_thailand_localization.thai_withholding_tax.pnd_filing = {
 		}
 
 		erpnext.utils.map_current_doc({
-			method: "erpnext_thailand_localization.thai_withholding_tax.service.pnd_filing.add_purchase_withholding_tax_entry_to_filing",
-			source_doctype: "Purchase Withholding Tax Entry",
+			method: "erpnext_thailand_localization.thai_wht.service.pnd_filing.add_purchase_withholding_tax_entry_to_filing",
+			source_doctype: "Purchase WHT Entry",
 			target: frm,
 			setters: [
 				{
@@ -123,7 +123,7 @@ erpnext_thailand_localization.thai_withholding_tax.pnd_filing = {
 				},
 			],
 			get_query_method:
-				"erpnext_thailand_localization.thai_withholding_tax.service.pnd_filing.get_unfiled_purchase_withholding_tax_entries",
+				"erpnext_thailand_localization.thai_wht.service.pnd_filing.get_unfiled_purchase_withholding_tax_entries",
 			get_query_filters: {
 				return_doctype: frm.doc.doctype,
 				company: frm.doc.company,

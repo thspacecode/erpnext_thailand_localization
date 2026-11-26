@@ -13,16 +13,16 @@ from erpnext_thailand_localization.tests.factories import (
 	PurchaseInvoiceFactory,
 	SalesInvoiceFactory,
 )
-from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
+from erpnext_thailand_localization.thai_wht.doctype.purchase_wht_entry.purchase_wht_entry import (
 	make_purchase_withholding_tax_entry,
 )
-from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
+from erpnext_thailand_localization.thai_wht.doctype.sales_wht_entry.sales_wht_entry import (
 	make_sales_withholding_tax_entry,
 )
-from erpnext_thailand_localization.thai_withholding_tax.override_whitelist_method.get_payment_entry import (
+from erpnext_thailand_localization.thai_wht.override_whitelist_method.get_payment_entry import (
 	get_payment_entry,
 )
-from erpnext_thailand_localization.thai_withholding_tax.service.pnd_filing import (
+from erpnext_thailand_localization.thai_wht.service.pnd_filing import (
 	add_purchase_withholding_tax_entry_to_filing,
 )
 
@@ -33,13 +33,13 @@ if TYPE_CHECKING:
 	from frappe.contacts.doctype.address.address import Address
 	from frappe.utils import DateTimeLikeObject
 
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_withholding_tax_entry.purchase_withholding_tax_entry import (
-		PurchaseWithholdingTaxEntry,
+	from erpnext_thailand_localization.thai_wht.doctype.purchase_wht_entry.purchase_wht_entry import (
+		PurchaseWHTEntry,
 	)
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_withholding_tax_entry.sales_withholding_tax_entry import (
-		SalesWithholdingTaxEntry,
+	from erpnext_thailand_localization.thai_wht.doctype.sales_wht_entry.sales_wht_entry import (
+		SalesWHTEntry,
 	)
-	from erpnext_thailand_localization.thai_withholding_tax.model.pnd_filing import PNDFiling
+	from erpnext_thailand_localization.thai_wht.model.pnd_filing import PNDFiling
 
 	type Invoice = SalesInvoice | PurchaseInvoice
 
@@ -78,12 +78,12 @@ class BootStrapDevData(BootStrapTestMasterData):
 		two_months_ago = self.get_month_date(-2)
 		period_key = getdate(two_months_ago).strftime("%Y-%m")
 		self.make_pnd_filing(
-			"Thai PND 3 Filing",
+			"PND3 Filing",
 			two_months_ago,
 			[purchase_entries[f"AG-LEGAL-CONSULTING-{period_key}"]],
 		)
 		self.make_pnd_filing(
-			"Thai PND 53 Filing",
+			"PND53 Filing",
 			two_months_ago,
 			[purchase_entries[f"HPC-DELIVERY-SERVICE-{period_key}"]],
 		)
@@ -326,14 +326,10 @@ class BootStrapDevData(BootStrapTestMasterData):
 		self.record_change("created", payment_entry.doctype, payment_entry.name)
 		return payment_entry
 
-	def make_purchase_withholding_tax_entry(
-		self, payment_entry: "PaymentEntry"
-	) -> "PurchaseWithholdingTaxEntry":
-		existing_name = self.get_existing_withholding_tax_entry(
-			payment_entry, "Purchase Withholding Tax Entry"
-		)
+	def make_purchase_withholding_tax_entry(self, payment_entry: "PaymentEntry") -> "PurchaseWHTEntry":
+		existing_name = self.get_existing_withholding_tax_entry(payment_entry, "Purchase WHT Entry")
 		if existing_name:
-			doc = frappe.get_doc("Purchase Withholding Tax Entry", existing_name)
+			doc = frappe.get_doc("Purchase WHT Entry", existing_name)
 			if not doc.pnd:
 				doc = make_purchase_withholding_tax_entry(payment_entry.name, target_doc=doc)
 				doc.db_set("pnd", doc.pnd)
@@ -353,10 +349,10 @@ class BootStrapDevData(BootStrapTestMasterData):
 		self,
 		invoice: "SalesInvoice",
 		payment_entry: "PaymentEntry",
-	) -> "SalesWithholdingTaxEntry":
-		existing_name = self.get_existing_withholding_tax_entry(payment_entry, "Sales Withholding Tax Entry")
+	) -> "SalesWHTEntry":
+		existing_name = self.get_existing_withholding_tax_entry(payment_entry, "Sales WHT Entry")
 		if existing_name:
-			doc = frappe.get_doc("Sales Withholding Tax Entry", existing_name)
+			doc = frappe.get_doc("Sales WHT Entry", existing_name)
 			self.record_change("skipped", doc.doctype, doc.name)
 			return doc
 
@@ -392,7 +388,7 @@ class BootStrapDevData(BootStrapTestMasterData):
 		self,
 		doctype: str,
 		tax_period: "DateTimeLikeObject",
-		sources: list["PurchaseWithholdingTaxEntry"],
+		sources: list["PurchaseWHTEntry"],
 	) -> "PNDFiling":
 		tax_period = get_first_day(getdate(tax_period))
 		existing_names = frappe.get_all(

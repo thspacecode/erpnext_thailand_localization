@@ -35,6 +35,13 @@ export class DeskPage extends BasePage {
 		await this.page.goto(`${DESK_ROOT}/${slug(doctype)}/${encodeURIComponent(name)}`);
 		await this.awaitReady();
 		await expect.poll(() => this.currentRoute()).toEqual(["Form", doctype, name]);
+		await this.page.waitForFunction(
+			({ doctype, name }) => {
+				const form = (window as unknown as { cur_frm?: { doc?: { doctype: string; name: string } } }).cur_frm;
+				return form?.doc?.doctype === doctype && form.doc.name === name;
+			},
+			{ doctype, name },
+		);
 	}
 
 	async goToSingle(doctype: string) {
