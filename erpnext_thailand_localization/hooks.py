@@ -24,10 +24,10 @@ after_install = "erpnext_thailand_localization.install.after_install"
 
 # Overriding Methods
 override_whitelisted_methods = {
-	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "erpnext_thailand_localization.thai_withholding_tax.override_whitelist_method.get_payment_entry.get_payment_entry"
+	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "erpnext_thailand_localization.thai_wht.override_whitelist_method.get_payment_entry.get_payment_entry"
 }
 override_doctype_dashboards = {
-	"Payment Entry": "erpnext_thailand_localization.thai_withholding_tax.payment_entry_dashboard.get_dashboard_data"
+	"Payment Entry": "erpnext_thailand_localization.thai_wht.payment_entry_dashboard.get_dashboard_data"
 }
 
 # Includes in <head>
@@ -159,7 +159,7 @@ app_include_js = "/assets/erpnext_thailand_localization/js/pnd_filing.js"
 # Hook on document methods and events
 
 doc_events = {
-	"Address": {"validate": "erpnext_thailand_localization.thai_withholding_tax.address.validate_address"},
+	"Address": {"validate": "erpnext_thailand_localization.thai_wht.address.validate_address"},
 }
 
 # Scheduled Tasks

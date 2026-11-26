@@ -13,16 +13,16 @@ from erpnext_thailand_localization.tests.factories import (
 	PurchaseInvoiceFactory,
 	SalesInvoiceFactory,
 )
-from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_wht_entry.purchase_wht_entry import (
+from erpnext_thailand_localization.thai_wht.doctype.purchase_wht_entry.purchase_wht_entry import (
 	make_purchase_withholding_tax_entry,
 )
-from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_wht_entry.sales_wht_entry import (
+from erpnext_thailand_localization.thai_wht.doctype.sales_wht_entry.sales_wht_entry import (
 	make_sales_withholding_tax_entry,
 )
-from erpnext_thailand_localization.thai_withholding_tax.override_whitelist_method.get_payment_entry import (
+from erpnext_thailand_localization.thai_wht.override_whitelist_method.get_payment_entry import (
 	get_payment_entry,
 )
-from erpnext_thailand_localization.thai_withholding_tax.service.pnd_filing import (
+from erpnext_thailand_localization.thai_wht.service.pnd_filing import (
 	add_purchase_withholding_tax_entry_to_filing,
 )
 
@@ -33,13 +33,13 @@ if TYPE_CHECKING:
 	from frappe.contacts.doctype.address.address import Address
 	from frappe.utils import DateTimeLikeObject
 
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_wht_entry.purchase_wht_entry import (
+	from erpnext_thailand_localization.thai_wht.doctype.purchase_wht_entry.purchase_wht_entry import (
 		PurchaseWHTEntry,
 	)
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.sales_wht_entry.sales_wht_entry import (
+	from erpnext_thailand_localization.thai_wht.doctype.sales_wht_entry.sales_wht_entry import (
 		SalesWHTEntry,
 	)
-	from erpnext_thailand_localization.thai_withholding_tax.model.pnd_filing import PNDFiling
+	from erpnext_thailand_localization.thai_wht.model.pnd_filing import PNDFiling
 
 	type Invoice = SalesInvoice | PurchaseInvoice
 

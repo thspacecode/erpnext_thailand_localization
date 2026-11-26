@@ -5,7 +5,7 @@ from erpnext_thailand_localization.types import Json
 from .base import DocTypeFactory
 
 if TYPE_CHECKING:
-	from erpnext_thailand_localization.thai_withholding_tax.doctype.pnd53_filing.pnd53_filing import (
+	from erpnext_thailand_localization.thai_wht.doctype.pnd53_filing.pnd53_filing import (
 		PND53Filing,
 	)
 

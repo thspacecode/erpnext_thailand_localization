@@ -2,7 +2,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-from erpnext_thailand_localization.thai_value_added_tax.service.undue_value_added_tax import (
+from erpnext_thailand_localization.thai_vat.service.undue_value_added_tax import (
 	fetch_undue_vat_detail,
 )
 

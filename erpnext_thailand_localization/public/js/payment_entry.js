@@ -58,7 +58,7 @@ frappe.ui.form.on("Payment Entry", {
 		}
 
 		const { message: has_existing_entry } = await frappe.call({
-			method: "erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.has_existing_withholding_tax_entry",
+			method: "erpnext_thailand_localization.thai_wht.service.payment_entry.has_existing_withholding_tax_entry",
 			args: { payment_entry: frm.doc.name },
 		});
 		frm.has_existing_withholding_tax_entry = has_existing_entry;
@@ -96,14 +96,14 @@ frappe.ui.form.on("Payment Entry", {
 
 	open_purchase_withholding_tax_entry(frm) {
 		return frappe.model.open_mapped_doc({
-			method: "erpnext_thailand_localization.thai_withholding_tax.doctype.purchase_wht_entry.purchase_wht_entry.make_purchase_withholding_tax_entry",
+			method: "erpnext_thailand_localization.thai_wht.doctype.purchase_wht_entry.purchase_wht_entry.make_purchase_withholding_tax_entry",
 			frm,
 		});
 	},
 
 	open_sales_withholding_tax_entry(frm) {
 		return frappe.model.open_mapped_doc({
-			method: "erpnext_thailand_localization.thai_withholding_tax.doctype.sales_wht_entry.sales_wht_entry.make_sales_withholding_tax_entry",
+			method: "erpnext_thailand_localization.thai_wht.doctype.sales_wht_entry.sales_wht_entry.make_sales_withholding_tax_entry",
 			frm,
 		});
 	},
@@ -130,7 +130,7 @@ frappe.ui.form.on("Payment Entry", {
 		}
 
 		const { message: deductions = [] } = await frappe.call({
-			method: "erpnext_thailand_localization.thai_withholding_tax.service.payment_entry.get_withholding_tax_from_references",
+			method: "erpnext_thailand_localization.thai_wht.service.payment_entry.get_withholding_tax_from_references",
 			args: { doc: frm.doc },
 			freeze: true,
 			freeze_message: __("Getting Withholding Tax from References..."),

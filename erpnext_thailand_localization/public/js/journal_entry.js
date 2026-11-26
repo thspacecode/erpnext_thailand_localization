@@ -17,12 +17,12 @@ frappe.ui.form.on("Journal Entry", {
 			{
 				label: __("PND 3 Filing"),
 				doctype: "PND3 Filing",
-				method: "erpnext_thailand_localization.thai_withholding_tax.doctype.pnd3_filing.pnd3_filing.make_journal_entry",
+				method: "erpnext_thailand_localization.thai_wht.doctype.pnd3_filing.pnd3_filing.make_journal_entry",
 			},
 			{
 				label: __("PND 53 Filing"),
 				doctype: "PND53 Filing",
-				method: "erpnext_thailand_localization.thai_withholding_tax.doctype.pnd53_filing.pnd53_filing.make_journal_entry",
+				method: "erpnext_thailand_localization.thai_wht.doctype.pnd53_filing.pnd53_filing.make_journal_entry",
 			},
 		];
 
