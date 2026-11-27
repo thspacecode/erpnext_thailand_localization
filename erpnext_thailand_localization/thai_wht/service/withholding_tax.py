@@ -39,6 +39,9 @@ def fetch_wht_detail(
 ) -> WithholdingTaxDetail:
 	item = frappe.get_doc("Item", item_code)
 	item.check_permission("read")
+	if not is_withholding_tax_payer_eligible(party_type, party, company):
+		return {"income_type": None, "tax_rate": 0, "source": None}
+
 	category = get_thai_withholding_tax_category(party_type, party, company)
 
 	if item.custom_thai_withholding_tax_income_type:
@@ -67,6 +70,25 @@ def fetch_wht_detail(
 		}
 
 	return {"income_type": None, "tax_rate": 0, "source": None}
+
+
+def is_withholding_tax_payer_eligible(
+	party_type: str | None,
+	party: str | None,
+	company: str | None,
+) -> bool:
+	"""Exclude individual payers, not individual income recipients."""
+	if party_type == "Supplier" and company:
+		return (
+			frappe.get_cached_value("Company", company, "custom_thai_withholding_tax_category")
+			!= "Individual - Domestic"
+		)
+	if party_type == "Customer" and party:
+		return (
+			frappe.get_cached_value("Customer", party, "custom_thai_withholding_tax_category")
+			!= "Individual - Domestic"
+		)
+	return True
 
 
 def get_thai_withholding_tax_category(
@@ -149,6 +171,11 @@ def get_reference_withholding_tax_deductions(
 	if not is_withholding_tax_enabled(payment_entry.company, withholding_tax_type):
 		return []
 
+	party_type = "Customer" if withholding_tax_type == "Sales" else "Supplier"
+	party = reference_document.get(frappe.scrub(party_type))
+	if not is_withholding_tax_payer_eligible(party_type, party, payment_entry.company):
+		return []
+
 	payment_ratio = get_payment_ratio(payment_entry, reference_document)
 	if not payment_ratio:
 		return []
@@ -156,8 +183,6 @@ def get_reference_withholding_tax_deductions(
 	cost_center = payment_entry.cost_center or frappe.get_cached_value(
 		"Company", payment_entry.company, "cost_center"
 	)
-	party_type = "Customer" if reference_document.doctype in ("Sales Invoice", "Sales Order") else "Supplier"
-	party = reference_document.get(frappe.scrub(party_type))
 	category = get_thai_withholding_tax_category(party_type, party, payment_entry.company)
 	item_details = {}
 	deductions = []
