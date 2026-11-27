@@ -84,7 +84,10 @@ def is_withholding_tax_payer_eligible(
 			!= "Individual - Domestic"
 		)
 	if party_type == "Customer" and party:
-		return frappe.get_cached_value("Customer", party, "customer_type") != "Individual"
+		return (
+			frappe.get_cached_value("Customer", party, "custom_thai_withholding_tax_category")
+			!= "Individual - Domestic"
+		)
 	return True
 
 

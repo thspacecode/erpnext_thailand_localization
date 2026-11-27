@@ -17,9 +17,10 @@ class TestWithholdingTaxPayer(TestCase):
 		for party_type, value, expected in (
 			("Supplier", "Individual - Domestic", False),
 			("Supplier", "Juristic Person - Domestic", True),
-			("Customer", "Individual", False),
-			("Customer", "Company", True),
-			("Customer", "Partnership", True),
+			("Customer", "Individual - Domestic", False),
+			("Customer", "Juristic Person - Domestic", True),
+			("Customer", "Foundation or Association", True),
+			("Customer", None, True),
 		):
 			with self.subTest(party_type=party_type, value=value):
 				with patch.object(frappe, "get_cached_value", return_value=value) as lookup:
@@ -31,7 +32,7 @@ class TestWithholdingTaxPayer(TestCase):
 						*(
 							("Company", "Company", "custom_thai_withholding_tax_category")
 							if party_type == "Supplier"
-							else ("Customer", "Party", "customer_type")
+							else ("Customer", "Party", "custom_thai_withholding_tax_category")
 						)
 					)
 
@@ -40,7 +41,7 @@ class TestWithholdingTaxPayer(TestCase):
 		# Arrange: Supply an accessible item and an individual customer.
 		with (
 			patch.object(frappe, "get_doc") as get_doc,
-			patch.object(frappe, "get_cached_value", return_value="Individual"),
+			patch.object(frappe, "get_cached_value", return_value="Individual - Domestic"),
 		):
 			# Act and assert: Do not fall through to item or income type rates.
 			self.assertEqual(
@@ -52,8 +53,8 @@ class TestWithholdingTaxPayer(TestCase):
 	def test_get_reference_withholding_tax_deductions(self):
 		"""Exclude individual payers for orders and invoices in both directions."""
 		for doctype, party_type, identity in (
-			("Sales Order", "Customer", "Individual"),
-			("Sales Invoice", "Customer", "Individual"),
+			("Sales Order", "Customer", "Individual - Domestic"),
+			("Sales Invoice", "Customer", "Individual - Domestic"),
 			("Purchase Order", "Supplier", "Individual - Domestic"),
 			("Purchase Invoice", "Supplier", "Individual - Domestic"),
 		):
